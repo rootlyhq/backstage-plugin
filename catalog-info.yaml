@@ -1,0 +1,15 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: backstage-plugin
+  description: |
+    Backstage plugin to integrate Rootly.
+  annotations:
+    github.com/project-slug: rootlyhq/backstage-plugin
+  tags:
+    - plugin
+    - oss
+spec:
+  type: library
+  owner: user:rootlyhq
+lifecycle: stable
