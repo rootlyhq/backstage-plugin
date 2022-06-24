@@ -27,7 +27,6 @@ export const StatusChip = ({ status }: { status: string }) => {
     case 'completed':
       chip = <ResolvedChip label={status} size="small" />;
       break;
-    case 'in_progress':
     case 'mitigated':
     case 'in_progress':
     case 'verifying':
