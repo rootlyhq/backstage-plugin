@@ -179,7 +179,7 @@ const RootlyPlugin = createPlugin({
         return new RootlyApi({
           discoveryApi,
           identityApi,
-          domain: "https://rootly.ngrok.io"
+          domain: "https://rootly.com"
         });
       }
     })
@@ -191,13 +191,13 @@ const RootlyPlugin = createPlugin({
 
 const RootlyPage = RootlyPlugin.provide(createRoutableExtension({
   name: "RootlyPage",
-  component: () => import('./index-c26ef825.esm.js').then((m) => m.RootlyPage),
+  component: () => import('./index-75487fb6.esm.js').then((m) => m.RootlyPage),
   mountPoint: RootlyRouteRef
 }));
 const EntityRootlyRootlyOverviewCard = RootlyPlugin.provide(createComponentExtension({
   name: "EntityRootlyRootlyOverviewCard",
   component: {
-    lazy: () => import('./index-adc52f66.esm.js').then((m) => m.RootlyOverviewCard)
+    lazy: () => import('./index-2bcac5e5.esm.js').then((m) => m.RootlyOverviewCard)
   }
 }));
 
@@ -433,7 +433,6 @@ const StatusChip = ({ status }) => {
         size: "small"
       });
       break;
-    case "in_progress":
     case "mitigated":
     case "in_progress":
     case "verifying":
@@ -926,4 +925,4 @@ const RootlyIncidentsPageLayout = () => {
 RootlyIncidentsPageLayout.Route = Route;
 
 export { ColoredChip as C, DefaultRootlyPageLayout as D, EntityRootlyRootlyOverviewCard as E, IncidentsTable as I, RootlyApiRef as R, ServicesDialog as S, ServicesTable as a, StatusChip as b, RootlyPlugin as c, RootlyIncidentsPageLayout as d, RootlyPage as e, RootlyApi as f, ROOTLY_ANNOTATION as g, ROOTLY_TEAM_ANNOTATION as h, isRootlyAvailable as i };
-//# sourceMappingURL=index-bbad3452.esm.js.map
+//# sourceMappingURL=index-4b3431f2.esm.js.map
