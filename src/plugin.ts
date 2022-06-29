@@ -21,7 +21,7 @@ export const RootlyPlugin = createPlugin({
         return new RootlyApi({
           discoveryApi: discoveryApi,
           identityApi: identityApi,
-          domain: 'https://rootly.ngrok.io',
+          domain: 'https://rootly.com',
         });
       },
     }),
