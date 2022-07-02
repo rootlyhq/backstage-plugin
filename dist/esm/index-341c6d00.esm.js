@@ -7,8 +7,8 @@ import { useApi } from '@backstage/core-plugin-api';
 import Link from '@material-ui/core/Link';
 import { Alert } from '@material-ui/lab';
 import { useAsync } from 'react-use';
-import { R as RootlyApiRef, S as ServicesDialog, D as DefaultRootlyPageLayout, a as ServicesTable, I as IncidentsTable } from './index-4b3431f2.esm.js';
-export { D as DefaultRootlyPageLayout } from './index-4b3431f2.esm.js';
+import { R as RootlyApiRef, S as ServicesDialog, D as DefaultRootlyPageLayout, a as ServicesTable, I as IncidentsTable } from './index-f62183ad.esm.js';
+export { D as DefaultRootlyPageLayout } from './index-f62183ad.esm.js';
 import { IconButton, Menu, MenuItem, ListItemIcon, Typography } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
@@ -260,4 +260,4 @@ const RootlyPage = () => {
 };
 
 export { RootlyPage };
-//# sourceMappingURL=index-75487fb6.esm.js.map
+//# sourceMappingURL=index-341c6d00.esm.js.map

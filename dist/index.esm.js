@@ -1,4 +1,4 @@
-export { D as DefaultRootlyPage, E as EntityRootlyRootlyOverviewCard, I as IncidentsTable, g as ROOTLY_ANNOTATION, h as ROOTLY_TEAM_ANNOTATION, f as RootlyApi, R as RootlyApiRef, d as RootlyIncidentsPage, e as RootlyPage, c as RootlyPlugin, S as ServicesDialog, a as ServicesTable, i as isRootlyAvailable } from './esm/index-4b3431f2.esm.js';
+export { D as DefaultRootlyPage, I as IncidentsTable, h as ROOTLY_ANNOTATION, i as ROOTLY_TEAM_ANNOTATION, g as RootlyApi, R as RootlyApiRef, c as RootlyIncidentsPage, f as RootlyOverviewCard, e as RootlyPage, d as RootlyPlugin, S as ServicesDialog, a as ServicesTable, j as isRootlyAvailable } from './esm/index-f62183ad.esm.js';
 import 'react';
 import 'react-router';
 import '@backstage/plugin-catalog-react';

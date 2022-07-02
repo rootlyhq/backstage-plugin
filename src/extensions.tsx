@@ -12,11 +12,20 @@ export const RootlyPage = RootlyPlugin.provide(
   }),
 );
 
-export const EntityRootlyRootlyOverviewCard = RootlyPlugin.provide(
+export const RootlyOverviewCard = RootlyPlugin.provide(
   createComponentExtension({
-    name: 'EntityRootlyRootlyOverviewCard',
+    name: 'RootlyOverviewCard',
     component: {
       lazy: () => import('./components/Entity').then(m => m.RootlyOverviewCard),
+    },
+  }),
+);
+
+export const RootlyIncidentsPage = RootlyPlugin.provide(
+  createComponentExtension({
+    name: 'RootlyIncidentsPage',
+    component: {
+      lazy: () => import('./components/RootlyIncidentsPage').then(m => m.RootlyIncidentsPage),
     },
   }),
 );

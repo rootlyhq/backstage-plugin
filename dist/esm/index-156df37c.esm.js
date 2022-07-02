@@ -14,7 +14,7 @@ import 'chartkick/chart.js';
 import moment from 'moment';
 import React, { useState } from 'react';
 import { useAsync } from 'react-use';
-import { R as RootlyApiRef, C as ColoredChip, b as StatusChip } from './index-4b3431f2.esm.js';
+import { R as RootlyApiRef, C as ColoredChip, b as StatusChip } from './index-f62183ad.esm.js';
 import 'qs';
 import 'react-router';
 import '@material-ui/icons/MoreVert';
@@ -151,4 +151,4 @@ const RootlyOverviewCard = () => {
 };
 
 export { RootlyOverviewCard };
-//# sourceMappingURL=index-2bcac5e5.esm.js.map
+//# sourceMappingURL=index-156df37c.esm.js.map
