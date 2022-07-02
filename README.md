@@ -42,6 +42,7 @@ to authenticate with Rootly without exposing your API key to users.
 # app-config.yaml
 proxy:
   '/rootly/api':
+    target: https://api.rootly.com
     headers:
       Authorization: Bearer ${ROOTLY_API_KEY}
 ```
