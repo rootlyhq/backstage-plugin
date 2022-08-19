@@ -1,4 +1,4 @@
-import { alertApiRef, useApi } from '@backstage/core-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
 import {
   IconButton,
   ListItemIcon,

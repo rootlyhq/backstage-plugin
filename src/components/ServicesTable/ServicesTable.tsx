@@ -9,7 +9,6 @@ import React, { useCallback, useState } from 'react';
 import { useAsync } from 'react-use';
 import { RootlyApiRef, ServicesFetchOpts } from '../../api';
 import { Service } from '../../types';
-import { ServiceActionsMenu } from '../Service/ServiceActionsMenu';
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -77,10 +76,6 @@ export const ServicesTable = ({ params }: { params?: ServicesFetchOpts }) => {
     } else {
       return <div>N/A</div>;
     }
-  }, []);
-
-  const actionsColumn = useCallback(rowData => {
-    return <ServiceActionsMenu service={rowData} />;
   }, []);
 
   const columns: TableColumn<Service>[] = [
