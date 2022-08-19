@@ -102,9 +102,13 @@ import { RootlyOverviewCard } from '@rootly/backstage-plugin';
 const overviewContent = (
   <Grid container spacing={3} alignItems="stretch">
     // ...
-    <Grid item md={6}>
-      <RootlyOverviewCard />
-    </Grid>
+    <EntitySwitch>
+      <EntitySwitch.Case if={isRootlyAvailable}>
+        <Grid item sm={6}>
+          <RootlyOverviewCard />
+        </Grid>
+      </EntitySwitch.Case>
+    </EntitySwitch>
     // ...
   </Grid>
 );
