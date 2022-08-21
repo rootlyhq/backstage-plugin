@@ -14,13 +14,8 @@ import 'chartkick/chart.js';
 import moment from 'moment';
 import React, { useState } from 'react';
 import { useAsync } from 'react-use';
-import { R as RootlyApiRef, C as ColoredChip, b as StatusChip } from './index-f62183ad.esm.js';
+import { R as RootlyApiRef, C as ColoredChip, b as StatusChip } from './index-b13f7e91.esm.js';
 import 'qs';
-import 'react-router';
-import '@material-ui/icons/MoreVert';
-import '@material-ui/icons/OpenInNew';
-import '@material-ui/icons/Sync';
-import '@material-ui/icons/Delete';
 import '@material-ui/core/Divider';
 
 const truncate = (input, length) => input.length > length ? `${input.substring(0, length)}...` : input;
@@ -151,4 +146,4 @@ const RootlyOverviewCard = () => {
 };
 
 export { RootlyOverviewCard };
-//# sourceMappingURL=index-156df37c.esm.js.map
+//# sourceMappingURL=index-a38649e6.esm.js.map

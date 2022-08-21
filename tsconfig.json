@@ -2,6 +2,7 @@
   "extends": "@backstage/cli/config/tsconfig.json",
   "include": ["src", "dev"],
   "compilerOptions": {
+    "declaration": true,
     "outDir": "dist-types",
     "incremental": false
   }

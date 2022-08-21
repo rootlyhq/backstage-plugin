@@ -1,18 +1,13 @@
-import { createApiRef, createRouteRef, createPlugin, createApiFactory, discoveryApiRef, identityApiRef, createRoutableExtension, createComponentExtension, useApi, attachComponentData } from '@backstage/core-plugin-api';
+import { createApiRef, createRouteRef, createPlugin, createApiFactory, discoveryApiRef, identityApiRef, createRoutableExtension, createComponentExtension, useApi } from '@backstage/core-plugin-api';
 import { stringifyEntityRef, parseEntityRef } from '@backstage/catalog-model';
 import qs from 'qs';
-import React, { useState, useEffect, useCallback, Children, isValidElement, Fragment } from 'react';
-import 'react-router';
-import { EntityRefLink, useEntity } from '@backstage/plugin-catalog-react';
-import { Select, Table, Page, Header, RoutedTabs, Progress, Content, ContentHeader } from '@backstage/core-components';
+import { Table, Select } from '@backstage/core-components';
+import { EntityRefLink } from '@backstage/plugin-catalog-react';
+import { makeStyles, Tooltip, Chip, withStyles, Dialog, DialogTitle, DialogContent, Box, Button, Typography, DialogActions } from '@material-ui/core';
 import Link from '@material-ui/core/Link';
 import { Alert } from '@material-ui/lab';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useAsync } from 'react-use';
-import { Dialog, DialogTitle, DialogContent, Box, Button, Typography, DialogActions, Tooltip, Chip, withStyles, makeStyles, IconButton, Menu, MenuItem, ListItemIcon, Grid } from '@material-ui/core';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import OpenInNewIcon from '@material-ui/icons/OpenInNew';
-import '@material-ui/icons/Sync';
-import '@material-ui/icons/Delete';
 import Divider from '@material-ui/core/Divider';
 
 const RootlyApiRef = createApiRef({
@@ -191,112 +186,145 @@ const RootlyPlugin = createPlugin({
 
 const RootlyPage = RootlyPlugin.provide(createRoutableExtension({
   name: "RootlyPage",
-  component: () => import('./index-341c6d00.esm.js').then((m) => m.RootlyPage),
+  component: () => import('./index-6327fbc6.esm.js').then((m) => m.RootlyPage),
   mountPoint: RootlyRouteRef
 }));
 const RootlyOverviewCard = RootlyPlugin.provide(createComponentExtension({
   name: "RootlyOverviewCard",
   component: {
-    lazy: () => import('./index-156df37c.esm.js').then((m) => m.RootlyOverviewCard)
+    lazy: () => import('./index-a38649e6.esm.js').then((m) => m.RootlyOverviewCard)
   }
 }));
-RootlyPlugin.provide(createComponentExtension({
+const RootlyIncidentsPage = RootlyPlugin.provide(createComponentExtension({
   name: "RootlyIncidentsPage",
   component: {
-    lazy: () => import('./index-1c6def65.esm.js').then((m) => m.RootlyIncidentsPage)
+    lazy: () => import('./index-aa3a838e.esm.js').then((m) => m.RootlyIncidentsPage)
   }
 }));
 
-const ROOTLY_ANNOTATION = "rootly.com/component-selector";
-const ROOTLY_TEAM_ANNOTATION = "rootly.com/team";
+const ROOTLY_ANNOTATION_APP_NAME = "rootly.com/app-name";
 const isRootlyAvailable = (entity) => {
   var _a;
-  return Boolean((_a = entity.metadata.annotations) == null ? void 0 : _a[ROOTLY_ANNOTATION]);
+  return Boolean((_a = entity.metadata.annotations) == null ? void 0 : _a[ROOTLY_ANNOTATION_APP_NAME]);
 };
 
-const ServicesDialog = ({
-  open,
-  entity,
-  handleClose,
-  handleImport,
-  handleUpdate
-}) => {
+const useStyles$1 = makeStyles((theme) => ({
+  container: {
+    width: 850
+  },
+  empty: {
+    padding: theme.spacing(2),
+    display: "flex",
+    justifyContent: "center"
+  }
+}));
+const DEFAULT_PAGE_NUMBER$1 = 1;
+const DEFAULT_PAGE_SIZE$1 = 10;
+const ServicesTable = ({ params }) => {
+  const classes = useStyles$1();
   const RootlyApi = useApi(RootlyApiRef);
-  const [selectedItem, setSelectedItem] = useState("");
+  const smallColumnStyle = {
+    width: "5%",
+    maxWidth: "5%"
+  };
+  const mediumColumnStyle = {
+    width: "10%",
+    maxWidth: "10%"
+  };
+  const [page, setPage] = useState({
+    number: DEFAULT_PAGE_NUMBER$1,
+    size: DEFAULT_PAGE_SIZE$1
+  });
   const {
     value: response,
     loading,
     error
-  } = useAsync(async () => await RootlyApi.getServices({
-    filter: {
-      backstage_id: null
-    },
-    page: { size: 999 }
-  }));
-  const data = response ? response.data : [];
-  useEffect(() => {
+  } = useAsync(async () => await RootlyApi.getServices({ ...params, page }), [page]);
+  const nameColumn = useCallback((rowData) => {
     var _a;
-    if (entity && data) {
-      const entityTriplet = stringifyEntityRef({
-        namespace: entity.metadata.namespace,
-        kind: entity.kind,
-        name: entity.metadata.name
+    return /* @__PURE__ */ React.createElement(Tooltip, {
+      title: ((_a = rowData.attributes.description) == null ? void 0 : _a.substring(0, 255)) || rowData.attributes.name
+    }, /* @__PURE__ */ React.createElement(Link, {
+      target: "blank",
+      href: RootlyApi.getServiceDetailsURL(rowData)
+    }, rowData.attributes.name));
+  }, []);
+  const backstageColumn = useCallback((rowData) => {
+    if (rowData.attributes.backstage_id) {
+      return /* @__PURE__ */ React.createElement(EntityRefLink, {
+        entityRef: parseEntityRef(rowData.attributes.backstage_id)
       });
-      const selectedItem2 = (_a = data.find((s) => s.attributes.backstage_id == entityTriplet)) == null ? void 0 : _a.id;
-      if (selectedItem2) {
-        setSelectedItem(selectedItem2);
-      }
+    } else {
+      return /* @__PURE__ */ React.createElement("div", null, "N/A");
     }
-  }, [data]);
-  const onSelectedServiceChanged = (newSelectedItem) => {
-    setSelectedItem(newSelectedItem);
-  };
-  const onImportAsNewServiceButtonClicked = () => {
-    handleImport(entity);
-  };
-  const onLinkToExistingServiceButtonClicked = () => {
-    var _a;
-    handleUpdate(entity, { id: (_a = entity.linkedService) == null ? void 0 : _a.id }, { id: selectedItem });
-  };
-  if (loading) {
-    return /* @__PURE__ */ React.createElement(React.Fragment, null);
-  } else if (error) {
+  }, []);
+  const columns = [
+    {
+      title: "Name",
+      field: "name",
+      highlight: true,
+      cellStyle: smallColumnStyle,
+      headerStyle: smallColumnStyle,
+      render: nameColumn
+    },
+    {
+      title: "Backstage",
+      field: "backstage",
+      cellStyle: smallColumnStyle,
+      headerStyle: smallColumnStyle,
+      render: backstageColumn
+    },
+    {
+      title: "Incidents",
+      field: "attributes.incidents_count",
+      type: "numeric",
+      cellStyle: mediumColumnStyle,
+      headerStyle: mediumColumnStyle
+    },
+    {
+      title: "Updated At",
+      field: "attributes.updated_at",
+      type: "datetime",
+      dateSetting: { locale: "en-US" },
+      cellStyle: mediumColumnStyle,
+      headerStyle: mediumColumnStyle
+    },
+    {
+      title: "Created At",
+      field: "attributes.created_at",
+      type: "datetime",
+      dateSetting: { locale: "en-US" },
+      cellStyle: mediumColumnStyle,
+      headerStyle: mediumColumnStyle
+    }
+  ];
+  if (error) {
     return /* @__PURE__ */ React.createElement(Alert, {
       severity: "error"
     }, error.message);
   }
-  return /* @__PURE__ */ React.createElement(Dialog, {
-    open,
-    onClose: handleClose,
-    "aria-labelledby": "dialog-title",
-    "aria-describedby": "dialog-description"
-  }, /* @__PURE__ */ React.createElement(DialogTitle, {
-    id: "dialog-title"
-  }, "Services"), /* @__PURE__ */ React.createElement(DialogContent, null, entity && !entity.linkedService && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(Box, {
-    sx: { mx: "auto" },
-    mb: 2
-  }, /* @__PURE__ */ React.createElement(Button, {
-    color: "primary",
-    variant: "contained",
-    onClick: onImportAsNewServiceButtonClicked
-  }, "Import as new service")), /* @__PURE__ */ React.createElement(Divider, null)), /* @__PURE__ */ React.createElement(Box, {
-    sx: { mx: "auto" },
-    mt: 2
-  }, /* @__PURE__ */ React.createElement(Typography, null, "Select a Rootly service you want to map this component to:"), /* @__PURE__ */ React.createElement(Select, {
-    onChange: onSelectedServiceChanged,
-    selected: selectedItem,
-    placeholder: "Select",
-    label: "Services",
-    items: (data || []).map((service) => {
-      return {
-        label: service.attributes.name,
-        value: service.id
-      };
-    })
-  }))), /* @__PURE__ */ React.createElement(DialogActions, null, /* @__PURE__ */ React.createElement(Button, {
-    color: "primary",
-    onClick: onLinkToExistingServiceButtonClicked
-  }, "Link")));
+  const data = response ? response.data : [];
+  return /* @__PURE__ */ React.createElement(Table, {
+    isLoading: loading,
+    options: {
+      sorting: true,
+      search: false,
+      paging: true,
+      actionsColumnIndex: -1,
+      pageSize: DEFAULT_PAGE_SIZE$1,
+      padding: "dense"
+    },
+    localization: { header: { actions: void 0 } },
+    columns,
+    data,
+    page: page.number - 1,
+    totalCount: response == null ? void 0 : response.meta.total_count,
+    emptyContent: /* @__PURE__ */ React.createElement("div", {
+      className: classes.empty
+    }, "No services"),
+    onPageChange: (pageIndex) => setPage({ ...page, number: pageIndex + 1 }),
+    onRowsPerPageChange: (rowsPerPage) => setPage({ ...page, size: rowsPerPage })
+  });
 };
 
 class IncidentWrapper {
@@ -466,7 +494,7 @@ const StatusChip = ({ status }) => {
   }, /* @__PURE__ */ React.createElement("span", null, chip));
 };
 
-const useStyles$1 = makeStyles((theme) => ({
+const useStyles = makeStyles((theme) => ({
   container: {
     width: 850
   },
@@ -476,10 +504,10 @@ const useStyles$1 = makeStyles((theme) => ({
     justifyContent: "center"
   }
 }));
-const DEFAULT_PAGE_NUMBER$1 = 1;
-const DEFAULT_PAGE_SIZE$1 = 10;
+const DEFAULT_PAGE_NUMBER = 1;
+const DEFAULT_PAGE_SIZE = 10;
 const IncidentsTable = ({ params }) => {
-  const classes = useStyles$1();
+  const classes = useStyles();
   const RootlyApi = useApi(RootlyApiRef);
   const smallColumnStyle = {
     width: "5%",
@@ -490,8 +518,8 @@ const IncidentsTable = ({ params }) => {
     maxWidth: "10%"
   };
   const [page, setPage] = useState({
-    number: DEFAULT_PAGE_NUMBER$1,
-    size: DEFAULT_PAGE_SIZE$1
+    number: DEFAULT_PAGE_NUMBER,
+    size: DEFAULT_PAGE_SIZE
   });
   const {
     value: response,
@@ -610,7 +638,7 @@ const IncidentsTable = ({ params }) => {
       search: false,
       paging: true,
       actionsColumnIndex: -1,
-      pageSize: DEFAULT_PAGE_SIZE$1,
+      pageSize: DEFAULT_PAGE_SIZE,
       padding: "dense"
     },
     localization: { header: { actions: void 0 } },
@@ -626,309 +654,90 @@ const IncidentsTable = ({ params }) => {
   });
 };
 
-const ServiceActionsMenu = ({ service }) => {
+const ServicesDialog = ({
+  open,
+  entity,
+  handleClose,
+  handleImport,
+  handleUpdate
+}) => {
   const RootlyApi = useApi(RootlyApiRef);
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleCloseMenu = () => {
-    setAnchorEl(null);
-  };
-  return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(IconButton, {
-    "aria-label": "more",
-    "aria-controls": "long-menu",
-    "aria-haspopup": "true",
-    onClick: handleClick
-  }, /* @__PURE__ */ React.createElement(MoreVertIcon, null)), /* @__PURE__ */ React.createElement(Menu, {
-    id: `actions-menu-${service.id}`,
-    anchorEl,
-    keepMounted: true,
-    open: Boolean(anchorEl),
-    onClose: handleCloseMenu,
-    PaperProps: {
-      style: { maxHeight: 48 * 4.5 }
-    }
-  }, /* @__PURE__ */ React.createElement(MenuItem, {
-    key: "details",
-    onClick: handleCloseMenu
-  }, /* @__PURE__ */ React.createElement(ListItemIcon, null, /* @__PURE__ */ React.createElement(OpenInNewIcon, {
-    fontSize: "small"
-  })), /* @__PURE__ */ React.createElement(Typography, {
-    variant: "inherit",
-    noWrap: true
-  }, /* @__PURE__ */ React.createElement(Link, {
-    target: "blank",
-    href: RootlyApi.getServiceDetailsURL(service)
-  }, "View in Rootly")))));
-};
-
-const useStyles = makeStyles((theme) => ({
-  container: {
-    width: 850
-  },
-  empty: {
-    padding: theme.spacing(2),
-    display: "flex",
-    justifyContent: "center"
-  }
-}));
-const DEFAULT_PAGE_NUMBER = 1;
-const DEFAULT_PAGE_SIZE = 10;
-const ServicesTable = ({ params }) => {
-  const classes = useStyles();
-  const RootlyApi = useApi(RootlyApiRef);
-  const smallColumnStyle = {
-    width: "5%",
-    maxWidth: "5%"
-  };
-  const mediumColumnStyle = {
-    width: "10%",
-    maxWidth: "10%"
-  };
-  const [page, setPage] = useState({
-    number: DEFAULT_PAGE_NUMBER,
-    size: DEFAULT_PAGE_SIZE
-  });
-  const {
-    value: response,
-    loading,
-    error
-  } = useAsync(async () => await RootlyApi.getServices({ ...params, page }), [page]);
-  const nameColumn = useCallback((rowData) => {
-    var _a;
-    return /* @__PURE__ */ React.createElement(Tooltip, {
-      title: ((_a = rowData.attributes.description) == null ? void 0 : _a.substring(0, 255)) || rowData.attributes.name
-    }, /* @__PURE__ */ React.createElement(Link, {
-      target: "blank",
-      href: RootlyApi.getServiceDetailsURL(rowData)
-    }, rowData.attributes.name));
-  }, []);
-  const backstageColumn = useCallback((rowData) => {
-    if (rowData.attributes.backstage_id) {
-      return /* @__PURE__ */ React.createElement(EntityRefLink, {
-        entityRef: parseEntityRef(rowData.attributes.backstage_id)
-      });
-    } else {
-      return /* @__PURE__ */ React.createElement("div", null, "N/A");
-    }
-  }, []);
-  useCallback((rowData) => {
-    return /* @__PURE__ */ React.createElement(ServiceActionsMenu, {
-      service: rowData
-    });
-  }, []);
-  const columns = [
-    {
-      title: "Name",
-      field: "name",
-      highlight: true,
-      cellStyle: smallColumnStyle,
-      headerStyle: smallColumnStyle,
-      render: nameColumn
-    },
-    {
-      title: "Backstage",
-      field: "backstage",
-      cellStyle: smallColumnStyle,
-      headerStyle: smallColumnStyle,
-      render: backstageColumn
-    },
-    {
-      title: "Incidents",
-      field: "attributes.incidents_count",
-      type: "numeric",
-      cellStyle: mediumColumnStyle,
-      headerStyle: mediumColumnStyle
-    },
-    {
-      title: "Updated At",
-      field: "attributes.updated_at",
-      type: "datetime",
-      dateSetting: { locale: "en-US" },
-      cellStyle: mediumColumnStyle,
-      headerStyle: mediumColumnStyle
-    },
-    {
-      title: "Created At",
-      field: "attributes.created_at",
-      type: "datetime",
-      dateSetting: { locale: "en-US" },
-      cellStyle: mediumColumnStyle,
-      headerStyle: mediumColumnStyle
-    }
-  ];
-  if (error) {
-    return /* @__PURE__ */ React.createElement(Alert, {
-      severity: "error"
-    }, error.message);
-  }
-  const data = response ? response.data : [];
-  return /* @__PURE__ */ React.createElement(Table, {
-    isLoading: loading,
-    options: {
-      sorting: true,
-      search: false,
-      paging: true,
-      actionsColumnIndex: -1,
-      pageSize: DEFAULT_PAGE_SIZE,
-      padding: "dense"
-    },
-    localization: { header: { actions: void 0 } },
-    columns,
-    data,
-    page: page.number - 1,
-    totalCount: response == null ? void 0 : response.meta.total_count,
-    emptyContent: /* @__PURE__ */ React.createElement("div", {
-      className: classes.empty
-    }, "No services"),
-    onPageChange: (pageIndex) => setPage({ ...page, number: pageIndex + 1 }),
-    onRowsPerPageChange: (rowsPerPage) => setPage({ ...page, size: rowsPerPage })
-  });
-};
-
-const Route$1 = () => null;
-attachComponentData(Route$1, "core.gatherMountPoints", true);
-function createSubRoutesFromChildren(childrenProps) {
-  const routeType = (/* @__PURE__ */ React.createElement(Route$1, {
-    path: "",
-    title: ""
-  }, /* @__PURE__ */ React.createElement("div", null))).type;
-  return Children.toArray(childrenProps).flatMap((child) => {
-    if (!isValidElement(child)) {
-      return [];
-    }
-    if (child.type === Fragment) {
-      return createSubRoutesFromChildren(child.props.children);
-    }
-    if (child.type !== routeType) {
-      throw new Error("Child of ExploreLayout must be an ExploreLayout.Route");
-    }
-    const { path, title, children, tabProps } = child.props;
-    return [{ path, title, children, tabProps }];
-  });
-}
-const DefaultRootlyPageLayout = ({ children }) => {
-  const routes = createSubRoutesFromChildren(children);
-  return /* @__PURE__ */ React.createElement(Page, {
-    themeId: "tool"
-  }, /* @__PURE__ */ React.createElement(Header, {
-    title: "Rootly"
-  }), /* @__PURE__ */ React.createElement(RoutedTabs, {
-    routes
-  }));
-};
-DefaultRootlyPageLayout.Route = Route$1;
-
-const Route = () => null;
-attachComponentData(Route, "core.gatherMountPoints", true);
-const RootlyIncidentsPageLayout = () => {
-  const { entity } = useEntity();
-  const RootlyApi = useApi(RootlyApiRef);
-  const [open, setOpen] = useState(false);
-  const [reload, setReload] = useState(false);
-  const handleOpenDialog = () => {
-    setOpen(true);
-  };
-  const handleCloseDialog = () => {
-    setOpen(false);
-  };
-  const handleCloseImport = async (entity2) => {
-    await RootlyApi.importEntity(entity2);
-    setReload(!reload);
-  };
-  const handleCloseUpdate = async (entity2, old_service, service2) => {
-    await RootlyApi.updateEntity(entity2, old_service, service2);
-    setReload(!reload);
-  };
-  const entityTriplet = stringifyEntityRef({
-    namespace: entity.metadata.namespace,
-    kind: entity.kind,
-    name: entity.metadata.name
-  });
+  const [selectedItem, setSelectedItem] = useState("");
   const {
     value: response,
     loading,
     error
   } = useAsync(async () => await RootlyApi.getServices({
     filter: {
-      backstage_id: entityTriplet
+      backstage_id: null
+    },
+    page: { size: 999 }
+  }));
+  const data = response ? response.data : [];
+  useEffect(() => {
+    var _a;
+    if (entity && data) {
+      const entityTriplet = stringifyEntityRef({
+        namespace: entity.metadata.namespace,
+        kind: entity.kind,
+        name: entity.metadata.name
+      });
+      const selectedItem2 = (_a = data.find((s) => s.attributes.backstage_id == entityTriplet)) == null ? void 0 : _a.id;
+      if (selectedItem2) {
+        setSelectedItem(selectedItem2);
+      }
     }
-  }), [reload]);
+  }, [data]);
+  const onSelectedServiceChanged = (newSelectedItem) => {
+    setSelectedItem(newSelectedItem);
+  };
+  const onImportAsNewServiceButtonClicked = () => {
+    handleImport(entity);
+  };
+  const onLinkToExistingServiceButtonClicked = () => {
+    var _a;
+    handleUpdate(entity, { id: (_a = entity.linkedService) == null ? void 0 : _a.id }, { id: selectedItem });
+  };
   if (loading) {
-    return /* @__PURE__ */ React.createElement(Progress, null);
+    return /* @__PURE__ */ React.createElement(React.Fragment, null);
   } else if (error) {
     return /* @__PURE__ */ React.createElement(Alert, {
       severity: "error"
     }, error.message);
   }
-  const service = response && response.data && response.data.length > 0 ? response.data[0] : null;
-  if (!service) {
-    return /* @__PURE__ */ React.createElement(Page, {
-      themeId: "tool"
-    }, /* @__PURE__ */ React.createElement(Content, null, /* @__PURE__ */ React.createElement(ContentHeader, {
-      title: entity.metadata.name
-    }), /* @__PURE__ */ React.createElement(Grid, {
-      container: true,
-      spacing: 3,
-      direction: "column"
-    }, /* @__PURE__ */ React.createElement(Box, {
-      sx: { mx: "auto" },
-      mt: 2
-    }, /* @__PURE__ */ React.createElement(Alert, {
-      severity: "error"
-    }, "Looks like this component is not linked to any services in Rootly")), /* @__PURE__ */ React.createElement(Box, {
-      sx: { mx: "auto" },
-      mt: 2
-    }, /* @__PURE__ */ React.createElement(Button, {
-      color: "primary",
-      variant: "contained",
-      onClick: handleOpenDialog
-    }, "Import or link to an existing Rootly service")), /* @__PURE__ */ React.createElement(ServicesDialog, {
-      open,
-      entity,
-      handleClose: handleCloseDialog,
-      handleImport: handleCloseImport,
-      handleUpdate: handleCloseUpdate
-    }))));
-  } else {
-    return /* @__PURE__ */ React.createElement(Page, {
-      themeId: "tool"
-    }, /* @__PURE__ */ React.createElement(Content, null, /* @__PURE__ */ React.createElement(ContentHeader, {
-      title: "Ongoing incidents"
-    }), /* @__PURE__ */ React.createElement(Grid, {
-      container: true,
-      spacing: 3,
-      direction: "column"
-    }, /* @__PURE__ */ React.createElement(Grid, {
-      item: true
-    }, /* @__PURE__ */ React.createElement(IncidentsTable, {
-      params: {
-        filter: {
-          services: service.attributes.slug,
-          status: "started,mitigated"
-        },
-        include: "environments,services,functionalities,groups,incident_types"
-      }
-    }))), /* @__PURE__ */ React.createElement(ContentHeader, {
-      title: "Past incidents"
-    }), /* @__PURE__ */ React.createElement(Grid, {
-      container: true,
-      spacing: 3,
-      direction: "column"
-    }, /* @__PURE__ */ React.createElement(Grid, {
-      item: true
-    }, /* @__PURE__ */ React.createElement(IncidentsTable, {
-      params: {
-        filter: {
-          services: service.attributes.slug
-        },
-        include: "environments,services,functionalities,groups,incident_types"
-      }
-    })))));
-  }
+  return /* @__PURE__ */ React.createElement(Dialog, {
+    open,
+    onClose: handleClose,
+    "aria-labelledby": "dialog-title",
+    "aria-describedby": "dialog-description"
+  }, /* @__PURE__ */ React.createElement(DialogTitle, {
+    id: "dialog-title"
+  }, "Services"), /* @__PURE__ */ React.createElement(DialogContent, null, entity && !entity.linkedService && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(Box, {
+    sx: { mx: "auto" },
+    mb: 2
+  }, /* @__PURE__ */ React.createElement(Button, {
+    color: "primary",
+    variant: "contained",
+    onClick: onImportAsNewServiceButtonClicked
+  }, "Import as new service")), /* @__PURE__ */ React.createElement(Divider, null)), /* @__PURE__ */ React.createElement(Box, {
+    sx: { mx: "auto" },
+    mt: 2
+  }, /* @__PURE__ */ React.createElement(Typography, null, "Select a Rootly service you want to map this component to:"), /* @__PURE__ */ React.createElement(Select, {
+    onChange: onSelectedServiceChanged,
+    selected: selectedItem,
+    placeholder: "Select",
+    label: "Services",
+    items: (data || []).map((service) => {
+      return {
+        label: service.attributes.name,
+        value: service.id
+      };
+    })
+  }))), /* @__PURE__ */ React.createElement(DialogActions, null, /* @__PURE__ */ React.createElement(Button, {
+    color: "primary",
+    onClick: onLinkToExistingServiceButtonClicked
+  }, "Link")));
 };
-RootlyIncidentsPageLayout.Route = Route;
 
-export { ColoredChip as C, DefaultRootlyPageLayout as D, IncidentsTable as I, RootlyApiRef as R, ServicesDialog as S, ServicesTable as a, StatusChip as b, RootlyIncidentsPageLayout as c, RootlyPlugin as d, RootlyPage as e, RootlyOverviewCard as f, RootlyApi as g, ROOTLY_ANNOTATION as h, ROOTLY_TEAM_ANNOTATION as i, isRootlyAvailable as j };
-//# sourceMappingURL=index-f62183ad.esm.js.map
+export { ColoredChip as C, IncidentsTable as I, RootlyApiRef as R, ServicesDialog as S, ServicesTable as a, StatusChip as b, RootlyPage as c, RootlyOverviewCard as d, RootlyIncidentsPage as e, RootlyPlugin as f, RootlyApi as g, isRootlyAvailable as i };
+//# sourceMappingURL=index-b13f7e91.esm.js.map

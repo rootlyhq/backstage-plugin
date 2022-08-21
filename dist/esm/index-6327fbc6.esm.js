@@ -1,14 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, Children, isValidElement, Fragment } from 'react';
 import { useOutlet } from 'react-router';
 import { catalogApiRef, EntityRefLink, EntityListProvider } from '@backstage/plugin-catalog-react';
 import { stringifyEntityRef } from '@backstage/catalog-model';
-import { Table, Progress } from '@backstage/core-components';
-import { useApi } from '@backstage/core-plugin-api';
+import { Table, Progress, Page, Header, RoutedTabs } from '@backstage/core-components';
+import { useApi, attachComponentData } from '@backstage/core-plugin-api';
 import Link from '@material-ui/core/Link';
 import { Alert } from '@material-ui/lab';
 import { useAsync } from 'react-use';
-import { R as RootlyApiRef, S as ServicesDialog, D as DefaultRootlyPageLayout, a as ServicesTable, I as IncidentsTable } from './index-f62183ad.esm.js';
-export { D as DefaultRootlyPageLayout } from './index-f62183ad.esm.js';
+import { R as RootlyApiRef, S as ServicesDialog, a as ServicesTable, I as IncidentsTable } from './index-b13f7e91.esm.js';
 import { IconButton, Menu, MenuItem, ListItemIcon, Typography } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
@@ -237,6 +236,39 @@ const EntitiesList = () => {
   return /* @__PURE__ */ React.createElement(EntityListProvider, null, /* @__PURE__ */ React.createElement(EntitiesTable, null));
 };
 
+const Route = () => null;
+attachComponentData(Route, "core.gatherMountPoints", true);
+function createSubRoutesFromChildren(childrenProps) {
+  const routeType = (/* @__PURE__ */ React.createElement(Route, {
+    path: "",
+    title: ""
+  }, /* @__PURE__ */ React.createElement("div", null))).type;
+  return Children.toArray(childrenProps).flatMap((child) => {
+    if (!isValidElement(child)) {
+      return [];
+    }
+    if (child.type === Fragment) {
+      return createSubRoutesFromChildren(child.props.children);
+    }
+    if (child.type !== routeType) {
+      throw new Error("Child of ExploreLayout must be an ExploreLayout.Route");
+    }
+    const { path, title, children, tabProps } = child.props;
+    return [{ path, title, children, tabProps }];
+  });
+}
+const DefaultRootlyPageLayout = ({ children }) => {
+  const routes = createSubRoutesFromChildren(children);
+  return /* @__PURE__ */ React.createElement(Page, {
+    themeId: "tool"
+  }, /* @__PURE__ */ React.createElement(Header, {
+    title: "Rootly"
+  }), /* @__PURE__ */ React.createElement(RoutedTabs, {
+    routes
+  }));
+};
+DefaultRootlyPageLayout.Route = Route;
+
 const DefaultRootlyPage = () => {
   return /* @__PURE__ */ React.createElement(DefaultRootlyPageLayout, null, /* @__PURE__ */ React.createElement(DefaultRootlyPageLayout.Route, {
     path: "entities",
@@ -259,5 +291,5 @@ const RootlyPage = () => {
   return outlet || /* @__PURE__ */ React.createElement(DefaultRootlyPage, null);
 };
 
-export { RootlyPage };
-//# sourceMappingURL=index-341c6d00.esm.js.map
+export { DefaultRootlyPageLayout, RootlyPage };
+//# sourceMappingURL=index-6327fbc6.esm.js.map
