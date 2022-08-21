@@ -7,12 +7,6 @@ import { DefaultRootlyPageLayout } from './DefaultRootlyPageLayout';
 export const DefaultRootlyPage = () => {
   return (
     <DefaultRootlyPageLayout>
-      <DefaultRootlyPageLayout.Route path="entities" title="Entities">
-        <EntitiesList />
-      </DefaultRootlyPageLayout.Route>
-      <DefaultRootlyPageLayout.Route path="services" title="Services">
-        <ServicesTable />
-      </DefaultRootlyPageLayout.Route>
       <DefaultRootlyPageLayout.Route path="incidents" title="Incidents">
         <IncidentsTable
           params={{
@@ -20,6 +14,12 @@ export const DefaultRootlyPage = () => {
               'environments,services,functionalities,groups,incident_types',
           }}
         />
+      </DefaultRootlyPageLayout.Route>
+      <DefaultRootlyPageLayout.Route path="entities" title="Entities">
+        <EntitiesList />
+      </DefaultRootlyPageLayout.Route>
+      <DefaultRootlyPageLayout.Route path="services" title="Services">
+        <ServicesTable />
       </DefaultRootlyPageLayout.Route>
     </DefaultRootlyPageLayout>
   );
