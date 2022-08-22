@@ -96,7 +96,7 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
 
 ```ts
 // packages/app/src/components/catalog/EntityPage.tsx
-import { RootlyOverviewCard } from '@rootly/backstage-plugin';
+import { RootlyOverviewCard, isRootlyAvailable } from '@rootly/backstage-plugin';
 
 // ...
 const overviewContent = (
