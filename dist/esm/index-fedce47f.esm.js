@@ -7,7 +7,7 @@ import { useEntity } from '@backstage/plugin-catalog-react';
 import { Grid, Box, Button } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import { useAsync } from 'react-use';
-import { R as RootlyApiRef, S as ServicesDialog, I as IncidentsTable } from './index-b13f7e91.esm.js';
+import { R as RootlyApiRef, S as ServicesDialog, I as IncidentsTable } from './index-8222806b.esm.js';
 import 'qs';
 import '@material-ui/core/Link';
 import '@material-ui/core/Divider';
@@ -132,4 +132,4 @@ const RootlyIncidentsPage = () => {
 };
 
 export { RootlyIncidentsPage, RootlyIncidentsPageLayout };
-//# sourceMappingURL=index-aa3a838e.esm.js.map
+//# sourceMappingURL=index-fedce47f.esm.js.map

@@ -186,19 +186,19 @@ const RootlyPlugin = createPlugin({
 
 const RootlyPage = RootlyPlugin.provide(createRoutableExtension({
   name: "RootlyPage",
-  component: () => import('./index-6327fbc6.esm.js').then((m) => m.RootlyPage),
+  component: () => import('./index-028a1ee0.esm.js').then((m) => m.RootlyPage),
   mountPoint: RootlyRouteRef
 }));
 const RootlyOverviewCard = RootlyPlugin.provide(createComponentExtension({
   name: "RootlyOverviewCard",
   component: {
-    lazy: () => import('./index-a38649e6.esm.js').then((m) => m.RootlyOverviewCard)
+    lazy: () => import('./index-c8bb48c9.esm.js').then((m) => m.RootlyOverviewCard)
   }
 }));
 const RootlyIncidentsPage = RootlyPlugin.provide(createComponentExtension({
   name: "RootlyIncidentsPage",
   component: {
-    lazy: () => import('./index-aa3a838e.esm.js').then((m) => m.RootlyIncidentsPage)
+    lazy: () => import('./index-fedce47f.esm.js').then((m) => m.RootlyIncidentsPage)
   }
 }));
 
@@ -740,4 +740,4 @@ const ServicesDialog = ({
 };
 
 export { ColoredChip as C, IncidentsTable as I, RootlyApiRef as R, ServicesDialog as S, ServicesTable as a, StatusChip as b, RootlyPage as c, RootlyOverviewCard as d, RootlyIncidentsPage as e, RootlyPlugin as f, RootlyApi as g, isRootlyAvailable as i };
-//# sourceMappingURL=index-b13f7e91.esm.js.map
+//# sourceMappingURL=index-8222806b.esm.js.map

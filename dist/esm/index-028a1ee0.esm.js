@@ -7,7 +7,7 @@ import { useApi, attachComponentData } from '@backstage/core-plugin-api';
 import Link from '@material-ui/core/Link';
 import { Alert } from '@material-ui/lab';
 import { useAsync } from 'react-use';
-import { R as RootlyApiRef, S as ServicesDialog, a as ServicesTable, I as IncidentsTable } from './index-b13f7e91.esm.js';
+import { R as RootlyApiRef, S as ServicesDialog, I as IncidentsTable, a as ServicesTable } from './index-8222806b.esm.js';
 import { IconButton, Menu, MenuItem, ListItemIcon, Typography } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
@@ -271,19 +271,19 @@ DefaultRootlyPageLayout.Route = Route;
 
 const DefaultRootlyPage = () => {
   return /* @__PURE__ */ React.createElement(DefaultRootlyPageLayout, null, /* @__PURE__ */ React.createElement(DefaultRootlyPageLayout.Route, {
-    path: "entities",
-    title: "Entities"
-  }, /* @__PURE__ */ React.createElement(EntitiesList, null)), /* @__PURE__ */ React.createElement(DefaultRootlyPageLayout.Route, {
-    path: "services",
-    title: "Services"
-  }, /* @__PURE__ */ React.createElement(ServicesTable, null)), /* @__PURE__ */ React.createElement(DefaultRootlyPageLayout.Route, {
     path: "incidents",
     title: "Incidents"
   }, /* @__PURE__ */ React.createElement(IncidentsTable, {
     params: {
       include: "environments,services,functionalities,groups,incident_types"
     }
-  })));
+  })), /* @__PURE__ */ React.createElement(DefaultRootlyPageLayout.Route, {
+    path: "entities",
+    title: "Entities"
+  }, /* @__PURE__ */ React.createElement(EntitiesList, null)), /* @__PURE__ */ React.createElement(DefaultRootlyPageLayout.Route, {
+    path: "services",
+    title: "Services"
+  }, /* @__PURE__ */ React.createElement(ServicesTable, null)));
 };
 
 const RootlyPage = () => {
@@ -292,4 +292,4 @@ const RootlyPage = () => {
 };
 
 export { DefaultRootlyPageLayout, RootlyPage };
-//# sourceMappingURL=index-6327fbc6.esm.js.map
+//# sourceMappingURL=index-028a1ee0.esm.js.map
