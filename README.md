@@ -94,6 +94,16 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
 
 ![Rootly overview page](./docs/rootly-entity-overview.png)
 
+To configure the entity to use the RootlyOverviewCard, add the Rootly app name to the entity annotations. For this you add `rootly.com/app-name` and configure this as follows:
+
+```yml
+metadata:
+    annotations:
+          rootly.com/app-name: your-app-name
+```
+
+The boolean `isRootlyAvailable` checks the entity annotations for `rootly.com/app-name`.
+
 ```ts
 // packages/app/src/components/catalog/EntityPage.tsx
 import { RootlyOverviewCard, isRootlyAvailable } from '@rootly/backstage-plugin';
