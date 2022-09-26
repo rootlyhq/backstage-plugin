@@ -7,7 +7,7 @@ import { useEntity } from '@backstage/plugin-catalog-react';
 import { Grid, Box, Button } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import { useAsync } from 'react-use';
-import { R as RootlyApiRef, S as ServicesDialog, I as IncidentsTable } from './index-8222806b.esm.js';
+import { R as RootlyApiRef, S as ServicesDialog, I as IncidentsTable } from './index-259fb488.esm.js';
 import 'qs';
 import '@material-ui/core/Link';
 import '@material-ui/core/Divider';
@@ -42,11 +42,14 @@ const RootlyIncidentsPageLayout = () => {
     value: response,
     loading,
     error
-  } = useAsync(async () => await RootlyApi.getServices({
-    filter: {
-      backstage_id: entityTriplet
-    }
-  }), [reload]);
+  } = useAsync(
+    async () => await RootlyApi.getServices({
+      filter: {
+        backstage_id: entityTriplet
+      }
+    }),
+    [reload]
+  );
   if (loading) {
     return /* @__PURE__ */ React.createElement(Progress, null);
   } else if (error) {
@@ -132,4 +135,4 @@ const RootlyIncidentsPage = () => {
 };
 
 export { RootlyIncidentsPage, RootlyIncidentsPageLayout };
-//# sourceMappingURL=index-fedce47f.esm.js.map
+//# sourceMappingURL=index-fbce594f.esm.js.map

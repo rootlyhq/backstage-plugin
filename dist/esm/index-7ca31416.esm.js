@@ -14,7 +14,7 @@ import 'chartkick/chart.js';
 import moment from 'moment';
 import React, { useState } from 'react';
 import { useAsync } from 'react-use';
-import { R as RootlyApiRef, C as ColoredChip, b as StatusChip } from './index-8222806b.esm.js';
+import { R as RootlyApiRef, C as ColoredChip, b as StatusChip } from './index-259fb488.esm.js';
 import 'qs';
 import '@material-ui/core/Divider';
 
@@ -83,29 +83,38 @@ const RootlyOverviewCard = () => {
     value: serviceResponse,
     loading: serviceLoading,
     error: serviceError
-  } = useAsync(async () => await RootlyApi.getServices({
-    filter: {
-      backstage_id: entityTriplet
-    }
-  }), [reload]);
+  } = useAsync(
+    async () => await RootlyApi.getServices({
+      filter: {
+        backstage_id: entityTriplet
+      }
+    }),
+    [reload]
+  );
   const service = serviceResponse && serviceResponse.data && serviceResponse.data.length > 0 ? serviceResponse.data[0] : null;
   const {
     value: incidentsResponse,
     loading: incidentsLoading,
     error: incidentsError
-  } = useAsync(async () => service ? await RootlyApi.getIncidents({
-    filter: {
-      services: service.attributes.slug,
-      status: "started,mitigated"
-    }
-  }) : { data: [] }, [service]);
+  } = useAsync(
+    async () => service ? await RootlyApi.getIncidents({
+      filter: {
+        services: service.attributes.slug,
+        status: "started,mitigated"
+      }
+    }) : { data: [] },
+    [service]
+  );
   const {
     value: chartResponse,
     loading: chartLoading,
     error: chartError
-  } = useAsync(async () => service ? await RootlyApi.getServiceIncidentsChart(service, {
-    period: "week"
-  }) : { data: [] }, [service]);
+  } = useAsync(
+    async () => service ? await RootlyApi.getServiceIncidentsChart(service, {
+      period: "week"
+    }) : { data: [] },
+    [service]
+  );
   const incidents = incidentsResponse && incidentsResponse.data && incidentsResponse.data.length > 0 ? incidentsResponse.data : null;
   return /* @__PURE__ */ React.createElement(Card, null, /* @__PURE__ */ React.createElement(CardHeader, {
     title: "Rootly",
@@ -146,4 +155,4 @@ const RootlyOverviewCard = () => {
 };
 
 export { RootlyOverviewCard };
-//# sourceMappingURL=index-c8bb48c9.esm.js.map
+//# sourceMappingURL=index-7ca31416.esm.js.map

@@ -7,7 +7,7 @@ import { useApi, attachComponentData } from '@backstage/core-plugin-api';
 import Link from '@material-ui/core/Link';
 import { Alert } from '@material-ui/lab';
 import { useAsync } from 'react-use';
-import { R as RootlyApiRef, S as ServicesDialog, I as IncidentsTable, a as ServicesTable } from './index-8222806b.esm.js';
+import { R as RootlyApiRef, S as ServicesDialog, I as IncidentsTable, a as ServicesTable } from './index-259fb488.esm.js';
 import { IconButton, Menu, MenuItem, ListItemIcon, Typography } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
@@ -117,7 +117,9 @@ const EntitiesTable = () => {
     maxWidth: "5%"
   };
   const [reload, setReload] = useState(false);
-  const { value, loading, error } = useAsync(async () => await catalogApi.getEntities());
+  const { value, loading, error } = useAsync(
+    async () => await catalogApi.getEntities()
+  );
   const handleUpdate = async (entity, old_service, service) => {
     await RootlyApi.updateEntity(entity, old_service, service);
     setTimeout(() => setReload(!reload), 500);
@@ -140,11 +142,14 @@ const EntitiesTable = () => {
       value: response,
       loading: loading2,
       error: error2
-    } = useAsync(async () => await RootlyApi.getServices({
-      filter: {
-        backstage_id: entityTriplet
-      }
-    }), [reload2]);
+    } = useAsync(
+      async () => await RootlyApi.getServices({
+        filter: {
+          backstage_id: entityTriplet
+        }
+      }),
+      [reload2]
+    );
     if (loading2) {
       return /* @__PURE__ */ React.createElement(Progress, null);
     } else if (error2) {
@@ -292,4 +297,4 @@ const RootlyPage = () => {
 };
 
 export { DefaultRootlyPageLayout, RootlyPage };
-//# sourceMappingURL=index-028a1ee0.esm.js.map
+//# sourceMappingURL=index-9b568a65.esm.js.map

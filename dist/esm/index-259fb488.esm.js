@@ -41,19 +41,28 @@ class RootlyApi {
   async getServices(opts) {
     const init = { headers: { "Content-Type": "application/vnd.api+json" } };
     const params = qs.stringify(opts, { encode: false });
-    const response = await this.fetch(`/v1/services?${params}`, init);
+    const response = await this.fetch(
+      `/v1/services?${params}`,
+      init
+    );
     return response;
   }
   async getIncidents(opts) {
     const init = { headers: { "Content-Type": "application/vnd.api+json" } };
     const params = qs.stringify(opts, { encode: false });
-    const response = await this.fetch(`/v1/incidents?${params}`, init);
+    const response = await this.fetch(
+      `/v1/incidents?${params}`,
+      init
+    );
     return response;
   }
   async getServiceIncidentsChart(service, opts) {
     const init = { headers: { "Content-Type": "application/vnd.api+json" } };
     const params = qs.stringify(opts, { encode: false });
-    const response = await this.fetch(`/v1/services/${service.id}/incidents_chart?${params}`, init);
+    const response = await this.fetch(
+      `/v1/services/${service.id}/incidents_chart?${params}`,
+      init
+    );
     return response;
   }
   async importEntity(entity) {
@@ -184,23 +193,29 @@ const RootlyPlugin = createPlugin({
   }
 });
 
-const RootlyPage = RootlyPlugin.provide(createRoutableExtension({
-  name: "RootlyPage",
-  component: () => import('./index-028a1ee0.esm.js').then((m) => m.RootlyPage),
-  mountPoint: RootlyRouteRef
-}));
-const RootlyOverviewCard = RootlyPlugin.provide(createComponentExtension({
-  name: "RootlyOverviewCard",
-  component: {
-    lazy: () => import('./index-c8bb48c9.esm.js').then((m) => m.RootlyOverviewCard)
-  }
-}));
-const RootlyIncidentsPage = RootlyPlugin.provide(createComponentExtension({
-  name: "RootlyIncidentsPage",
-  component: {
-    lazy: () => import('./index-fedce47f.esm.js').then((m) => m.RootlyIncidentsPage)
-  }
-}));
+const RootlyPage = RootlyPlugin.provide(
+  createRoutableExtension({
+    name: "RootlyPage",
+    component: () => import('./index-9b568a65.esm.js').then((m) => m.RootlyPage),
+    mountPoint: RootlyRouteRef
+  })
+);
+const RootlyOverviewCard = RootlyPlugin.provide(
+  createComponentExtension({
+    name: "RootlyOverviewCard",
+    component: {
+      lazy: () => import('./index-7ca31416.esm.js').then((m) => m.RootlyOverviewCard)
+    }
+  })
+);
+const RootlyIncidentsPage = RootlyPlugin.provide(
+  createComponentExtension({
+    name: "RootlyIncidentsPage",
+    component: {
+      lazy: () => import('./index-fbce594f.esm.js').then((m) => m.RootlyIncidentsPage)
+    }
+  })
+);
 
 const ROOTLY_ANNOTATION_APP_NAME = "rootly.com/app-name";
 const isRootlyAvailable = (entity) => {
@@ -239,7 +254,10 @@ const ServicesTable = ({ params }) => {
     value: response,
     loading,
     error
-  } = useAsync(async () => await RootlyApi.getServices({ ...params, page }), [page]);
+  } = useAsync(
+    async () => await RootlyApi.getServices({ ...params, page }),
+    [page]
+  );
   const nameColumn = useCallback((rowData) => {
     var _a;
     return /* @__PURE__ */ React.createElement(Tooltip, {
@@ -525,7 +543,10 @@ const IncidentsTable = ({ params }) => {
     value: response,
     loading,
     error
-  } = useAsync(async () => await RootlyApi.getIncidents({ ...params, page }), [page]);
+  } = useAsync(
+    async () => await RootlyApi.getIncidents({ ...params, page }),
+    [page]
+  );
   const columns = [
     {
       title: "Started At",
@@ -667,12 +688,14 @@ const ServicesDialog = ({
     value: response,
     loading,
     error
-  } = useAsync(async () => await RootlyApi.getServices({
-    filter: {
-      backstage_id: null
-    },
-    page: { size: 999 }
-  }));
+  } = useAsync(
+    async () => await RootlyApi.getServices({
+      filter: {
+        backstage_id: null
+      },
+      page: { size: 999 }
+    })
+  );
   const data = response ? response.data : [];
   useEffect(() => {
     var _a;
@@ -682,7 +705,9 @@ const ServicesDialog = ({
         kind: entity.kind,
         name: entity.metadata.name
       });
-      const selectedItem2 = (_a = data.find((s) => s.attributes.backstage_id == entityTriplet)) == null ? void 0 : _a.id;
+      const selectedItem2 = (_a = data.find(
+        (s) => s.attributes.backstage_id == entityTriplet
+      )) == null ? void 0 : _a.id;
       if (selectedItem2) {
         setSelectedItem(selectedItem2);
       }
@@ -696,7 +721,11 @@ const ServicesDialog = ({
   };
   const onLinkToExistingServiceButtonClicked = () => {
     var _a;
-    handleUpdate(entity, { id: (_a = entity.linkedService) == null ? void 0 : _a.id }, { id: selectedItem });
+    handleUpdate(
+      entity,
+      { id: (_a = entity.linkedService) == null ? void 0 : _a.id },
+      { id: selectedItem }
+    );
   };
   if (loading) {
     return /* @__PURE__ */ React.createElement(React.Fragment, null);
@@ -740,4 +769,4 @@ const ServicesDialog = ({
 };
 
 export { ColoredChip as C, IncidentsTable as I, RootlyApiRef as R, ServicesDialog as S, ServicesTable as a, StatusChip as b, RootlyPage as c, RootlyOverviewCard as d, RootlyIncidentsPage as e, RootlyPlugin as f, RootlyApi as g, isRootlyAvailable as i };
-//# sourceMappingURL=index-8222806b.esm.js.map
+//# sourceMappingURL=index-259fb488.esm.js.map
