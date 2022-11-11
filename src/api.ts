@@ -30,6 +30,7 @@ export type IncidentsFetchOpts = {
 };
 
 export interface Rootly {
+  getService(id_or_slug: String): Promise<ServiceResponse>;
   getServices(opts?: ServicesFetchOpts): Promise<ServicesResponse>;
   getIncidents(opts?: IncidentsFetchOpts): Promise<IncidentsResponse>;
   importEntity(entity: Entity): Promise<void>;
@@ -44,9 +45,12 @@ export interface Rootly {
   getListIncidents(): string;
   getListIncidentsForServiceURL(service: Service): string;
   getServiceDetailsURL(service: Service): string;
-  getIncidentDetailsURL(incident: Incident): string;
 
   getServiceIncidentsChart(service: Service, opts?: {period: string}): Promise<{data: object}>;
+}
+
+interface ServiceResponse {
+  data: Service;
 }
 
 interface ServicesResponse {
@@ -126,6 +130,15 @@ export class RootlyApi implements Rootly {
     const resp = await fetch(`${apiUrl}${input}`, authedInit);
     if (!resp.ok)
       throw new Error(`Request failed with ${resp.status}: ${resp.statusText}`);
+  }
+
+  async getService(id_or_slug: String): Promise<ServiceResponse> {
+    const init = { headers: { 'Content-Type': 'application/vnd.api+json' } };
+    const response = await this.fetch<ServiceResponse>(
+      `/v1/services/${id_or_slug}`,
+      init,
+    );
+    return response;
   }
 
   async getServices(opts?: ServicesFetchOpts): Promise<ServicesResponse> {
@@ -258,10 +271,6 @@ export class RootlyApi implements Rootly {
 
   getServiceDetailsURL(service: Service): string {
     return `${this.domain}/account/services/${service.attributes.slug}`;
-  }
-
-  getIncidentDetailsURL(incident: Incident): string {
-    return `${this.domain}/account/incidents/${incident.attributes.slug}`;
   }
 
   private async apiUrl() {

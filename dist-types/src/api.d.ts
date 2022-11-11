@@ -18,6 +18,7 @@ export declare type IncidentsFetchOpts = {
     include?: string;
 };
 export interface Rootly {
+    getService(id_or_slug: String): Promise<ServiceResponse>;
     getServices(opts?: ServicesFetchOpts): Promise<ServicesResponse>;
     getIncidents(opts?: IncidentsFetchOpts): Promise<IncidentsResponse>;
     importEntity(entity: Entity): Promise<void>;
@@ -27,12 +28,14 @@ export interface Rootly {
     getListIncidents(): string;
     getListIncidentsForServiceURL(service: Service): string;
     getServiceDetailsURL(service: Service): string;
-    getIncidentDetailsURL(incident: Incident): string;
     getServiceIncidentsChart(service: Service, opts?: {
         period: string;
     }): Promise<{
         data: object;
     }>;
+}
+interface ServiceResponse {
+    data: Service;
 }
 interface ServicesResponse {
     meta: {
@@ -80,6 +83,7 @@ export declare class RootlyApi implements Rootly {
     constructor(opts: Options);
     private fetch;
     private call;
+    getService(id_or_slug: String): Promise<ServiceResponse>;
     getServices(opts?: ServicesFetchOpts): Promise<ServicesResponse>;
     getIncidents(opts?: IncidentsFetchOpts): Promise<IncidentsResponse>;
     getServiceIncidentsChart(service: Service, opts?: {
@@ -94,7 +98,6 @@ export declare class RootlyApi implements Rootly {
     getListIncidents(): string;
     getListIncidentsForServiceURL(service: Service): string;
     getServiceDetailsURL(service: Service): string;
-    getIncidentDetailsURL(incident: Incident): string;
     private apiUrl;
     private addAuthHeaders;
 }

@@ -27,19 +27,23 @@ import { LineChart } from 'react-chartkick';
 import { blue } from '@material-ui/core/colors';
 import 'chartkick/chart.js';
 import moment from 'moment';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAsync } from 'react-use';
 import { Rootly, RootlyApiRef } from '../../api';
-import { Incident, Service } from '../../types';
+import { Entity, Incident, Service } from '../../types';
 import { ColoredChip } from '../UI/ColoredChip';
 import { StatusChip } from '../UI/StatusChip';
+import {
+  autoImportService,
+  ROOTLY_ANNOTATION_SERVICE_ID,
+  ROOTLY_ANNOTATION_SERVICE_SLUG,
+} from '../../integration';
 
 const truncate = (input: string, length: number) =>
   input.length > length ? `${input.substring(0, length)}...` : input;
 
 const IncidentListItem = ({
   incident,
-  rootlyApi,
 }: {
   incident: Incident;
   rootlyApi: Rootly;
@@ -52,7 +56,7 @@ const IncidentListItem = ({
             <Link
               style={{ marginRight: 8 }}
               target="blank"
-              href={rootlyApi.getIncidentDetailsURL(incident)}
+              href={incident.attributes.url}
             >
               {truncate(incident.attributes.title, 100)}
             </Link>
@@ -97,6 +101,10 @@ export const RootlyOverviewCard = () => {
   const { entity } = useEntity();
   const RootlyApi = useApi(RootlyApiRef);
 
+  const service_id_annotation =
+    entity.metadata.annotations?.[ROOTLY_ANNOTATION_SERVICE_ID] ||
+    entity.metadata.annotations?.[ROOTLY_ANNOTATION_SERVICE_SLUG];
+
   const [reload, setReload] = useState(false);
 
   const createIncidentLink: IconLinkVerticalProps = {
@@ -118,6 +126,41 @@ export const RootlyOverviewCard = () => {
     kind: entity.kind,
     name: entity.metadata.name,
   });
+
+  useEffect(() => {
+    if (service_id_annotation) {
+      RootlyApi.getService(service_id_annotation)
+        .then(annotationServiceResponse => {
+          const annotationService = annotationServiceResponse.data;
+          if (annotationService.attributes.backstage_id != entityTriplet) {
+            RootlyApi.getServices({
+              filter: {
+                backstage_id: entityTriplet,
+              },
+            }).then(servicesResponse => {
+              const service =
+                servicesResponse &&
+                servicesResponse.data &&
+                servicesResponse.data.length > 0
+                  ? servicesResponse.data[0]
+                  : null;
+              if (service) {
+                RootlyApi.updateEntity(
+                  entity as Entity,
+                  service,
+                  annotationService,
+                );
+              }
+            });
+          }
+        })
+        .catch(() => {
+          if (autoImportService(entity)) {
+            RootlyApi.importEntity(entity as Entity);
+          }
+        });
+    }
+  }, []);
 
   const {
     value: serviceResponse,

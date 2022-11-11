@@ -75,7 +75,7 @@ export const IncidentsTable = ({ params }: { params?: IncidentsFetchOpts }) => {
         >
           <Link
             target="blank"
-            href={RootlyApi.getIncidentDetailsURL(rowData.incident)}
+            href={rowData.incident.attributes.url}
           >
             {rowData.incident.attributes.title}
           </Link>

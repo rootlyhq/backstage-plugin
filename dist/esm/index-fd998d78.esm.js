@@ -38,6 +38,14 @@ class RootlyApi {
     if (!resp.ok)
       throw new Error(`Request failed with ${resp.status}: ${resp.statusText}`);
   }
+  async getService(id_or_slug) {
+    const init = { headers: { "Content-Type": "application/vnd.api+json" } };
+    const response = await this.fetch(
+      `/v1/services/${id_or_slug}`,
+      init
+    );
+    return response;
+  }
   async getServices(opts) {
     const init = { headers: { "Content-Type": "application/vnd.api+json" } };
     const params = qs.stringify(opts, { encode: false });
@@ -150,9 +158,6 @@ class RootlyApi {
   getServiceDetailsURL(service) {
     return `${this.domain}/account/services/${service.attributes.slug}`;
   }
-  getIncidentDetailsURL(incident) {
-    return `${this.domain}/account/incidents/${incident.attributes.slug}`;
-  }
   async apiUrl() {
     const proxyUrl = await this.discoveryApi.getBaseUrl("proxy");
     return proxyUrl + this.proxyPath;
@@ -196,7 +201,7 @@ const RootlyPlugin = createPlugin({
 const RootlyPage = RootlyPlugin.provide(
   createRoutableExtension({
     name: "RootlyPage",
-    component: () => import('./index-9b568a65.esm.js').then((m) => m.RootlyPage),
+    component: () => import('./index-8eb9a729.esm.js').then((m) => m.RootlyPage),
     mountPoint: RootlyRouteRef
   })
 );
@@ -204,7 +209,7 @@ const RootlyOverviewCard = RootlyPlugin.provide(
   createComponentExtension({
     name: "RootlyOverviewCard",
     component: {
-      lazy: () => import('./index-7ca31416.esm.js').then((m) => m.RootlyOverviewCard)
+      lazy: () => import('./index-0fcb5aa8.esm.js').then((m) => m.RootlyOverviewCard)
     }
   })
 );
@@ -212,15 +217,21 @@ const RootlyIncidentsPage = RootlyPlugin.provide(
   createComponentExtension({
     name: "RootlyIncidentsPage",
     component: {
-      lazy: () => import('./index-fbce594f.esm.js').then((m) => m.RootlyIncidentsPage)
+      lazy: () => import('./index-a52b4454.esm.js').then((m) => m.RootlyIncidentsPage)
     }
   })
 );
 
-const ROOTLY_ANNOTATION_APP_NAME = "rootly.com/app-name";
+const ROOTLY_ANNOTATION_SERVICE_ID = "rootly.com/service-id";
+const ROOTLY_ANNOTATION_SERVICE_SLUG = "rootly.com/service-slug";
+const ROOTLY_ANNOTATION_SERVICE_AUTO_IMPORT = "rootly.com/service-auto-import";
 const isRootlyAvailable = (entity) => {
-  var _a;
-  return Boolean((_a = entity.metadata.annotations) == null ? void 0 : _a[ROOTLY_ANNOTATION_APP_NAME]);
+  var _a, _b, _c, _d;
+  return Boolean((_a = entity.metadata.annotations) == null ? void 0 : _a[ROOTLY_ANNOTATION_SERVICE_ID]) && Boolean((_b = entity.metadata.annotations) == null ? void 0 : _b[ROOTLY_ANNOTATION_SERVICE_ID]) || Boolean((_c = entity.metadata.annotations) == null ? void 0 : _c[ROOTLY_ANNOTATION_SERVICE_SLUG]) && Boolean((_d = entity.metadata.annotations) == null ? void 0 : _d[ROOTLY_ANNOTATION_SERVICE_SLUG]);
+};
+const autoImportService = (entity) => {
+  var _a, _b;
+  return Boolean((_a = entity.metadata.annotations) == null ? void 0 : _a[ROOTLY_ANNOTATION_SERVICE_AUTO_IMPORT]) && Boolean((_b = entity.metadata.annotations) == null ? void 0 : _b[ROOTLY_ANNOTATION_SERVICE_AUTO_IMPORT]);
 };
 
 const useStyles$1 = makeStyles((theme) => ({
@@ -567,7 +578,7 @@ const IncidentsTable = ({ params }) => {
           title: ((_a = rowData.incident.attributes.summary) == null ? void 0 : _a.substring(0, 255)) || rowData.incident.attributes.title
         }, /* @__PURE__ */ React.createElement(Link, {
           target: "blank",
-          href: RootlyApi.getIncidentDetailsURL(rowData.incident)
+          href: rowData.incident.attributes.url
         }, rowData.incident.attributes.title));
       }
     },
@@ -768,5 +779,5 @@ const ServicesDialog = ({
   }, "Link")));
 };
 
-export { ColoredChip as C, IncidentsTable as I, RootlyApiRef as R, ServicesDialog as S, ServicesTable as a, StatusChip as b, RootlyPage as c, RootlyOverviewCard as d, RootlyIncidentsPage as e, RootlyPlugin as f, RootlyApi as g, isRootlyAvailable as i };
-//# sourceMappingURL=index-259fb488.esm.js.map
+export { ColoredChip as C, IncidentsTable as I, RootlyApiRef as R, ServicesDialog as S, ROOTLY_ANNOTATION_SERVICE_ID as a, ROOTLY_ANNOTATION_SERVICE_SLUG as b, autoImportService as c, ServicesTable as d, StatusChip as e, RootlyPage as f, RootlyOverviewCard as g, RootlyIncidentsPage as h, RootlyPlugin as i, isRootlyAvailable as j, RootlyApi as k };
+//# sourceMappingURL=index-fd998d78.esm.js.map

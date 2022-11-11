@@ -12,16 +12,15 @@ import { LineChart } from 'react-chartkick';
 import { blue } from '@material-ui/core/colors';
 import 'chartkick/chart.js';
 import moment from 'moment';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAsync } from 'react-use';
-import { R as RootlyApiRef, C as ColoredChip, b as StatusChip } from './index-259fb488.esm.js';
+import { R as RootlyApiRef, a as ROOTLY_ANNOTATION_SERVICE_ID, b as ROOTLY_ANNOTATION_SERVICE_SLUG, c as autoImportService, C as ColoredChip, e as StatusChip } from './index-fd998d78.esm.js';
 import 'qs';
 import '@material-ui/core/Divider';
 
 const truncate = (input, length) => input.length > length ? `${input.substring(0, length)}...` : input;
 const IncidentListItem = ({
-  incident,
-  rootlyApi
+  incident
 }) => {
   var _a, _b, _c;
   return /* @__PURE__ */ React.createElement(ListItem, {
@@ -32,7 +31,7 @@ const IncidentListItem = ({
     primary: /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(Link, {
       style: { marginRight: 8 },
       target: "blank",
-      href: rootlyApi.getIncidentDetailsURL(incident)
+      href: incident.attributes.url
     }, truncate(incident.attributes.title, 100)), /* @__PURE__ */ React.createElement(ColoredChip, {
       label: (_a = incident.attributes.severity) == null ? void 0 : _a.data.attributes.name,
       tooltip: (_b = incident.attributes.severity) == null ? void 0 : _b.data.attributes.description,
@@ -59,8 +58,10 @@ const getViewIncidentsForServiceLink = (service, rootlyApi) => {
   };
 };
 const RootlyOverviewCard = () => {
+  var _a, _b;
   const { entity } = useEntity();
   const RootlyApi = useApi(RootlyApiRef);
+  const service_id_annotation = ((_a = entity.metadata.annotations) == null ? void 0 : _a[ROOTLY_ANNOTATION_SERVICE_ID]) || ((_b = entity.metadata.annotations) == null ? void 0 : _b[ROOTLY_ANNOTATION_SERVICE_SLUG]);
   const [reload, setReload] = useState(false);
   const createIncidentLink = {
     label: "Create Incident",
@@ -79,6 +80,33 @@ const RootlyOverviewCard = () => {
     kind: entity.kind,
     name: entity.metadata.name
   });
+  useEffect(() => {
+    if (service_id_annotation) {
+      RootlyApi.getService(service_id_annotation).then((annotationServiceResponse) => {
+        const annotationService = annotationServiceResponse.data;
+        if (annotationService.attributes.backstage_id != entityTriplet) {
+          RootlyApi.getServices({
+            filter: {
+              backstage_id: entityTriplet
+            }
+          }).then((servicesResponse) => {
+            const service2 = servicesResponse && servicesResponse.data && servicesResponse.data.length > 0 ? servicesResponse.data[0] : null;
+            if (service2) {
+              RootlyApi.updateEntity(
+                entity,
+                service2,
+                annotationService
+              );
+            }
+          });
+        }
+      }).catch(() => {
+        if (autoImportService(entity)) {
+          RootlyApi.importEntity(entity);
+        }
+      });
+    }
+  }, []);
   const {
     value: serviceResponse,
     loading: serviceLoading,
@@ -155,4 +183,4 @@ const RootlyOverviewCard = () => {
 };
 
 export { RootlyOverviewCard };
-//# sourceMappingURL=index-7ca31416.esm.js.map
+//# sourceMappingURL=index-0fcb5aa8.esm.js.map

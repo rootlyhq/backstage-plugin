@@ -4,9 +4,14 @@ import { useApi } from '@backstage/core-plugin-api';
 import { catalogApiRef, EntityRefLink } from '@backstage/plugin-catalog-react';
 import Link from '@material-ui/core/Link';
 import { Alert } from '@material-ui/lab';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAsync } from 'react-use';
 import { RootlyApiRef } from '../../api';
+import {
+  autoImportService,
+  ROOTLY_ANNOTATION_SERVICE_ID,
+  ROOTLY_ANNOTATION_SERVICE_SLUG,
+} from '../../integration';
 import { Entity, Service } from '../../types';
 import { EntityActionsMenu } from '../Entity/EntityActionsMenu';
 
@@ -42,6 +47,56 @@ export const EntitiesTable = () => {
     await RootlyApi.deleteEntity(service);
     setTimeout(() => setReload(!reload), 500);
   };
+
+  useEffect(() => {
+    catalogApi.getEntities().then(entities => {
+      entities.items.forEach(entity => {
+        const entityTriplet = stringifyEntityRef({
+          namespace: entity.metadata.namespace,
+          kind: entity.kind,
+          name: entity.metadata.name,
+        });
+
+        const service_id_annotation =
+          entity.metadata.annotations?.[ROOTLY_ANNOTATION_SERVICE_ID] ||
+          entity.metadata.annotations?.[ROOTLY_ANNOTATION_SERVICE_SLUG];
+
+        if (service_id_annotation) {
+          RootlyApi.getService(service_id_annotation)
+            .then(annotationServiceResponse => {
+              const annotationService = annotationServiceResponse.data;
+              // if(entityTriplet.includes('search')) { debugger }
+              if (annotationService.attributes.backstage_id && annotationService.attributes.backstage_id != entityTriplet) {
+                RootlyApi.getServices({
+                  filter: {
+                    backstage_id: annotationService.attributes.backstage_id,
+                  },
+                }).then(servicesResponse => {
+                  const service =
+                    servicesResponse &&
+                    servicesResponse.data &&
+                    servicesResponse.data.length > 0
+                      ? servicesResponse.data[0]
+                      : null;
+                  if (service) {
+                    RootlyApi.updateEntity(
+                      entity as Entity,
+                      annotationService,
+                      service,
+                    );
+                  }
+                });
+              }
+            })
+            .catch(() => {
+              if (autoImportService(entity)) {
+                RootlyApi.importEntity(entity as Entity);
+              }
+            });
+        }
+      });
+    });
+  }, []);
 
   const fetchService = (entity: Entity, reload: boolean) => {
     const entityTriplet = stringifyEntityRef({
@@ -114,14 +169,22 @@ export const EntitiesTable = () => {
       field: 'actions',
       cellStyle: smallColumnStyle,
       headerStyle: smallColumnStyle,
-      render: rowData => (
-        <EntityActionsMenu
-          entity={rowData}
-          handleUpdate={handleUpdate}
-          handleImport={handleImport}
-          handleDelete={handleDelete}
-        />
-      ),
+      render: rowData => {
+        const service_id_annotation =
+          rowData.metadata.annotations?.[ROOTLY_ANNOTATION_SERVICE_ID] ||
+          rowData.metadata.annotations?.[ROOTLY_ANNOTATION_SERVICE_SLUG];
+
+        return service_id_annotation ? (
+          <div>Set through entity file</div>
+        ) : (
+          <EntityActionsMenu
+            entity={rowData}
+            handleUpdate={handleUpdate}
+            handleImport={handleImport}
+            handleDelete={handleDelete}
+          />
+        );
+      },
     },
   ];
 

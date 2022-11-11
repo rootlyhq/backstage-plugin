@@ -11,6 +11,8 @@ The Rootly plugin is a frontend plugin that displays Rootly services, incidents 
 
 - The `RootlyIncidentsPage` component which produces a dedicated page within your entity with details about ongoing and past incidents.
 
+You can link and import entities in rootly services through Backstage Web UI or through annotations.
+
 ## Installation
 
 ### Creating an Rootly API key
@@ -45,6 +47,37 @@ proxy:
     target: https://api.rootly.com
     headers:
       Authorization: Bearer ${ROOTLY_API_KEY}
+```
+
+### Annotations
+
+Available annotations are the following:
+
+```yaml
+rootly.com/service-id: 7a328a08-6701-445e-a1ad-ca2fb913ed1e # Use service-id or service-slug. Not both.
+rootly.com/service-slug: elasticsearch-staging # Use service-id or service-slug. Not both.
+rootly.com/service-auto-import: enabled # This will auto import the entity as a rootly service if we don't find any.
+```
+
+#### Example
+
+```yaml
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: elasticsearch-staging
+  description: |
+   elasticsearch-staging
+  annotations:
+    github.com/project-slug: backstage/backstage
+    backstage.io/techdocs-ref: dir:.
+    lighthouse.com/website-url: https://rootly.com
+    rootly.com/service-slug: elasticsearch-staging
+    rootly.com/service-auto-import: enabled
+spec:
+  type: grpc
+  owner: guests
+  lifecycle: experimental
 ```
 
 ### Global
@@ -136,7 +169,11 @@ const websiteEntityPage = (
     </EntityLayout.Route>
 
     <EntityLayout.Route path="/rootly" title="Rootly">
-      <RootlyIncidentsPage />
+      <EntitySwitch.Case if={isRootlyAvailable}>
+        <Grid item sm={6}>
+          <RootlyIncidentsPage />
+        </Grid>
+      </EntitySwitch.Case>
     </EntityLayout.Route>
   </EntityLayout>
 );

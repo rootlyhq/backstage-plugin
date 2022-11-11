@@ -1,4 +1,4 @@
-import React, { useState, Children, isValidElement, Fragment } from 'react';
+import React, { useState, useEffect, Children, isValidElement, Fragment } from 'react';
 import { useOutlet } from 'react-router';
 import { catalogApiRef, EntityRefLink, EntityListProvider } from '@backstage/plugin-catalog-react';
 import { stringifyEntityRef } from '@backstage/catalog-model';
@@ -7,7 +7,7 @@ import { useApi, attachComponentData } from '@backstage/core-plugin-api';
 import Link from '@material-ui/core/Link';
 import { Alert } from '@material-ui/lab';
 import { useAsync } from 'react-use';
-import { R as RootlyApiRef, S as ServicesDialog, I as IncidentsTable, a as ServicesTable } from './index-259fb488.esm.js';
+import { R as RootlyApiRef, S as ServicesDialog, a as ROOTLY_ANNOTATION_SERVICE_ID, b as ROOTLY_ANNOTATION_SERVICE_SLUG, c as autoImportService, I as IncidentsTable, d as ServicesTable } from './index-fd998d78.esm.js';
 import { IconButton, Menu, MenuItem, ListItemIcon, Typography } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
@@ -132,6 +132,44 @@ const EntitiesTable = () => {
     await RootlyApi.deleteEntity(service);
     setTimeout(() => setReload(!reload), 500);
   };
+  useEffect(() => {
+    catalogApi.getEntities().then((entities) => {
+      entities.items.forEach((entity) => {
+        var _a, _b;
+        const entityTriplet = stringifyEntityRef({
+          namespace: entity.metadata.namespace,
+          kind: entity.kind,
+          name: entity.metadata.name
+        });
+        const service_id_annotation = ((_a = entity.metadata.annotations) == null ? void 0 : _a[ROOTLY_ANNOTATION_SERVICE_ID]) || ((_b = entity.metadata.annotations) == null ? void 0 : _b[ROOTLY_ANNOTATION_SERVICE_SLUG]);
+        if (service_id_annotation) {
+          RootlyApi.getService(service_id_annotation).then((annotationServiceResponse) => {
+            const annotationService = annotationServiceResponse.data;
+            if (annotationService.attributes.backstage_id && annotationService.attributes.backstage_id != entityTriplet) {
+              RootlyApi.getServices({
+                filter: {
+                  backstage_id: annotationService.attributes.backstage_id
+                }
+              }).then((servicesResponse) => {
+                const service = servicesResponse && servicesResponse.data && servicesResponse.data.length > 0 ? servicesResponse.data[0] : null;
+                if (service) {
+                  RootlyApi.updateEntity(
+                    entity,
+                    annotationService,
+                    service
+                  );
+                }
+              });
+            }
+          }).catch(() => {
+            if (autoImportService(entity)) {
+              RootlyApi.importEntity(entity);
+            }
+          });
+        }
+      });
+    });
+  }, []);
   const fetchService = (entity, reload2) => {
     const entityTriplet = stringifyEntityRef({
       namespace: entity.metadata.namespace,
@@ -199,12 +237,16 @@ const EntitiesTable = () => {
       field: "actions",
       cellStyle: smallColumnStyle,
       headerStyle: smallColumnStyle,
-      render: (rowData) => /* @__PURE__ */ React.createElement(EntityActionsMenu, {
-        entity: rowData,
-        handleUpdate,
-        handleImport,
-        handleDelete
-      })
+      render: (rowData) => {
+        var _a, _b;
+        const service_id_annotation = ((_a = rowData.metadata.annotations) == null ? void 0 : _a[ROOTLY_ANNOTATION_SERVICE_ID]) || ((_b = rowData.metadata.annotations) == null ? void 0 : _b[ROOTLY_ANNOTATION_SERVICE_SLUG]);
+        return service_id_annotation ? /* @__PURE__ */ React.createElement("div", null, "Set through entity file") : /* @__PURE__ */ React.createElement(EntityActionsMenu, {
+          entity: rowData,
+          handleUpdate,
+          handleImport,
+          handleDelete
+        });
+      }
     }
   ];
   if (error) {
@@ -297,4 +339,4 @@ const RootlyPage = () => {
 };
 
 export { DefaultRootlyPageLayout, RootlyPage };
-//# sourceMappingURL=index-9b568a65.esm.js.map
+//# sourceMappingURL=index-8eb9a729.esm.js.map

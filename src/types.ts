@@ -117,6 +117,7 @@ export interface Incident {
     labels: string[];
     severity: { data: Severity } | undefined;
     user: { data: User } | undefined;
+    url: string;
     created_at: string;
     updated_at: string;
   };

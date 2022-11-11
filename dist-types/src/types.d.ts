@@ -118,6 +118,7 @@ export interface Incident {
         user: {
             data: User;
         } | undefined;
+        url: string;
         created_at: string;
         updated_at: string;
     };
