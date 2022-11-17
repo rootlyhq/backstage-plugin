@@ -257,7 +257,7 @@ export class RootlyApi implements Rootly {
   }
 
   getCreateIncidentURL(): string {
-    return `${this.domain}/account/incidents?auto-open=true`;
+    return `${this.domain}/account/incidents/new`;
   }
 
   getListIncidents(): string {

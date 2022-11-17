@@ -14,7 +14,7 @@ import 'chartkick/chart.js';
 import moment from 'moment';
 import React, { useState, useEffect } from 'react';
 import { useAsync } from 'react-use';
-import { R as RootlyApiRef, a as ROOTLY_ANNOTATION_SERVICE_ID, b as ROOTLY_ANNOTATION_SERVICE_SLUG, c as autoImportService, C as ColoredChip, e as StatusChip } from './index-fd998d78.esm.js';
+import { R as RootlyApiRef, a as ROOTLY_ANNOTATION_SERVICE_ID, b as ROOTLY_ANNOTATION_SERVICE_SLUG, c as autoImportService, C as ColoredChip, e as StatusChip } from './index-3d62b2a7.esm.js';
 import 'qs';
 import '@material-ui/core/Divider';
 
@@ -183,4 +183,4 @@ const RootlyOverviewCard = () => {
 };
 
 export { RootlyOverviewCard };
-//# sourceMappingURL=index-0fcb5aa8.esm.js.map
+//# sourceMappingURL=index-8137882a.esm.js.map
