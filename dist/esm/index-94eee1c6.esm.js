@@ -7,7 +7,7 @@ import { useApi, attachComponentData } from '@backstage/core-plugin-api';
 import Link from '@material-ui/core/Link';
 import { Alert } from '@material-ui/lab';
 import { useAsync } from 'react-use';
-import { R as RootlyApiRef, S as ServicesDialog, a as ROOTLY_ANNOTATION_SERVICE_ID, b as ROOTLY_ANNOTATION_SERVICE_SLUG, c as autoImportService, I as IncidentsTable, d as ServicesTable } from './index-3dbadc15.esm.js';
+import { R as RootlyApiRef, S as ServicesDialog, a as ROOTLY_ANNOTATION_SERVICE_ID, b as ROOTLY_ANNOTATION_SERVICE_SLUG, c as autoImportService, I as IncidentsTable, d as ServicesTable } from './index-ea36e89a.esm.js';
 import { IconButton, Menu, MenuItem, ListItemIcon, Typography } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
@@ -113,8 +113,8 @@ const EntitiesTable = () => {
   const { value, loading, error } = useAsync(
     async () => await catalogApi.getEntities()
   );
-  const handleUpdate = async (entity, old_service, service) => {
-    await RootlyApi.updateEntity(entity, old_service, service);
+  const handleUpdate = async (entity, service, old_service) => {
+    await RootlyApi.updateEntity(entity, service, old_service);
     setTimeout(() => setReload(!reload), 500);
   };
   const handleImport = async (entity) => {
@@ -153,6 +153,11 @@ const EntitiesTable = () => {
                   );
                 }
               });
+            } else {
+              RootlyApi.updateEntity(
+                entity,
+                annotationService
+              );
             }
           }).catch(() => {
             if (autoImportService(entity)) {
@@ -323,4 +328,4 @@ const RootlyPage = () => {
 };
 
 export { DefaultRootlyPageLayout, RootlyPage };
-//# sourceMappingURL=index-be004f33.esm.js.map
+//# sourceMappingURL=index-94eee1c6.esm.js.map

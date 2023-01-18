@@ -14,7 +14,7 @@ import 'chartkick/chart.js';
 import moment from 'moment';
 import React, { useState, useEffect } from 'react';
 import { useAsync } from 'react-use';
-import { R as RootlyApiRef, a as ROOTLY_ANNOTATION_SERVICE_ID, b as ROOTLY_ANNOTATION_SERVICE_SLUG, c as autoImportService, C as ColoredChip, e as StatusChip } from './index-3dbadc15.esm.js';
+import { R as RootlyApiRef, a as ROOTLY_ANNOTATION_SERVICE_ID, b as ROOTLY_ANNOTATION_SERVICE_SLUG, c as autoImportService, C as ColoredChip, e as StatusChip } from './index-ea36e89a.esm.js';
 import 'qs';
 import '@material-ui/core/Divider';
 
@@ -84,7 +84,7 @@ const RootlyOverviewCard = () => {
     if (service_id_annotation) {
       RootlyApi.getService(service_id_annotation).then((annotationServiceResponse) => {
         const annotationService = annotationServiceResponse.data;
-        if (annotationService.attributes.backstage_id != entityTriplet) {
+        if (annotationService.attributes.backstage_id && annotationService.attributes.backstage_id != entityTriplet) {
           RootlyApi.getServices({
             filter: {
               backstage_id: entityTriplet
@@ -94,11 +94,16 @@ const RootlyOverviewCard = () => {
             if (service2) {
               RootlyApi.updateEntity(
                 entity,
-                service2,
-                annotationService
+                annotationService,
+                service2
               );
             }
           });
+        } else {
+          RootlyApi.updateEntity(
+            entity,
+            annotationService
+          );
         }
       }).catch(() => {
         if (autoImportService(entity)) {
@@ -139,7 +144,7 @@ const RootlyOverviewCard = () => {
     error: chartError
   } = useAsync(
     async () => service ? await RootlyApi.getServiceIncidentsChart(service, {
-      period: "week"
+      period: "day"
     }) : { data: [] },
     [service]
   );
@@ -187,4 +192,4 @@ const RootlyOverviewCard = () => {
 };
 
 export { RootlyOverviewCard };
-//# sourceMappingURL=index-0ea6d1b7.esm.js.map
+//# sourceMappingURL=index-613b7541.esm.js.map

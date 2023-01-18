@@ -7,7 +7,7 @@ import { useEntity } from '@backstage/plugin-catalog-react';
 import { Grid, Box, Button } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import { useAsync } from 'react-use';
-import { R as RootlyApiRef, S as ServicesDialog, I as IncidentsTable } from './index-3dbadc15.esm.js';
+import { R as RootlyApiRef, S as ServicesDialog, I as IncidentsTable } from './index-ea36e89a.esm.js';
 import 'qs';
 import '@material-ui/core/Link';
 import '@material-ui/core/Divider';
@@ -29,8 +29,8 @@ const RootlyIncidentsPageLayout = () => {
     await RootlyApi.importEntity(entity2);
     setReload(!reload);
   };
-  const handleCloseUpdate = async (entity2, old_service, service2) => {
-    await RootlyApi.updateEntity(entity2, old_service, service2);
+  const handleCloseUpdate = async (entity2, service2, old_service) => {
+    await RootlyApi.updateEntity(entity2, service2, old_service);
     setReload(!reload);
   };
   const entityTriplet = stringifyEntityRef({
@@ -112,4 +112,4 @@ const RootlyIncidentsPage = () => {
 };
 
 export { RootlyIncidentsPage, RootlyIncidentsPageLayout };
-//# sourceMappingURL=index-946fc0f7.esm.js.map
+//# sourceMappingURL=index-c4167a31.esm.js.map

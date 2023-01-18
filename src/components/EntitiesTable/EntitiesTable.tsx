@@ -31,10 +31,10 @@ export const EntitiesTable = () => {
 
   const handleUpdate = async (
     entity: Entity,
-    old_service: Service,
     service: Service,
+    old_service?: Service,
   ) => {
-    await RootlyApi.updateEntity(entity, old_service, service);
+    await RootlyApi.updateEntity(entity, service, old_service);
     setTimeout(() => setReload(!reload), 500);
   };
 
@@ -85,6 +85,11 @@ export const EntitiesTable = () => {
                     );
                   }
                 });
+              } else {
+                RootlyApi.updateEntity(
+                  entity as Entity,
+                  annotationService,
+                );
               }
             })
             .catch(() => {

@@ -132,7 +132,7 @@ export const RootlyOverviewCard = () => {
       RootlyApi.getService(service_id_annotation)
         .then(annotationServiceResponse => {
           const annotationService = annotationServiceResponse.data;
-          if (annotationService.attributes.backstage_id != entityTriplet) {
+          if (annotationService.attributes.backstage_id && annotationService.attributes.backstage_id != entityTriplet) {
             RootlyApi.getServices({
               filter: {
                 backstage_id: entityTriplet,
@@ -147,11 +147,16 @@ export const RootlyOverviewCard = () => {
               if (service) {
                 RootlyApi.updateEntity(
                   entity as Entity,
-                  service,
                   annotationService,
+                  service,
                 );
               }
             });
+          } else {
+            RootlyApi.updateEntity(
+              entity as Entity,
+              annotationService,
+            );
           }
         })
         .catch(() => {
@@ -206,7 +211,7 @@ export const RootlyOverviewCard = () => {
     async () =>
       service
         ? await RootlyApi.getServiceIncidentsChart(service, {
-            period: 'week',
+            period: 'day',
           })
         : { data: [] },
     [service],

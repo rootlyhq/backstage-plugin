@@ -36,8 +36,8 @@ export interface Rootly {
   importEntity(entity: Entity): Promise<void>;
   updateEntity(
     entity: Entity,
-    old_service: Service,
     service: Service,
+    old_service?: Service,
   ): Promise<void>;
   deleteEntity(service: Service): Promise<void>;
 
@@ -197,8 +197,8 @@ export class RootlyApi implements Rootly {
 
   async updateEntity(
     entity: Entity,
-    old_service: Service,
     service: Service,
+    old_service?: Service,
   ): Promise<void> {
     const entityTriplet = stringifyEntityRef({
       namespace: entity.metadata.namespace,

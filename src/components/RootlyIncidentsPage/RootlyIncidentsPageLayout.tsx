@@ -50,10 +50,10 @@ export const RootlyIncidentsPageLayout = () => {
 
   const handleCloseUpdate = async (
     entity: Entity,
-    old_service: Service,
     service: Service,
+    old_service?: Service,
   ) => {
-    await RootlyApi.updateEntity(entity, old_service, service);
+    await RootlyApi.updateEntity(entity, service, old_service);
     setReload(!reload);
   };
 
