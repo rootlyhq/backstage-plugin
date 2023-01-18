@@ -7,7 +7,7 @@ import { useApi, attachComponentData } from '@backstage/core-plugin-api';
 import Link from '@material-ui/core/Link';
 import { Alert } from '@material-ui/lab';
 import { useAsync } from 'react-use';
-import { R as RootlyApiRef, S as ServicesDialog, a as ROOTLY_ANNOTATION_SERVICE_ID, b as ROOTLY_ANNOTATION_SERVICE_SLUG, c as autoImportService, I as IncidentsTable, d as ServicesTable } from './index-89e3b17a.esm.js';
+import { R as RootlyApiRef, S as ServicesDialog, a as ROOTLY_ANNOTATION_SERVICE_ID, b as ROOTLY_ANNOTATION_SERVICE_SLUG, c as autoImportService, I as IncidentsTable, d as ServicesTable } from './index-3dbadc15.esm.js';
 import { IconButton, Menu, MenuItem, ListItemIcon, Typography } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
@@ -51,62 +51,55 @@ const EntityActionsMenu = ({
     kind: entity.kind,
     name: entity.metadata.name
   });
-  return /* @__PURE__ */ React.createElement(React.Fragment, null, openDialog && /* @__PURE__ */ React.createElement(ServicesDialog, {
-    open: openDialog,
-    entity,
-    handleClose: handleCloseDialog,
-    handleImport: handleCloseImport,
-    handleUpdate: handleCloseUpdate
-  }), /* @__PURE__ */ React.createElement(IconButton, {
-    "aria-label": "more",
-    "aria-controls": "long-menu",
-    "aria-haspopup": "true",
-    onClick: handleClick
-  }, /* @__PURE__ */ React.createElement(MoreVertIcon, null)), /* @__PURE__ */ React.createElement(Menu, {
-    id: `actions-menu-${entityTriplet}`,
-    anchorEl,
-    keepMounted: true,
-    open: Boolean(anchorEl),
-    onClose: handleCloseMenu,
-    PaperProps: {
-      style: { maxHeight: 48 * 4.5 }
+  return /* @__PURE__ */ React.createElement(React.Fragment, null, openDialog && /* @__PURE__ */ React.createElement(
+    ServicesDialog,
+    {
+      open: openDialog,
+      entity,
+      handleClose: handleCloseDialog,
+      handleImport: handleCloseImport,
+      handleUpdate: handleCloseUpdate
     }
-  }, !entity.linkedService && /* @__PURE__ */ React.createElement(MenuItem, {
-    key: "import",
-    onClick: handleOpenServicesDialog
-  }, /* @__PURE__ */ React.createElement(ListItemIcon, null, /* @__PURE__ */ React.createElement(SyncIcon, {
-    fontSize: "small"
-  })), /* @__PURE__ */ React.createElement(Typography, {
-    variant: "inherit",
-    noWrap: true
-  }, "Import service in Rootly")), /* @__PURE__ */ React.createElement(MenuItem, {
-    key: "link",
-    onClick: handleOpenServicesDialog
-  }, /* @__PURE__ */ React.createElement(ListItemIcon, null, /* @__PURE__ */ React.createElement(SyncIcon, {
-    fontSize: "small"
-  })), /* @__PURE__ */ React.createElement(Typography, {
-    variant: "inherit",
-    noWrap: true
-  }, "Link to another Rootly service")), entity.linkedService && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(MenuItem, {
-    key: "unlink",
-    onClick: () => handleDelete(entity.linkedService)
-  }, /* @__PURE__ */ React.createElement(ListItemIcon, null, /* @__PURE__ */ React.createElement(Delete, {
-    fontSize: "small"
-  })), /* @__PURE__ */ React.createElement(Typography, {
-    variant: "inherit",
-    noWrap: true
-  }, "Unlink")), /* @__PURE__ */ React.createElement(MenuItem, {
-    key: "details",
-    onClick: handleCloseMenu
-  }, /* @__PURE__ */ React.createElement(ListItemIcon, null, /* @__PURE__ */ React.createElement(OpenInNewIcon, {
-    fontSize: "small"
-  })), /* @__PURE__ */ React.createElement(Typography, {
-    variant: "inherit",
-    noWrap: true
-  }, /* @__PURE__ */ React.createElement(Link, {
-    target: "blank",
-    href: RootlyApi.getServiceDetailsURL(entity.linkedService)
-  }, "View in Rootly"))))));
+  ), /* @__PURE__ */ React.createElement(
+    IconButton,
+    {
+      "aria-label": "more",
+      "aria-controls": "long-menu",
+      "aria-haspopup": "true",
+      onClick: handleClick
+    },
+    /* @__PURE__ */ React.createElement(MoreVertIcon, null)
+  ), /* @__PURE__ */ React.createElement(
+    Menu,
+    {
+      id: `actions-menu-${entityTriplet}`,
+      anchorEl,
+      keepMounted: true,
+      open: Boolean(anchorEl),
+      onClose: handleCloseMenu,
+      PaperProps: {
+        style: { maxHeight: 48 * 4.5 }
+      }
+    },
+    !entity.linkedService && /* @__PURE__ */ React.createElement(MenuItem, { key: "import", onClick: handleOpenServicesDialog }, /* @__PURE__ */ React.createElement(ListItemIcon, null, /* @__PURE__ */ React.createElement(SyncIcon, { fontSize: "small" })), /* @__PURE__ */ React.createElement(Typography, { variant: "inherit", noWrap: true }, "Import service in Rootly")),
+    /* @__PURE__ */ React.createElement(MenuItem, { key: "link", onClick: handleOpenServicesDialog }, /* @__PURE__ */ React.createElement(ListItemIcon, null, /* @__PURE__ */ React.createElement(SyncIcon, { fontSize: "small" })), /* @__PURE__ */ React.createElement(Typography, { variant: "inherit", noWrap: true }, "Link to another Rootly service")),
+    entity.linkedService && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(
+      MenuItem,
+      {
+        key: "unlink",
+        onClick: () => handleDelete(entity.linkedService)
+      },
+      /* @__PURE__ */ React.createElement(ListItemIcon, null, /* @__PURE__ */ React.createElement(Delete, { fontSize: "small" })),
+      /* @__PURE__ */ React.createElement(Typography, { variant: "inherit", noWrap: true }, "Unlink")
+    ), /* @__PURE__ */ React.createElement(MenuItem, { key: "details", onClick: handleCloseMenu }, /* @__PURE__ */ React.createElement(ListItemIcon, null, /* @__PURE__ */ React.createElement(OpenInNewIcon, { fontSize: "small" })), /* @__PURE__ */ React.createElement(Typography, { variant: "inherit", noWrap: true }, /* @__PURE__ */ React.createElement(
+      Link,
+      {
+        target: "blank",
+        href: RootlyApi.getServiceDetailsURL(entity.linkedService)
+      },
+      "View in Rootly"
+    ))))
+  ));
 };
 
 const EntitiesTable = () => {
@@ -195,10 +188,14 @@ const EntitiesTable = () => {
     }
     if (response && response.data.length > 0) {
       entity.linkedService = response.data[0];
-      return /* @__PURE__ */ React.createElement(Link, {
-        target: "blank",
-        href: RootlyApi.getServiceDetailsURL(entity.linkedService)
-      }, entity.linkedService.attributes.name);
+      return /* @__PURE__ */ React.createElement(
+        Link,
+        {
+          target: "blank",
+          href: RootlyApi.getServiceDetailsURL(entity.linkedService)
+        },
+        entity.linkedService.attributes.name
+      );
     } else {
       entity.linkedService = void 0;
       return /* @__PURE__ */ React.createElement("div", null, "Not Linked");
@@ -212,9 +209,7 @@ const EntitiesTable = () => {
       cellStyle: smallColumnStyle,
       headerStyle: smallColumnStyle,
       render: (rowData) => {
-        return /* @__PURE__ */ React.createElement(EntityRefLink, {
-          entityRef: rowData
-        });
+        return /* @__PURE__ */ React.createElement(EntityRefLink, { entityRef: rowData });
       }
     },
     {
@@ -240,19 +235,20 @@ const EntitiesTable = () => {
       render: (rowData) => {
         var _a, _b;
         const service_id_annotation = ((_a = rowData.metadata.annotations) == null ? void 0 : _a[ROOTLY_ANNOTATION_SERVICE_ID]) || ((_b = rowData.metadata.annotations) == null ? void 0 : _b[ROOTLY_ANNOTATION_SERVICE_SLUG]);
-        return service_id_annotation ? /* @__PURE__ */ React.createElement("div", null, "Set through entity file") : /* @__PURE__ */ React.createElement(EntityActionsMenu, {
-          entity: rowData,
-          handleUpdate,
-          handleImport,
-          handleDelete
-        });
+        return service_id_annotation ? /* @__PURE__ */ React.createElement("div", null, "Set through entity file") : /* @__PURE__ */ React.createElement(
+          EntityActionsMenu,
+          {
+            entity: rowData,
+            handleUpdate,
+            handleImport,
+            handleDelete
+          }
+        );
       }
     }
   ];
   if (error) {
-    return /* @__PURE__ */ React.createElement(Alert, {
-      severity: "error"
-    }, error.message);
+    return /* @__PURE__ */ React.createElement(Alert, { severity: "error" }, error.message);
   }
   const data = value ? value.items.map((entity) => {
     const entityTriplet = stringifyEntityRef({
@@ -262,21 +258,24 @@ const EntitiesTable = () => {
     });
     return { ...entity, id: entityTriplet, linkedService: void 0 };
   }) : [];
-  return /* @__PURE__ */ React.createElement(Table, {
-    isLoading: loading,
-    options: {
-      sorting: true,
-      search: true,
-      paging: true,
-      actionsColumnIndex: -1,
-      pageSize: 25,
-      pageSizeOptions: [25, 50, 100, 150, 200],
-      padding: "dense"
-    },
-    localization: { header: { actions: void 0 } },
-    columns,
-    data
-  });
+  return /* @__PURE__ */ React.createElement(
+    Table,
+    {
+      isLoading: loading,
+      options: {
+        sorting: true,
+        search: true,
+        paging: true,
+        actionsColumnIndex: -1,
+        pageSize: 25,
+        pageSizeOptions: [25, 50, 100, 150, 200],
+        padding: "dense"
+      },
+      localization: { header: { actions: void 0 } },
+      columns,
+      data
+    }
+  );
 };
 
 const EntitiesList = () => {
@@ -286,10 +285,7 @@ const EntitiesList = () => {
 const Route = () => null;
 attachComponentData(Route, "core.gatherMountPoints", true);
 function createSubRoutesFromChildren(childrenProps) {
-  const routeType = (/* @__PURE__ */ React.createElement(Route, {
-    path: "",
-    title: ""
-  }, /* @__PURE__ */ React.createElement("div", null))).type;
+  const routeType = (/* @__PURE__ */ React.createElement(Route, { path: "", title: "" }, /* @__PURE__ */ React.createElement("div", null))).type;
   return Children.toArray(childrenProps).flatMap((child) => {
     if (!isValidElement(child)) {
       return [];
@@ -306,31 +302,19 @@ function createSubRoutesFromChildren(childrenProps) {
 }
 const DefaultRootlyPageLayout = ({ children }) => {
   const routes = createSubRoutesFromChildren(children);
-  return /* @__PURE__ */ React.createElement(Page, {
-    themeId: "tool"
-  }, /* @__PURE__ */ React.createElement(Header, {
-    title: "Rootly"
-  }), /* @__PURE__ */ React.createElement(RoutedTabs, {
-    routes
-  }));
+  return /* @__PURE__ */ React.createElement(Page, { themeId: "tool" }, /* @__PURE__ */ React.createElement(Header, { title: "Rootly" }), /* @__PURE__ */ React.createElement(RoutedTabs, { routes }));
 };
 DefaultRootlyPageLayout.Route = Route;
 
 const DefaultRootlyPage = () => {
-  return /* @__PURE__ */ React.createElement(DefaultRootlyPageLayout, null, /* @__PURE__ */ React.createElement(DefaultRootlyPageLayout.Route, {
-    path: "incidents",
-    title: "Incidents"
-  }, /* @__PURE__ */ React.createElement(IncidentsTable, {
-    params: {
-      include: "environments,services,functionalities,groups,incident_types"
+  return /* @__PURE__ */ React.createElement(DefaultRootlyPageLayout, null, /* @__PURE__ */ React.createElement(DefaultRootlyPageLayout.Route, { path: "incidents", title: "Incidents" }, /* @__PURE__ */ React.createElement(
+    IncidentsTable,
+    {
+      params: {
+        include: "environments,services,functionalities,groups,incident_types"
+      }
     }
-  })), /* @__PURE__ */ React.createElement(DefaultRootlyPageLayout.Route, {
-    path: "entities",
-    title: "Entities"
-  }, /* @__PURE__ */ React.createElement(EntitiesList, null)), /* @__PURE__ */ React.createElement(DefaultRootlyPageLayout.Route, {
-    path: "services",
-    title: "Services"
-  }, /* @__PURE__ */ React.createElement(ServicesTable, null)));
+  )), /* @__PURE__ */ React.createElement(DefaultRootlyPageLayout.Route, { path: "entities", title: "Entities" }, /* @__PURE__ */ React.createElement(EntitiesList, null)), /* @__PURE__ */ React.createElement(DefaultRootlyPageLayout.Route, { path: "services", title: "Services" }, /* @__PURE__ */ React.createElement(ServicesTable, null)));
 };
 
 const RootlyPage = () => {
@@ -339,4 +323,4 @@ const RootlyPage = () => {
 };
 
 export { DefaultRootlyPageLayout, RootlyPage };
-//# sourceMappingURL=index-5fa0c63b.esm.js.map
+//# sourceMappingURL=index-be004f33.esm.js.map

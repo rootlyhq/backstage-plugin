@@ -201,7 +201,7 @@ const RootlyPlugin = createPlugin({
 const RootlyPage = RootlyPlugin.provide(
   createRoutableExtension({
     name: "RootlyPage",
-    component: () => import('./index-5fa0c63b.esm.js').then((m) => m.RootlyPage),
+    component: () => import('./index-be004f33.esm.js').then((m) => m.RootlyPage),
     mountPoint: RootlyRouteRef
   })
 );
@@ -209,7 +209,7 @@ const RootlyOverviewCard = RootlyPlugin.provide(
   createComponentExtension({
     name: "RootlyOverviewCard",
     component: {
-      lazy: () => import('./index-67703643.esm.js').then((m) => m.RootlyOverviewCard)
+      lazy: () => import('./index-0ea6d1b7.esm.js').then((m) => m.RootlyOverviewCard)
     }
   })
 );
@@ -217,7 +217,7 @@ const RootlyIncidentsPage = RootlyPlugin.provide(
   createComponentExtension({
     name: "RootlyIncidentsPage",
     component: {
-      lazy: () => import('./index-bd766ab8.esm.js').then((m) => m.RootlyIncidentsPage)
+      lazy: () => import('./index-946fc0f7.esm.js').then((m) => m.RootlyIncidentsPage)
     }
   })
 );
@@ -271,18 +271,22 @@ const ServicesTable = ({ params }) => {
   );
   const nameColumn = useCallback((rowData) => {
     var _a;
-    return /* @__PURE__ */ React.createElement(Tooltip, {
-      title: ((_a = rowData.attributes.description) == null ? void 0 : _a.substring(0, 255)) || rowData.attributes.name
-    }, /* @__PURE__ */ React.createElement(Link, {
-      target: "blank",
-      href: RootlyApi.getServiceDetailsURL(rowData)
-    }, rowData.attributes.name));
+    return /* @__PURE__ */ React.createElement(
+      Tooltip,
+      {
+        title: ((_a = rowData.attributes.description) == null ? void 0 : _a.substring(0, 255)) || rowData.attributes.name
+      },
+      /* @__PURE__ */ React.createElement(Link, { target: "blank", href: RootlyApi.getServiceDetailsURL(rowData) }, rowData.attributes.name)
+    );
   }, []);
   const backstageColumn = useCallback((rowData) => {
     if (rowData.attributes.backstage_id) {
-      return /* @__PURE__ */ React.createElement(EntityRefLink, {
-        entityRef: parseEntityRef(rowData.attributes.backstage_id)
-      });
+      return /* @__PURE__ */ React.createElement(
+        EntityRefLink,
+        {
+          entityRef: parseEntityRef(rowData.attributes.backstage_id)
+        }
+      );
     } else {
       return /* @__PURE__ */ React.createElement("div", null, "N/A");
     }
@@ -328,32 +332,31 @@ const ServicesTable = ({ params }) => {
     }
   ];
   if (error) {
-    return /* @__PURE__ */ React.createElement(Alert, {
-      severity: "error"
-    }, error.message);
+    return /* @__PURE__ */ React.createElement(Alert, { severity: "error" }, error.message);
   }
   const data = response ? response.data : [];
-  return /* @__PURE__ */ React.createElement(Table, {
-    isLoading: loading,
-    options: {
-      sorting: true,
-      search: false,
-      paging: true,
-      actionsColumnIndex: -1,
-      pageSize: DEFAULT_PAGE_SIZE$1,
-      padding: "dense"
-    },
-    localization: { header: { actions: void 0 } },
-    columns,
-    data,
-    page: page.number - 1,
-    totalCount: response == null ? void 0 : response.meta.total_count,
-    emptyContent: /* @__PURE__ */ React.createElement("div", {
-      className: classes.empty
-    }, "No services"),
-    onPageChange: (pageIndex) => setPage({ ...page, number: pageIndex + 1 }),
-    onRowsPerPageChange: (rowsPerPage) => setPage({ ...page, size: rowsPerPage })
-  });
+  return /* @__PURE__ */ React.createElement(
+    Table,
+    {
+      isLoading: loading,
+      options: {
+        sorting: true,
+        search: false,
+        paging: true,
+        actionsColumnIndex: -1,
+        pageSize: DEFAULT_PAGE_SIZE$1,
+        padding: "dense"
+      },
+      localization: { header: { actions: void 0 } },
+      columns,
+      data,
+      page: page.number - 1,
+      totalCount: response == null ? void 0 : response.meta.total_count,
+      emptyContent: /* @__PURE__ */ React.createElement("div", { className: classes.empty }, "No services"),
+      onPageChange: (pageIndex) => setPage({ ...page, number: pageIndex + 1 }),
+      onRowsPerPageChange: (rowsPerPage) => setPage({ ...page, size: rowsPerPage })
+    }
+  );
 };
 
 class IncidentWrapper {
@@ -434,18 +437,16 @@ const ColoredChip = ({
   color
 }) => {
   if (label) {
-    return /* @__PURE__ */ React.createElement(Tooltip, {
-      title: tooltip || label
-    }, /* @__PURE__ */ React.createElement(Chip, {
-      label,
-      style: { backgroundColor: color || "#FFF" },
-      size: "small"
-    }));
+    return /* @__PURE__ */ React.createElement(Tooltip, { title: tooltip || label }, /* @__PURE__ */ React.createElement(
+      Chip,
+      {
+        label,
+        style: { backgroundColor: color || "#FFF" },
+        size: "small"
+      }
+    ));
   } else {
-    return /* @__PURE__ */ React.createElement(Chip, {
-      label: "N/A",
-      size: "small"
-    });
+    return /* @__PURE__ */ React.createElement(Chip, { label: "N/A", size: "small" });
   }
 };
 
@@ -454,18 +455,18 @@ const ColoredChips = ({
 }) => {
   if ((objects == null ? void 0 : objects.length) > 0) {
     return /* @__PURE__ */ React.createElement(React.Fragment, null, objects.map((r) => {
-      return /* @__PURE__ */ React.createElement(ColoredChip, {
-        key: Math.random().toString(36),
-        label: r.attributes.name,
-        tooltip: r.attributes.description,
-        color: r.attributes.color
-      });
+      return /* @__PURE__ */ React.createElement(
+        ColoredChip,
+        {
+          key: Math.random().toString(36),
+          label: r.attributes.name,
+          tooltip: r.attributes.description,
+          color: r.attributes.color
+        }
+      );
     }));
   }
-  return /* @__PURE__ */ React.createElement(Chip, {
-    label: "N/A",
-    size: "small"
-  });
+  return /* @__PURE__ */ React.createElement(Chip, { label: "N/A", size: "small" });
 };
 
 const ResolvedChip = withStyles({
@@ -491,36 +492,22 @@ const StatusChip = ({ status }) => {
   switch (status) {
     case "resolved":
     case "completed":
-      chip = /* @__PURE__ */ React.createElement(ResolvedChip, {
-        label: status,
-        size: "small"
-      });
+      chip = /* @__PURE__ */ React.createElement(ResolvedChip, { label: status, size: "small" });
       break;
     case "mitigated":
     case "in_progress":
     case "verifying":
     case "scheduled":
     case "cancelled":
-      chip = /* @__PURE__ */ React.createElement(MitigatedChip, {
-        label: status,
-        size: "small"
-      });
+      chip = /* @__PURE__ */ React.createElement(MitigatedChip, { label: status, size: "small" });
       break;
     case "started":
-      chip = /* @__PURE__ */ React.createElement(StartedChip, {
-        label: status,
-        size: "small"
-      });
+      chip = /* @__PURE__ */ React.createElement(StartedChip, { label: status, size: "small" });
       break;
     default:
-      chip = /* @__PURE__ */ React.createElement(Chip, {
-        label: status,
-        size: "small"
-      });
+      chip = /* @__PURE__ */ React.createElement(Chip, { label: status, size: "small" });
   }
-  return /* @__PURE__ */ React.createElement(Tooltip, {
-    title: status
-  }, /* @__PURE__ */ React.createElement("span", null, chip));
+  return /* @__PURE__ */ React.createElement(Tooltip, { title: status }, /* @__PURE__ */ React.createElement("span", null, chip));
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -574,12 +561,20 @@ const IncidentsTable = ({ params }) => {
       headerStyle: smallColumnStyle,
       render: (rowData) => {
         var _a;
-        return /* @__PURE__ */ React.createElement(Tooltip, {
-          title: ((_a = rowData.incident.attributes.summary) == null ? void 0 : _a.substring(0, 255)) || rowData.incident.attributes.title
-        }, /* @__PURE__ */ React.createElement(Link, {
-          target: "blank",
-          href: rowData.incident.attributes.url
-        }, rowData.incident.attributes.title));
+        return /* @__PURE__ */ React.createElement(
+          Tooltip,
+          {
+            title: ((_a = rowData.incident.attributes.summary) == null ? void 0 : _a.substring(0, 255)) || rowData.incident.attributes.title
+          },
+          /* @__PURE__ */ React.createElement(
+            Link,
+            {
+              target: "blank",
+              href: rowData.incident.attributes.url
+            },
+            rowData.incident.attributes.title
+          )
+        );
       }
     },
     {
@@ -589,10 +584,13 @@ const IncidentsTable = ({ params }) => {
       headerStyle: smallColumnStyle,
       render: (rowData) => {
         var _a;
-        return /* @__PURE__ */ React.createElement(Chip, {
-          label: (_a = rowData.incident.attributes.user) == null ? void 0 : _a.data.attributes.full_name,
-          size: "small"
-        });
+        return /* @__PURE__ */ React.createElement(
+          Chip,
+          {
+            label: (_a = rowData.incident.attributes.user) == null ? void 0 : _a.data.attributes.full_name,
+            size: "small"
+          }
+        );
       }
     },
     {
@@ -600,9 +598,7 @@ const IncidentsTable = ({ params }) => {
       field: "status",
       cellStyle: smallColumnStyle,
       headerStyle: smallColumnStyle,
-      render: (rowData) => /* @__PURE__ */ React.createElement(StatusChip, {
-        status: rowData.incident.attributes.status
-      })
+      render: (rowData) => /* @__PURE__ */ React.createElement(StatusChip, { status: rowData.incident.attributes.status })
     },
     {
       title: "Severity",
@@ -611,11 +607,14 @@ const IncidentsTable = ({ params }) => {
       headerStyle: smallColumnStyle,
       render: (rowData) => {
         var _a, _b, _c;
-        return /* @__PURE__ */ React.createElement(ColoredChip, {
-          label: (_a = rowData.incident.attributes.severity) == null ? void 0 : _a.data.attributes.name,
-          tooltip: (_b = rowData.incident.attributes.severity) == null ? void 0 : _b.data.attributes.description,
-          color: (_c = rowData.incident.attributes.severity) == null ? void 0 : _c.data.attributes.color
-        });
+        return /* @__PURE__ */ React.createElement(
+          ColoredChip,
+          {
+            label: (_a = rowData.incident.attributes.severity) == null ? void 0 : _a.data.attributes.name,
+            tooltip: (_b = rowData.incident.attributes.severity) == null ? void 0 : _b.data.attributes.description,
+            color: (_c = rowData.incident.attributes.severity) == null ? void 0 : _c.data.attributes.color
+          }
+        );
       }
     },
     {
@@ -623,67 +622,58 @@ const IncidentsTable = ({ params }) => {
       field: "environments",
       cellStyle: smallColumnStyle,
       headerStyle: smallColumnStyle,
-      render: (rowData) => /* @__PURE__ */ React.createElement(ColoredChips, {
-        objects: rowData.environments()
-      })
+      render: (rowData) => /* @__PURE__ */ React.createElement(ColoredChips, { objects: rowData.environments() })
     },
     {
       title: "Services",
       field: "services",
       cellStyle: smallColumnStyle,
       headerStyle: smallColumnStyle,
-      render: (rowData) => /* @__PURE__ */ React.createElement(ColoredChips, {
-        objects: rowData.services()
-      })
+      render: (rowData) => /* @__PURE__ */ React.createElement(ColoredChips, { objects: rowData.services() })
     },
     {
       title: "Functionalities",
       field: "functionalities",
       cellStyle: smallColumnStyle,
       headerStyle: smallColumnStyle,
-      render: (rowData) => /* @__PURE__ */ React.createElement(ColoredChips, {
-        objects: rowData.functionalities()
-      })
+      render: (rowData) => /* @__PURE__ */ React.createElement(ColoredChips, { objects: rowData.functionalities() })
     },
     {
       title: "Teams",
       field: "teams",
       cellStyle: smallColumnStyle,
       headerStyle: smallColumnStyle,
-      render: (rowData) => /* @__PURE__ */ React.createElement(ColoredChips, {
-        objects: rowData.groups()
-      })
+      render: (rowData) => /* @__PURE__ */ React.createElement(ColoredChips, { objects: rowData.groups() })
     }
   ];
   if (error) {
-    return /* @__PURE__ */ React.createElement(Alert, {
-      severity: "error"
-    }, error.message);
+    return /* @__PURE__ */ React.createElement(Alert, { severity: "error" }, error.message);
   }
   const data = response ? response.data.map((i) => {
     return new IncidentWrapper(i, response.included);
   }) : [];
-  return /* @__PURE__ */ React.createElement(Table, {
-    isLoading: loading,
-    options: {
-      sorting: true,
-      search: false,
-      paging: true,
-      actionsColumnIndex: -1,
-      pageSize: DEFAULT_PAGE_SIZE,
-      padding: "dense"
-    },
-    localization: { header: { actions: void 0 } },
-    columns,
-    data,
-    page: page.number - 1,
-    totalCount: response == null ? void 0 : response.meta.total_count,
-    emptyContent: /* @__PURE__ */ React.createElement("div", {
-      className: classes.empty
-    }, "No incidents"),
-    onPageChange: (pageIndex) => setPage({ ...page, number: pageIndex + 1 }),
-    onRowsPerPageChange: (rowsPerPage) => setPage({ ...page, size: rowsPerPage })
-  });
+  return /* @__PURE__ */ React.createElement(
+    Table,
+    {
+      isLoading: loading,
+      options: {
+        sorting: true,
+        search: false,
+        paging: true,
+        actionsColumnIndex: -1,
+        pageSize: DEFAULT_PAGE_SIZE,
+        padding: "dense"
+      },
+      localization: { header: { actions: void 0 } },
+      columns,
+      data,
+      page: page.number - 1,
+      totalCount: response == null ? void 0 : response.meta.total_count,
+      emptyContent: /* @__PURE__ */ React.createElement("div", { className: classes.empty }, "No incidents"),
+      onPageChange: (pageIndex) => setPage({ ...page, number: pageIndex + 1 }),
+      onRowsPerPageChange: (rowsPerPage) => setPage({ ...page, size: rowsPerPage })
+    }
+  );
 };
 
 const ServicesDialog = ({
@@ -741,43 +731,43 @@ const ServicesDialog = ({
   if (loading) {
     return /* @__PURE__ */ React.createElement(React.Fragment, null);
   } else if (error) {
-    return /* @__PURE__ */ React.createElement(Alert, {
-      severity: "error"
-    }, error.message);
+    return /* @__PURE__ */ React.createElement(Alert, { severity: "error" }, error.message);
   }
-  return /* @__PURE__ */ React.createElement(Dialog, {
-    open,
-    onClose: handleClose,
-    "aria-labelledby": "dialog-title",
-    "aria-describedby": "dialog-description"
-  }, /* @__PURE__ */ React.createElement(DialogTitle, {
-    id: "dialog-title"
-  }, "Services"), /* @__PURE__ */ React.createElement(DialogContent, null, entity && !entity.linkedService && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(Box, {
-    sx: { mx: "auto" },
-    mb: 2
-  }, /* @__PURE__ */ React.createElement(Button, {
-    color: "primary",
-    variant: "contained",
-    onClick: onImportAsNewServiceButtonClicked
-  }, "Import as new service")), /* @__PURE__ */ React.createElement(Divider, null)), /* @__PURE__ */ React.createElement(Box, {
-    sx: { mx: "auto" },
-    mt: 2
-  }, /* @__PURE__ */ React.createElement(Typography, null, "Select a Rootly service you want to map this component to:"), /* @__PURE__ */ React.createElement(Select, {
-    onChange: onSelectedServiceChanged,
-    selected: selectedItem,
-    placeholder: "Select",
-    label: "Services",
-    items: (data || []).map((service) => {
-      return {
-        label: service.attributes.name,
-        value: service.id
-      };
-    })
-  }))), /* @__PURE__ */ React.createElement(DialogActions, null, /* @__PURE__ */ React.createElement(Button, {
-    color: "primary",
-    onClick: onLinkToExistingServiceButtonClicked
-  }, "Link")));
+  return /* @__PURE__ */ React.createElement(
+    Dialog,
+    {
+      open,
+      onClose: handleClose,
+      "aria-labelledby": "dialog-title",
+      "aria-describedby": "dialog-description"
+    },
+    /* @__PURE__ */ React.createElement(DialogTitle, { id: "dialog-title" }, "Services"),
+    /* @__PURE__ */ React.createElement(DialogContent, null, entity && !entity.linkedService && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(Box, { sx: { mx: "auto" }, mb: 2 }, /* @__PURE__ */ React.createElement(
+      Button,
+      {
+        color: "primary",
+        variant: "contained",
+        onClick: onImportAsNewServiceButtonClicked
+      },
+      "Import as new service"
+    )), /* @__PURE__ */ React.createElement(Divider, null)), /* @__PURE__ */ React.createElement(Box, { sx: { mx: "auto" }, mt: 2 }, /* @__PURE__ */ React.createElement(Typography, null, "Select a Rootly service you want to map this component to:"), /* @__PURE__ */ React.createElement(
+      Select,
+      {
+        onChange: onSelectedServiceChanged,
+        selected: selectedItem,
+        placeholder: "Select",
+        label: "Services",
+        items: (data || []).map((service) => {
+          return {
+            label: service.attributes.name,
+            value: service.id
+          };
+        })
+      }
+    ))),
+    /* @__PURE__ */ React.createElement(DialogActions, null, /* @__PURE__ */ React.createElement(Button, { color: "primary", onClick: onLinkToExistingServiceButtonClicked }, "Link"))
+  );
 };
 
 export { ColoredChip as C, IncidentsTable as I, RootlyApiRef as R, ServicesDialog as S, ROOTLY_ANNOTATION_SERVICE_ID as a, ROOTLY_ANNOTATION_SERVICE_SLUG as b, autoImportService as c, ServicesTable as d, StatusChip as e, RootlyPage as f, RootlyOverviewCard as g, RootlyIncidentsPage as h, RootlyPlugin as i, isRootlyAvailable as j, RootlyApi as k };
-//# sourceMappingURL=index-89e3b17a.esm.js.map
+//# sourceMappingURL=index-3dbadc15.esm.js.map

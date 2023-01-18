@@ -65,7 +65,6 @@ export const EntitiesTable = () => {
           RootlyApi.getService(service_id_annotation)
             .then(annotationServiceResponse => {
               const annotationService = annotationServiceResponse.data;
-              // if(entityTriplet.includes('search')) { debugger }
               if (annotationService.attributes.backstage_id && annotationService.attributes.backstage_id != entityTriplet) {
                 RootlyApi.getServices({
                   filter: {
