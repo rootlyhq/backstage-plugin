@@ -76,8 +76,8 @@ export const ServicesDialog = ({
   const onLinkToExistingServiceButtonClicked = () => {
     handleUpdate(
       entity,
-      { id: entity.linkedService?.id } as Service,
       { id: selectedItem } as Service,
+      { id: entity.linkedService?.id } as Service,
     );
   };
 
