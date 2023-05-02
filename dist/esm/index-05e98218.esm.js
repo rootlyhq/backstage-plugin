@@ -14,7 +14,7 @@ import 'chartkick/chart.js';
 import moment from 'moment';
 import React, { useState, useEffect } from 'react';
 import { useAsync } from 'react-use';
-import { R as RootlyApiRef, a as ROOTLY_ANNOTATION_SERVICE_ID, b as ROOTLY_ANNOTATION_SERVICE_SLUG, c as autoImportService, C as ColoredChip, e as StatusChip } from './index-cbd5c361.esm.js';
+import { R as RootlyApiRef, a as ROOTLY_ANNOTATION_SERVICE_ID, b as ROOTLY_ANNOTATION_SERVICE_SLUG, c as autoImportService, C as ColoredChip, e as StatusChip } from './index-bc187665.esm.js';
 import 'qs';
 import '@material-ui/core/Divider';
 
@@ -70,7 +70,7 @@ const RootlyOverviewCard = () => {
     href: RootlyApi.getCreateIncidentURL()
   };
   const viewIncidentsLink = {
-    label: "View All Incident",
+    label: "View All Incidents",
     disabled: false,
     icon: /* @__PURE__ */ React.createElement(WhatshotIcon, null),
     href: RootlyApi.getListIncidents()
@@ -192,4 +192,4 @@ const RootlyOverviewCard = () => {
 };
 
 export { RootlyOverviewCard };
-//# sourceMappingURL=index-7e1ac667.esm.js.map
+//# sourceMappingURL=index-05e98218.esm.js.map
