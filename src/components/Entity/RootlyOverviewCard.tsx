@@ -115,7 +115,7 @@ export const RootlyOverviewCard = () => {
   };
 
   const viewIncidentsLink: IconLinkVerticalProps = {
-    label: 'View All Incident',
+    label: 'View All Incidents',
     disabled: false,
     icon: <WhatshotIcon />,
     href: RootlyApi.getListIncidents(),
