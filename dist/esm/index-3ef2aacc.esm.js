@@ -10,12 +10,22 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useAsync } from 'react-use';
 import Divider from '@material-ui/core/Divider';
 
+var __defProp$1 = Object.defineProperty;
+var __defNormalProp$1 = (obj, key, value) => key in obj ? __defProp$1(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField$1 = (obj, key, value) => {
+  __defNormalProp$1(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
 const RootlyApiRef = createApiRef({
   id: "plugin.rootly.service"
 });
 const DEFAULT_PROXY_PATH = "/rootly/api";
 class RootlyApi {
   constructor(opts) {
+    __publicField$1(this, "discoveryApi");
+    __publicField$1(this, "identityApi");
+    __publicField$1(this, "proxyPath");
+    __publicField$1(this, "domain");
     var _a;
     this.discoveryApi = opts.discoveryApi;
     this.identityApi = opts.identityApi;
@@ -201,7 +211,7 @@ const RootlyPlugin = createPlugin({
 const RootlyPage = RootlyPlugin.provide(
   createRoutableExtension({
     name: "RootlyPage",
-    component: () => import('./index-587cd746.esm.js').then((m) => m.RootlyPage),
+    component: () => import('./index-4353f21c.esm.js').then((m) => m.RootlyPage),
     mountPoint: RootlyRouteRef
   })
 );
@@ -209,7 +219,7 @@ const RootlyOverviewCard = RootlyPlugin.provide(
   createComponentExtension({
     name: "RootlyOverviewCard",
     component: {
-      lazy: () => import('./index-05e98218.esm.js').then((m) => m.RootlyOverviewCard)
+      lazy: () => import('./index-b1f2dad6.esm.js').then((m) => m.RootlyOverviewCard)
     }
   })
 );
@@ -217,7 +227,7 @@ const RootlyIncidentsPage = RootlyPlugin.provide(
   createComponentExtension({
     name: "RootlyIncidentsPage",
     component: {
-      lazy: () => import('./index-e3565a75.esm.js').then((m) => m.RootlyIncidentsPage)
+      lazy: () => import('./index-2b8b07b8.esm.js').then((m) => m.RootlyIncidentsPage)
     }
   })
 );
@@ -359,9 +369,17 @@ const ServicesTable = ({ params }) => {
   );
 };
 
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => {
+  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
 class IncidentWrapper {
   constructor(incident, included) {
-    this.environments = () => {
+    __publicField(this, "incident");
+    __publicField(this, "included");
+    __publicField(this, "environments", () => {
       var _a, _b, _c, _d, _e;
       if ((_b = (_a = this.incident.relationships) == null ? void 0 : _a.environments) == null ? void 0 : _b.data) {
         const ids = (_d = (_c = this.incident.relationships) == null ? void 0 : _c.environments) == null ? void 0 : _d.data.map((r) => {
@@ -373,8 +391,8 @@ class IncidentWrapper {
       } else {
         return [];
       }
-    };
-    this.services = () => {
+    });
+    __publicField(this, "services", () => {
       var _a, _b, _c, _d, _e;
       if ((_b = (_a = this.incident.relationships) == null ? void 0 : _a.services) == null ? void 0 : _b.data) {
         const ids = (_d = (_c = this.incident.relationships) == null ? void 0 : _c.services) == null ? void 0 : _d.data.map((r) => {
@@ -386,8 +404,8 @@ class IncidentWrapper {
       } else {
         return [];
       }
-    };
-    this.functionalities = () => {
+    });
+    __publicField(this, "functionalities", () => {
       var _a, _b, _c, _d, _e;
       if ((_b = (_a = this.incident.relationships) == null ? void 0 : _a.functionalities) == null ? void 0 : _b.data) {
         const ids = (_d = (_c = this.incident.relationships) == null ? void 0 : _c.functionalities) == null ? void 0 : _d.data.map((r) => {
@@ -399,8 +417,8 @@ class IncidentWrapper {
       } else {
         return [];
       }
-    };
-    this.groups = () => {
+    });
+    __publicField(this, "groups", () => {
       var _a, _b, _c, _d, _e;
       if ((_b = (_a = this.incident.relationships) == null ? void 0 : _a.groups) == null ? void 0 : _b.data) {
         const ids = (_d = (_c = this.incident.relationships) == null ? void 0 : _c.groups) == null ? void 0 : _d.data.map((r) => {
@@ -412,8 +430,8 @@ class IncidentWrapper {
       } else {
         return [];
       }
-    };
-    this.types = () => {
+    });
+    __publicField(this, "types", () => {
       var _a, _b, _c, _d, _e;
       if ((_b = (_a = this.incident.relationships) == null ? void 0 : _a.incident_types) == null ? void 0 : _b.data) {
         const ids = (_d = (_c = this.incident.relationships) == null ? void 0 : _c.incident_types) == null ? void 0 : _d.data.map((r) => {
@@ -425,7 +443,7 @@ class IncidentWrapper {
       } else {
         return [];
       }
-    };
+    });
     this.incident = incident;
     this.included = included;
   }
@@ -770,4 +788,4 @@ const ServicesDialog = ({
 };
 
 export { ColoredChip as C, IncidentsTable as I, RootlyApiRef as R, ServicesDialog as S, ROOTLY_ANNOTATION_SERVICE_ID as a, ROOTLY_ANNOTATION_SERVICE_SLUG as b, autoImportService as c, ServicesTable as d, StatusChip as e, RootlyPage as f, RootlyOverviewCard as g, RootlyIncidentsPage as h, RootlyPlugin as i, isRootlyAvailable as j, RootlyApi as k };
-//# sourceMappingURL=index-bc187665.esm.js.map
+//# sourceMappingURL=index-3ef2aacc.esm.js.map
