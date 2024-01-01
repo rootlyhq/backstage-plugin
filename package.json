@@ -33,7 +33,7 @@
     "@material-ui/lab": "4.0.0-alpha.45",
     "@types/react": "^17",
     "@types/react-dom": "^17",
-    "chart.js": "^3.8.0",
+    "chart.js": "^4.4.1",
     "history": "^5.0.0",
     "install": "^0.13.0",
     "moment": "^2.29.1",
