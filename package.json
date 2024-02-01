@@ -57,7 +57,7 @@
     "@backstage/dev-utils": "^1.0.24",
     "@backstage/test-utils": "^1.4.5",
     "@testing-library/jest-dom": "^5.10.1",
-    "@testing-library/react": "^11.2.5",
+    "@testing-library/react": "^14.2.0",
     "@testing-library/user-event": "^13.1.8",
     "@types/dom-to-image": "^2.6.3",
     "@types/jest": "^26.0.7",
