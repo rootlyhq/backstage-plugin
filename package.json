@@ -53,7 +53,7 @@
     "react-router-dom": "^6.0.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.24.0",
+    "@backstage/cli": "^0.25.2",
     "@backstage/dev-utils": "^1.0.24",
     "@backstage/test-utils": "^1.4.5",
     "@testing-library/jest-dom": "^5.10.1",
