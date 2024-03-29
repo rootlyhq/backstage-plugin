@@ -265,4 +265,4 @@ declare const ServicesDialog: ({ open, entity, handleClose, handleImport, handle
     handleUpdate: Function;
 }) => JSX.Element;
 
-export { IncidentsFetchOpts, IncidentsTable, Rootly, RootlyApi, RootlyApiRef, RootlyIncidentsPage, RootlyOverviewCard, RootlyPage, RootlyPlugin, ServicesDialog, ServicesFetchOpts, ServicesTable, isRootlyAvailable };
+export { type IncidentsFetchOpts, IncidentsTable, type Rootly, RootlyApi, RootlyApiRef, RootlyIncidentsPage, RootlyOverviewCard, RootlyPage, RootlyPlugin, ServicesDialog, type ServicesFetchOpts, ServicesTable, isRootlyAvailable };
