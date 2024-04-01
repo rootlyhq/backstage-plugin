@@ -62,7 +62,7 @@
     "@types/dom-to-image": "^2.6.3",
     "@types/jest": "^26.0.7",
     "@types/node": "^20.10.6",
-    "cross-fetch": "^3.0.6",
+    "cross-fetch": "^4.0.0",
     "jest-canvas-mock": "^2.3.0",
     "jest-fetch-mock": "^3.0.3",
     "react": "^16.13.1 || ^17.0.0"
