@@ -132,7 +132,7 @@ export const RootlyOverviewCard = () => {
       RootlyApi.getService(service_id_annotation)
         .then(annotationServiceResponse => {
           const annotationService = annotationServiceResponse.data;
-          if (annotationService.attributes.backstage_id && annotationService.attributes.backstage_id != entityTriplet) {
+          if (annotationService.attributes.backstage_id && annotationService.attributes.backstage_id !== entityTriplet) {
             RootlyApi.getServices({
               filter: {
                 backstage_id: entityTriplet,

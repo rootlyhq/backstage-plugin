@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "@backstage/catalog-model": "^1.4.5",
+    "@backstage/cli": "^0.26.2",
     "@backstage/core-components": "^0.14.3",
     "@backstage/core-plugin-api": "^1.9.1",
     "@backstage/plugin-catalog-react": "^1.11.2",
@@ -32,7 +33,7 @@
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "4.0.0-alpha.61",
     "@spotify/prettier-config": "^15.0.0",
-    "@types/react": "^17",
+    "@types/react": "^18",
     "@types/react-dom": "^18.2.18",
     "chart.js": "^4.4.1",
     "concurrently": "^8.2.2",
@@ -44,7 +45,7 @@
     "qs": "^6.10.3",
     "react-chartkick": "^0.5.2",
     "react-use": "^17.2.4",
-    "typescript": "~5.3.3"
+    "typescript": "^5.3.3"
   },
   "peerDependencies": {
     "react": "^16.13.1 || ^17.0.0",
@@ -60,9 +61,9 @@
     "@testing-library/react": "^14.2.2",
     "@testing-library/user-event": "^14.5.2",
     "@types/dom-to-image": "^2.6.3",
-    "@types/jest": "^26.0.7",
+    "@types/jest": "^29.0.0",
     "@types/node": "^20.10.6",
-    "cross-fetch": "^3.0.6",
+    "cross-fetch": "^4.0.0",
     "jest-canvas-mock": "^2.3.0",
     "jest-fetch-mock": "^3.0.3",
     "react": "^16.13.1 || ^17.0.0"

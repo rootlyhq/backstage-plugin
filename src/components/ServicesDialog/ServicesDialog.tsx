@@ -57,7 +57,7 @@ export const ServicesDialog = ({
         name: entity.metadata.name,
       });
       const selectedItem = data.find(
-        s => s.attributes.backstage_id == entityTriplet,
+        s => s.attributes.backstage_id === entityTriplet,
       )?.id;
       if (selectedItem) {
         setSelectedItem(selectedItem);
