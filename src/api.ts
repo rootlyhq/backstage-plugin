@@ -5,13 +5,22 @@ import {
   IdentityApi,
 } from '@backstage/core-plugin-api';
 import qs from 'qs';
-import { Entity, Incident, Service } from './types';
+import { Entity, Incident, Service, Functionality } from './types';
 
 export const RootlyApiRef = createApiRef<Rootly>({
   id: 'plugin.rootly.service',
 });
 
 export type ServicesFetchOpts = {
+  page?: {
+    number?: number;
+    size?: number;
+  };
+  filter?: object;
+  include?: string;
+};
+
+export type FunctionalitiesFetchOpts = {
   page?: {
     number?: number;
     size?: number;
@@ -32,14 +41,25 @@ export type IncidentsFetchOpts = {
 export interface Rootly {
   getService(id_or_slug: String): Promise<ServiceResponse>;
   getServices(opts?: ServicesFetchOpts): Promise<ServicesResponse>;
+  getFunctionality(id_or_slug: String): Promise<FunctionalityResponse>;
+  getFunctionalities(opts?: FunctionalitiesFetchOpts): Promise<FunctionalitiesResponse>;
   getIncidents(opts?: IncidentsFetchOpts): Promise<IncidentsResponse>;
-  importEntity(entity: Entity): Promise<void>;
-  updateEntity(
+
+  importServiceEntity(entity: Entity): Promise<void>;
+  updateServiceEntity(
     entity: Entity,
     service: Service,
     old_service?: Service,
   ): Promise<void>;
-  deleteEntity(service: Service): Promise<void>;
+  deleteServiceEntity(service: Service): Promise<void>;
+
+  importFunctionalityEntity(entity: Entity): Promise<void>;
+  updateFunctionalityEntity(
+    entity: Entity,
+    functionality: Functionality,
+    old_functionality?: Functionality,
+  ): Promise<void>;
+  deleteFunctionalityEntity(functionality: Functionality): Promise<void>;
 
   getCreateIncidentURL(): string;
   getListIncidents(): string;
@@ -59,6 +79,18 @@ interface ServicesResponse {
     total_pages: number;
   };
   data: Service[];
+}
+
+interface FunctionalityResponse {
+  data: Functionality;
+}
+
+interface FunctionalitiesResponse {
+  meta: {
+    total_count: number;
+    total_pages: number;
+  };
+  data: Functionality[];
 }
 
 interface IncidentsResponse {
@@ -151,6 +183,25 @@ export class RootlyApi implements Rootly {
     return response;
   }
 
+  async getFunctionality(id_or_slug: String): Promise<FunctionalityResponse> {
+    const init = { headers: { 'Content-Type': 'application/vnd.api+json' } };
+    const response = await this.fetch<FunctionalityResponse>(
+      `/v1/functionalities/${id_or_slug}`,
+      init,
+    );
+    return response;
+  }
+
+  async getFunctionalities(opts?: FunctionalitiesFetchOpts): Promise<FunctionalityResponse> {
+    const init = { headers: { 'Content-Type': 'application/vnd.api+json' } };
+    const params = qs.stringify(opts, { encode: false });
+    const response = await this.fetch<FunctionalityResponse>(
+      `/v1/functionalities?${params}`,
+      init,
+    );
+    return response;
+  }
+
   async getIncidents(opts?: IncidentsFetchOpts): Promise<IncidentsResponse> {
     const init = { headers: { 'Content-Type': 'application/vnd.api+json' } };
     const params = qs.stringify(opts, { encode: false });
@@ -171,7 +222,7 @@ export class RootlyApi implements Rootly {
     return response;
   }
 
-  async importEntity(entity: Entity): Promise<void> {
+  async importServiceEntity(entity: Entity): Promise<void> {
     const entityTriplet = stringifyEntityRef({
       namespace: entity.metadata.namespace,
       kind: entity.kind,
@@ -195,7 +246,7 @@ export class RootlyApi implements Rootly {
     await this.call(`/v1/services`, init);
   }
 
-  async updateEntity(
+  async updateServiceEntity(
     entity: Entity,
     service: Service,
     old_service?: Service,
@@ -239,7 +290,7 @@ export class RootlyApi implements Rootly {
     await this.call(`/v1/services/${service.id}`, init2);
   }
 
-  async deleteEntity(service: Service): Promise<void> {
+  async deleteServiceEntity(service: Service): Promise<void> {
     const init = {
       method: 'PUT',
       headers: { 'Content-Type': 'application/vnd.api+json' },
@@ -254,6 +305,91 @@ export class RootlyApi implements Rootly {
     };
 
     await this.call(`/v1/services/${service.id}`, init);
+  }
+
+  async importFunctionalityEntity(entity: Entity): Promise<void> {
+    const entityTriplet = stringifyEntityRef({
+      namespace: entity.metadata.namespace,
+      kind: entity.kind,
+      name: entity.metadata.name,
+    });
+    const init = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/vnd.api+json' },
+      body: JSON.stringify({
+        data: {
+          type: 'functionalities',
+          attributes: {
+            name: entity.metadata.name,
+            description: entity.metadata.description,
+            backstage_id: entityTriplet,
+          },
+        },
+      }),
+    };
+
+    await this.call(`/v1/functionalities`, init);
+  }
+
+  async updateFunctionalityEntity(
+    entity: Entity,
+    functionality: Functionality,
+    old_functionality?: Functionality,
+  ): Promise<void> {
+    const entityTriplet = stringifyEntityRef({
+      namespace: entity.metadata.namespace,
+      kind: entity.kind,
+      name: entity.metadata.name,
+    });
+
+    if (old_functionality?.id) {
+      const init1 = {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/vnd.api+json' },
+        body: JSON.stringify({
+          data: {
+            type: 'functionalities',
+            attributes: {
+              backstage_id: null,
+            },
+          },
+        }),
+      };
+
+      await this.call(`/v1/functionalities/${old_functionality.id}`, init1);
+    }
+
+    const init2 = {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/vnd.api+json' },
+      body: JSON.stringify({
+        data: {
+          type: 'functionalities',
+          attributes: {
+            backstage_id: entityTriplet,
+          },
+        },
+      }),
+    };
+
+    await this.call(`/v1/functionalities/${functionality.id}`, init2);
+  }
+
+  async deleteFunctionalityEntity(functionality: Functionality): Promise<void> {
+    const init = {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/vnd.api+json' },
+      body: JSON.stringify({
+        data: {
+          type: 'functionalities',
+          attributes: {
+            backstage_id: null,
+          },
+        },
+      }),
+    };
+
+    await this.call(`/v1/functionalities/${functionality.id}`, init);
   }
 
   getCreateIncidentURL(): string {
@@ -271,6 +407,10 @@ export class RootlyApi implements Rootly {
 
   getServiceDetailsURL(service: Service): string {
     return `${this.domain}/account/services/${service.attributes.slug}`;
+  }
+
+  getFunctionalityDetailsURL(functionality: Functionality): string {
+    return `${this.domain}/account/functionalities/${functionality.attributes.slug}`;
   }
 
   private async apiUrl() {

@@ -2,6 +2,7 @@ import React from 'react';
 import { EntitiesList } from '../EntitiesTable';
 import { IncidentsTable } from '../IncidentsTable';
 import { ServicesTable } from '../ServicesTable';
+import { FunctionalitiesTable } from '../FunctionalitiesTable';
 import { DefaultRootlyPageLayout } from './DefaultRootlyPageLayout';
 
 export const DefaultRootlyPage = () => {
@@ -20,6 +21,9 @@ export const DefaultRootlyPage = () => {
       </DefaultRootlyPageLayout.Route>
       <DefaultRootlyPageLayout.Route path="services" title="Services">
         <ServicesTable />
+      </DefaultRootlyPageLayout.Route>
+      <DefaultRootlyPageLayout.Route path="functionalities" title="Functionalities">
+        <FunctionalitiesTable />
       </DefaultRootlyPageLayout.Route>
     </DefaultRootlyPageLayout>
   );

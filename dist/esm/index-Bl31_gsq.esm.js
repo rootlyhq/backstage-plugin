@@ -14,7 +14,7 @@ import 'chartkick/chart.js';
 import moment from 'moment';
 import React, { useState, useEffect } from 'react';
 import { useAsync } from 'react-use';
-import { R as RootlyApiRef, a as ROOTLY_ANNOTATION_SERVICE_ID, b as ROOTLY_ANNOTATION_SERVICE_SLUG, c as autoImportService, C as ColoredChip, e as StatusChip } from './index-BTeRrTSg.esm.js';
+import { R as RootlyApiRef, a as ROOTLY_ANNOTATION_SERVICE_ID, b as ROOTLY_ANNOTATION_SERVICE_SLUG, e as ROOTLY_ANNOTATION_FUNCTIONALITY_ID, f as ROOTLY_ANNOTATION_FUNCTIONALITY_SLUG, c as autoImportService, g as autoImportFunctionality, C as ColoredChip, h as StatusChip } from './index-DCX11Rbu.esm.js';
 import 'qs';
 import '@material-ui/core/Divider';
 
@@ -58,10 +58,11 @@ const getViewIncidentsForServiceLink = (service, rootlyApi) => {
   };
 };
 const RootlyOverviewCard = () => {
-  var _a, _b;
+  var _a, _b, _c, _d;
   const { entity } = useEntity();
   const RootlyApi = useApi(RootlyApiRef);
   const service_id_annotation = ((_a = entity.metadata.annotations) == null ? void 0 : _a[ROOTLY_ANNOTATION_SERVICE_ID]) || ((_b = entity.metadata.annotations) == null ? void 0 : _b[ROOTLY_ANNOTATION_SERVICE_SLUG]);
+  const functionality_id_annotation = ((_c = entity.metadata.annotations) == null ? void 0 : _c[ROOTLY_ANNOTATION_FUNCTIONALITY_ID]) || ((_d = entity.metadata.annotations) == null ? void 0 : _d[ROOTLY_ANNOTATION_FUNCTIONALITY_SLUG]);
   const [reload, setReload] = useState(false);
   const createIncidentLink = {
     label: "Create Incident",
@@ -84,7 +85,7 @@ const RootlyOverviewCard = () => {
     if (service_id_annotation) {
       RootlyApi.getService(service_id_annotation).then((annotationServiceResponse) => {
         const annotationService = annotationServiceResponse.data;
-        if (annotationService.attributes.backstage_id && annotationService.attributes.backstage_id != entityTriplet) {
+        if (annotationService.attributes.backstage_id && annotationService.attributes.backstage_id !== entityTriplet) {
           RootlyApi.getServices({
             filter: {
               backstage_id: entityTriplet
@@ -92,7 +93,7 @@ const RootlyOverviewCard = () => {
           }).then((servicesResponse) => {
             const service2 = servicesResponse && servicesResponse.data && servicesResponse.data.length > 0 ? servicesResponse.data[0] : null;
             if (service2) {
-              RootlyApi.updateEntity(
+              RootlyApi.updateServiceEntity(
                 entity,
                 annotationService,
                 service2
@@ -100,14 +101,37 @@ const RootlyOverviewCard = () => {
             }
           });
         } else {
-          RootlyApi.updateEntity(
-            entity,
-            annotationService
-          );
+          RootlyApi.updateServiceEntity(entity, annotationService);
         }
       }).catch(() => {
         if (autoImportService(entity)) {
-          RootlyApi.importEntity(entity);
+          RootlyApi.importServiceEntity(entity);
+        }
+      });
+    } else if (functionality_id_annotation) {
+      RootlyApi.getFunctionality(functionality_id_annotation).then((annotationFunctionalityResponse) => {
+        const annotationFunctionality = annotationFunctionalityResponse.data;
+        if (annotationFunctionality.attributes.backstage_id && annotationFunctionality.attributes.backstage_id !== entityTriplet) {
+          RootlyApi.getFunctionalities({
+            filter: {
+              backstage_id: entityTriplet
+            }
+          }).then((functionalitiesResponse) => {
+            const functionality = functionalitiesResponse && functionalitiesResponse.data && functionalitiesResponse.data.length > 0 ? functionalitiesResponse.data[0] : null;
+            if (functionality) {
+              RootlyApi.updateFunctionalityEntity(
+                entity,
+                annotationFunctionality,
+                functionality
+              );
+            }
+          });
+        } else {
+          RootlyApi.updateFunctionalityEntity(entity, annotationFunctionality);
+        }
+      }).catch(() => {
+        if (autoImportFunctionality(entity)) {
+          RootlyApi.importFunctionalityEntity(entity);
         }
       });
     }
@@ -192,4 +216,4 @@ const RootlyOverviewCard = () => {
 };
 
 export { RootlyOverviewCard };
-//# sourceMappingURL=index-CCIJD_fq.esm.js.map
+//# sourceMappingURL=index-Bl31_gsq.esm.js.map

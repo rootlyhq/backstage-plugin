@@ -44,7 +44,7 @@ export const RootlyIncidentsPageLayout = () => {
   };
 
   const handleCloseImport = async (entity: Entity) => {
-    await RootlyApi.importEntity(entity);
+    await RootlyApi.importServiceEntity(entity);
     setReload(!reload);
   };
 
@@ -53,7 +53,7 @@ export const RootlyIncidentsPageLayout = () => {
     service: Service,
     old_service?: Service,
   ) => {
-    await RootlyApi.updateEntity(entity, service, old_service);
+    await RootlyApi.updateServiceEntity(entity, service, old_service);
     setReload(!reload);
   };
 

@@ -34,17 +34,17 @@ export const EntitiesTable = () => {
     service: Service,
     old_service?: Service,
   ) => {
-    await RootlyApi.updateEntity(entity, service, old_service);
+    await RootlyApi.updateServiceEntity(entity, service, old_service);
     setTimeout(() => setReload(!reload), 500);
   };
 
   const handleImport = async (entity: Entity) => {
-    await RootlyApi.importEntity(entity);
+    await RootlyApi.importServiceEntity(entity);
     setTimeout(() => setReload(!reload), 500);
   };
 
   const handleDelete = async (service: Service) => {
-    await RootlyApi.deleteEntity(service);
+    await RootlyApi.deleteServiceEntity(service);
     setTimeout(() => setReload(!reload), 500);
   };
 
@@ -78,7 +78,7 @@ export const EntitiesTable = () => {
                       ? servicesResponse.data[0]
                       : null;
                   if (service) {
-                    RootlyApi.updateEntity(
+                    RootlyApi.updateServiceEntity(
                       entity as Entity,
                       annotationService,
                       service,
@@ -86,7 +86,7 @@ export const EntitiesTable = () => {
                   }
                 });
               } else {
-                RootlyApi.updateEntity(
+                RootlyApi.updateServiceEntity(
                   entity as Entity,
                   annotationService,
                 );
@@ -94,7 +94,7 @@ export const EntitiesTable = () => {
             })
             .catch(() => {
               if (autoImportService(entity)) {
-                RootlyApi.importEntity(entity as Entity);
+                RootlyApi.importServiceEntity(entity as Entity);
               }
             });
         }
@@ -136,10 +136,10 @@ export const EntitiesTable = () => {
           {entity.linkedService.attributes.name}
         </Link>
       );
-    } else {
+    } 
       entity.linkedService = undefined;
       return <div>Not Linked</div>;
-    }
+    
   };
 
   const columns: TableColumn<Entity>[] = [

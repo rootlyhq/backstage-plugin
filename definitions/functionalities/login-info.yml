@@ -1,0 +1,16 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: Login
+  description: |
+   Controls the ability for users to login.
+  annotations:
+    github.com/project-slug: backstage/backstage
+    backstage.io/techdocs-ref: dir:.
+    lighthouse.com/website-url: https://rootly.com
+    rootly.com/functionality-slug: login
+    rootly.com/functionality-auto-import: enabled
+spec:
+  type: grpc
+  owner: guests
+  lifecycle: experimental

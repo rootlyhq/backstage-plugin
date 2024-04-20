@@ -65,6 +65,23 @@ class RootlyApi {
     );
     return response;
   }
+  async getFunctionality(id_or_slug) {
+    const init = { headers: { "Content-Type": "application/vnd.api+json" } };
+    const response = await this.fetch(
+      `/v1/functionalities/${id_or_slug}`,
+      init
+    );
+    return response;
+  }
+  async getFunctionalities(opts) {
+    const init = { headers: { "Content-Type": "application/vnd.api+json" } };
+    const params = qs.stringify(opts, { encode: false });
+    const response = await this.fetch(
+      `/v1/functionalities?${params}`,
+      init
+    );
+    return response;
+  }
   async getIncidents(opts) {
     const init = { headers: { "Content-Type": "application/vnd.api+json" } };
     const params = qs.stringify(opts, { encode: false });
@@ -83,7 +100,7 @@ class RootlyApi {
     );
     return response;
   }
-  async importEntity(entity) {
+  async importServiceEntity(entity) {
     const entityTriplet = stringifyEntityRef({
       namespace: entity.metadata.namespace,
       kind: entity.kind,
@@ -105,7 +122,7 @@ class RootlyApi {
     };
     await this.call(`/v1/services`, init);
   }
-  async updateEntity(entity, service, old_service) {
+  async updateServiceEntity(entity, service, old_service) {
     const entityTriplet = stringifyEntityRef({
       namespace: entity.metadata.namespace,
       kind: entity.kind,
@@ -140,7 +157,7 @@ class RootlyApi {
     };
     await this.call(`/v1/services/${service.id}`, init2);
   }
-  async deleteEntity(service) {
+  async deleteServiceEntity(service) {
     const init = {
       method: "PUT",
       headers: { "Content-Type": "application/vnd.api+json" },
@@ -155,6 +172,78 @@ class RootlyApi {
     };
     await this.call(`/v1/services/${service.id}`, init);
   }
+  async importFunctionalityEntity(entity) {
+    const entityTriplet = stringifyEntityRef({
+      namespace: entity.metadata.namespace,
+      kind: entity.kind,
+      name: entity.metadata.name
+    });
+    const init = {
+      method: "POST",
+      headers: { "Content-Type": "application/vnd.api+json" },
+      body: JSON.stringify({
+        data: {
+          type: "functionalities",
+          attributes: {
+            name: entity.metadata.name,
+            description: entity.metadata.description,
+            backstage_id: entityTriplet
+          }
+        }
+      })
+    };
+    await this.call(`/v1/functionalities`, init);
+  }
+  async updateFunctionalityEntity(entity, functionality, old_functionality) {
+    const entityTriplet = stringifyEntityRef({
+      namespace: entity.metadata.namespace,
+      kind: entity.kind,
+      name: entity.metadata.name
+    });
+    if (old_functionality == null ? void 0 : old_functionality.id) {
+      const init1 = {
+        method: "PUT",
+        headers: { "Content-Type": "application/vnd.api+json" },
+        body: JSON.stringify({
+          data: {
+            type: "functionalities",
+            attributes: {
+              backstage_id: null
+            }
+          }
+        })
+      };
+      await this.call(`/v1/functionalities/${old_functionality.id}`, init1);
+    }
+    const init2 = {
+      method: "PUT",
+      headers: { "Content-Type": "application/vnd.api+json" },
+      body: JSON.stringify({
+        data: {
+          type: "functionalities",
+          attributes: {
+            backstage_id: entityTriplet
+          }
+        }
+      })
+    };
+    await this.call(`/v1/functionalities/${functionality.id}`, init2);
+  }
+  async deleteFunctionalityEntity(functionality) {
+    const init = {
+      method: "PUT",
+      headers: { "Content-Type": "application/vnd.api+json" },
+      body: JSON.stringify({
+        data: {
+          type: "functionalities",
+          attributes: {
+            backstage_id: null
+          }
+        }
+      })
+    };
+    await this.call(`/v1/functionalities/${functionality.id}`, init);
+  }
   getCreateIncidentURL() {
     return `${this.domain}/account/incidents/new`;
   }
@@ -167,6 +256,9 @@ class RootlyApi {
   }
   getServiceDetailsURL(service) {
     return `${this.domain}/account/services/${service.attributes.slug}`;
+  }
+  getFunctionalityDetailsURL(functionality) {
+    return `${this.domain}/account/functionalities/${functionality.attributes.slug}`;
   }
   async apiUrl() {
     const proxyUrl = await this.discoveryApi.getBaseUrl("proxy");
@@ -211,7 +303,7 @@ const RootlyPlugin = createPlugin({
 const RootlyPage = RootlyPlugin.provide(
   createRoutableExtension({
     name: "RootlyPage",
-    component: () => import('./index-BjU9i0FX.esm.js').then((m) => m.RootlyPage),
+    component: () => import('./index-BqlwhgrZ.esm.js').then((m) => m.RootlyPage),
     mountPoint: RootlyRouteRef
   })
 );
@@ -219,7 +311,7 @@ const RootlyOverviewCard = RootlyPlugin.provide(
   createComponentExtension({
     name: "RootlyOverviewCard",
     component: {
-      lazy: () => import('./index-CCIJD_fq.esm.js').then((m) => m.RootlyOverviewCard)
+      lazy: () => import('./index-Bl31_gsq.esm.js').then((m) => m.RootlyOverviewCard)
     }
   })
 );
@@ -227,7 +319,7 @@ const RootlyIncidentsPage = RootlyPlugin.provide(
   createComponentExtension({
     name: "RootlyIncidentsPage",
     component: {
-      lazy: () => import('./index-D8Boutxk.esm.js').then((m) => m.RootlyIncidentsPage)
+      lazy: () => import('./index-D3Ylen0h.esm.js').then((m) => m.RootlyIncidentsPage)
     }
   })
 );
@@ -235,13 +327,20 @@ const RootlyIncidentsPage = RootlyPlugin.provide(
 const ROOTLY_ANNOTATION_SERVICE_ID = "rootly.com/service-id";
 const ROOTLY_ANNOTATION_SERVICE_SLUG = "rootly.com/service-slug";
 const ROOTLY_ANNOTATION_SERVICE_AUTO_IMPORT = "rootly.com/service-auto-import";
+const ROOTLY_ANNOTATION_FUNCTIONALITY_ID = "rootly.com/functionality-id";
+const ROOTLY_ANNOTATION_FUNCTIONALITY_SLUG = "rootly.com/functionality-slug";
+const ROOTLY_ANNOTATION_FUNCTIONALITY_AUTO_IMPORT = "rootly.com/functionality-auto-import";
 const isRootlyAvailable = (entity) => {
-  var _a, _b, _c, _d;
-  return Boolean((_a = entity.metadata.annotations) == null ? void 0 : _a[ROOTLY_ANNOTATION_SERVICE_ID]) && Boolean((_b = entity.metadata.annotations) == null ? void 0 : _b[ROOTLY_ANNOTATION_SERVICE_ID]) || Boolean((_c = entity.metadata.annotations) == null ? void 0 : _c[ROOTLY_ANNOTATION_SERVICE_SLUG]) && Boolean((_d = entity.metadata.annotations) == null ? void 0 : _d[ROOTLY_ANNOTATION_SERVICE_SLUG]);
+  var _a, _b, _c, _d, _e, _f, _g, _h;
+  return Boolean((_a = entity.metadata.annotations) == null ? void 0 : _a[ROOTLY_ANNOTATION_SERVICE_ID]) && Boolean((_b = entity.metadata.annotations) == null ? void 0 : _b[ROOTLY_ANNOTATION_SERVICE_ID]) || Boolean((_c = entity.metadata.annotations) == null ? void 0 : _c[ROOTLY_ANNOTATION_SERVICE_SLUG]) && Boolean((_d = entity.metadata.annotations) == null ? void 0 : _d[ROOTLY_ANNOTATION_SERVICE_SLUG]) || Boolean((_e = entity.metadata.annotations) == null ? void 0 : _e[ROOTLY_ANNOTATION_FUNCTIONALITY_ID]) && Boolean((_f = entity.metadata.annotations) == null ? void 0 : _f[ROOTLY_ANNOTATION_FUNCTIONALITY_ID]) || Boolean((_g = entity.metadata.annotations) == null ? void 0 : _g[ROOTLY_ANNOTATION_FUNCTIONALITY_SLUG]) && Boolean((_h = entity.metadata.annotations) == null ? void 0 : _h[ROOTLY_ANNOTATION_FUNCTIONALITY_SLUG]);
 };
 const autoImportService = (entity) => {
   var _a, _b;
   return Boolean((_a = entity.metadata.annotations) == null ? void 0 : _a[ROOTLY_ANNOTATION_SERVICE_AUTO_IMPORT]) && Boolean((_b = entity.metadata.annotations) == null ? void 0 : _b[ROOTLY_ANNOTATION_SERVICE_AUTO_IMPORT]);
+};
+const autoImportFunctionality = (entity) => {
+  var _a, _b;
+  return Boolean((_a = entity.metadata.annotations) == null ? void 0 : _a[ROOTLY_ANNOTATION_FUNCTIONALITY_AUTO_IMPORT]) && Boolean((_b = entity.metadata.annotations) == null ? void 0 : _b[ROOTLY_ANNOTATION_FUNCTIONALITY_AUTO_IMPORT]);
 };
 
 const useStyles$1 = makeStyles((theme) => ({
@@ -725,7 +824,7 @@ const ServicesDialog = ({
         name: entity.metadata.name
       });
       const selectedItem2 = (_a = data.find(
-        (s) => s.attributes.backstage_id == entityTriplet
+        (s) => s.attributes.backstage_id === entityTriplet
       )) == null ? void 0 : _a.id;
       if (selectedItem2) {
         setSelectedItem(selectedItem2);
@@ -787,5 +886,5 @@ const ServicesDialog = ({
   );
 };
 
-export { ColoredChip as C, IncidentsTable as I, RootlyApiRef as R, ServicesDialog as S, ROOTLY_ANNOTATION_SERVICE_ID as a, ROOTLY_ANNOTATION_SERVICE_SLUG as b, autoImportService as c, ServicesTable as d, StatusChip as e, RootlyPage as f, RootlyOverviewCard as g, RootlyIncidentsPage as h, RootlyPlugin as i, isRootlyAvailable as j, RootlyApi as k };
-//# sourceMappingURL=index-BTeRrTSg.esm.js.map
+export { ColoredChip as C, IncidentsTable as I, RootlyApiRef as R, ServicesDialog as S, ROOTLY_ANNOTATION_SERVICE_ID as a, ROOTLY_ANNOTATION_SERVICE_SLUG as b, autoImportService as c, ServicesTable as d, ROOTLY_ANNOTATION_FUNCTIONALITY_ID as e, ROOTLY_ANNOTATION_FUNCTIONALITY_SLUG as f, autoImportFunctionality as g, StatusChip as h, RootlyPage as i, RootlyOverviewCard as j, RootlyIncidentsPage as k, RootlyPlugin as l, isRootlyAvailable as m, RootlyApi as n };
+//# sourceMappingURL=index-DCX11Rbu.esm.js.map

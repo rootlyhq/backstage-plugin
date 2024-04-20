@@ -5,6 +5,7 @@ The Rootly plugin is a frontend plugin that displays Rootly services, incidents 
 - The `RootlyPage` routable extension component which produces a standalone page with the following capabilities:
   - View and search a list of entities and import/link them to rootly services
   - View and search a list of services
+  - View and search a list of functionalities
   - View and search a list of incidents
 
 - The `RootlyOverviewCard` component which produces a summary of your entity with incidents over last 30 days and ongoing incidents.
@@ -19,6 +20,7 @@ You can link and import entities in rootly services through Backstage Web UI or 
 
 Because of the features provided by the plugin, an API key with full access to your Rootly domain is required.
 - Read access on services is needed to list services, write access to link entities to services.
+- Read access on functionalities is needed to list functionalities, write access to link entities to functionalities.
 - Read access on incidents needed to list incidents.
 
 1. Go to `Profile` -> `Manage API Keys`.
@@ -57,6 +59,9 @@ Available annotations are the following:
 rootly.com/service-id: 7a328a08-6701-445e-a1ad-ca2fb913ed1e # Use service-id or service-slug. Not both.
 rootly.com/service-slug: elasticsearch-staging # Use service-id or service-slug. Not both.
 rootly.com/service-auto-import: enabled # This will auto import the entity as a rootly service if we don't find any.
+rootly.com/functionality-id: 7a328a08-694f4e1b-abbc-4cf7-bba0-a403df30ed88 # Use functionality-id or functionality-slug. Not both.
+rootly.com/functionality-slug: login # Use functionality-id or functionality-slug. Not both.
+rootly.com/functionality-auto-import: enabled # This will auto import the entity as a rootly functionality if we don't find any.
 ```
 
 #### Example
@@ -86,6 +91,7 @@ spec:
 
 ![Rootly entities page](./docs/rootly-entities-page.png)
 ![Rootly services page](./docs/rootly-services-page.png)
+![Rootly functionalies page](./docs/rootly-functionalities-page.png)
 ![Rootly incidents page](./docs/rootly-incidents-page.png)
 
 Expose the Rootly global page:

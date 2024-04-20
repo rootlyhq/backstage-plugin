@@ -4,3 +4,4 @@ export declare const ROOTLY_ANNOTATION_SERVICE_SLUG = "rootly.com/service-slug";
 export declare const ROOTLY_ANNOTATION_SERVICE_AUTO_IMPORT = "rootly.com/service-auto-import";
 export declare const isRootlyAvailable: (entity: Entity) => boolean;
 export declare const autoImportService: (entity: Entity) => boolean;
+export declare const autoImportFunctionality: (entity: Entity) => boolean;

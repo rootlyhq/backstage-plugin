@@ -139,4 +139,5 @@ export interface Incident {
 }
 export interface Entity extends BackstageEntity {
     linkedService: Service | undefined;
+    linkedFunctionality: Functionality | undefined;
 }

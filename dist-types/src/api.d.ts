@@ -1,5 +1,5 @@
 import { DiscoveryApi, IdentityApi } from '@backstage/core-plugin-api';
-import { Entity, Incident, Service } from './types';
+import { Entity, Incident, Service, Functionality } from './types';
 export declare const RootlyApiRef: import("@backstage/core-plugin-api").ApiRef<Rootly>;
 export declare type ServicesFetchOpts = {
     page?: {
@@ -21,9 +21,12 @@ export interface Rootly {
     getService(id_or_slug: String): Promise<ServiceResponse>;
     getServices(opts?: ServicesFetchOpts): Promise<ServicesResponse>;
     getIncidents(opts?: IncidentsFetchOpts): Promise<IncidentsResponse>;
-    importEntity(entity: Entity): Promise<void>;
-    updateEntity(entity: Entity, old_service: Service, service: Service): Promise<void>;
-    deleteEntity(service: Service): Promise<void>;
+    importServiceEntity(entity: Entity): Promise<void>;
+    updateServiceEntity(entity: Entity, old_service: Service, service: Service): Promise<void>;
+    deleteServiceEntity(service: Service): Promise<void>;
+    importFunctionalityEntity(entity: Entity): Promise<void>;
+    updateFunctionalityEntity(entity: Entity, old_functionality: Functionality, service: Functionality): Promise<void>;
+    deleteFunctionalityEntity(service: Functionality): Promise<void>;
     getCreateIncidentURL(): string;
     getListIncidents(): string;
     getListIncidentsForServiceURL(service: Service): string;
@@ -91,9 +94,9 @@ export declare class RootlyApi implements Rootly {
     }): Promise<{
         data: object;
     }>;
-    importEntity(entity: Entity): Promise<void>;
-    updateEntity(entity: Entity, old_service: Service, service: Service): Promise<void>;
-    deleteEntity(service: Service): Promise<void>;
+    importServiceEntity(entity: Entity): Promise<void>;
+    updateServiceEntity(entity: Entity, old_service: Service, service: Service): Promise<void>;
+    deleteServiceEntity(service: Service): Promise<void>;
     getCreateIncidentURL(): string;
     getListIncidents(): string;
     getListIncidentsForServiceURL(service: Service): string;

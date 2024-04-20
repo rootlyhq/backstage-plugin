@@ -35,8 +35,11 @@ import { ColoredChip } from '../UI/ColoredChip';
 import { StatusChip } from '../UI/StatusChip';
 import {
   autoImportService,
+  autoImportFunctionality,
   ROOTLY_ANNOTATION_SERVICE_ID,
   ROOTLY_ANNOTATION_SERVICE_SLUG,
+  ROOTLY_ANNOTATION_FUNCTIONALITY_ID,
+  ROOTLY_ANNOTATION_FUNCTIONALITY_SLUG,
 } from '../../integration';
 
 const truncate = (input: string, length: number) =>
@@ -105,6 +108,10 @@ export const RootlyOverviewCard = () => {
     entity.metadata.annotations?.[ROOTLY_ANNOTATION_SERVICE_ID] ||
     entity.metadata.annotations?.[ROOTLY_ANNOTATION_SERVICE_SLUG];
 
+  const functionality_id_annotation =
+    entity.metadata.annotations?.[ROOTLY_ANNOTATION_FUNCTIONALITY_ID] ||
+    entity.metadata.annotations?.[ROOTLY_ANNOTATION_FUNCTIONALITY_SLUG];
+
   const [reload, setReload] = useState(false);
 
   const createIncidentLink: IconLinkVerticalProps = {
@@ -132,7 +139,10 @@ export const RootlyOverviewCard = () => {
       RootlyApi.getService(service_id_annotation)
         .then(annotationServiceResponse => {
           const annotationService = annotationServiceResponse.data;
-          if (annotationService.attributes.backstage_id && annotationService.attributes.backstage_id !== entityTriplet) {
+          if (
+            annotationService.attributes.backstage_id &&
+            annotationService.attributes.backstage_id !== entityTriplet
+          ) {
             RootlyApi.getServices({
               filter: {
                 backstage_id: entityTriplet,
@@ -145,7 +155,7 @@ export const RootlyOverviewCard = () => {
                   ? servicesResponse.data[0]
                   : null;
               if (service) {
-                RootlyApi.updateEntity(
+                RootlyApi.updateServiceEntity(
                   entity as Entity,
                   annotationService,
                   service,
@@ -153,15 +163,48 @@ export const RootlyOverviewCard = () => {
               }
             });
           } else {
-            RootlyApi.updateEntity(
-              entity as Entity,
-              annotationService,
-            );
+            RootlyApi.updateServiceEntity(entity as Entity, annotationService);
           }
         })
         .catch(() => {
           if (autoImportService(entity)) {
-            RootlyApi.importEntity(entity as Entity);
+            RootlyApi.importServiceEntity(entity as Entity);
+          }
+        });
+    } else if (functionality_id_annotation) {
+      RootlyApi.getFunctionality(functionality_id_annotation)
+        .then(annotationFunctionalityResponse => {
+          const annotationFunctionality = annotationFunctionalityResponse.data;
+          if (
+            annotationFunctionality.attributes.backstage_id &&
+            annotationFunctionality.attributes.backstage_id !== entityTriplet
+          ) {
+            RootlyApi.getFunctionalities({
+              filter: {
+                backstage_id: entityTriplet,
+              },
+            }).then(functionalitiesResponse => {
+              const functionality =
+                functionalitiesResponse &&
+                functionalitiesResponse.data &&
+                functionalitiesResponse.data.length > 0
+                  ? functionalitiesResponse.data[0]
+                  : null;
+              if (functionality) {
+                RootlyApi.updateFunctionalityEntity(
+                  entity as Entity,
+                  annotationFunctionality,
+                  functionality,
+                );
+              }
+            });
+          } else {
+            RootlyApi.updateFunctionalityEntity(entity as Entity, annotationFunctionality);
+          }
+        })
+        .catch(() => {
+          if (autoImportFunctionality(entity)) {
+            RootlyApi.importFunctionalityEntity(entity as Entity);
           }
         });
     }
