@@ -251,7 +251,11 @@ class RootlyApi {
     return `${this.domain}/account/incidents`;
   }
   getListIncidentsForServiceURL(service) {
-    const params = qs.stringify({ services: [service.attributes.slug] }, { arrayFormat: "brackets" });
+    const params = qs.stringify({ filter: { filters: [{ services: [service.id] }] } }, { arrayFormat: "brackets" });
+    return `${this.domain}/account/incidents?${params}`;
+  }
+  getListIncidentsForFunctionalityURL(functionality) {
+    const params = qs.stringify({ filter: { filters: [{ functionalities: [functionality.id] }] } }, { arrayFormat: "brackets" });
     return `${this.domain}/account/incidents?${params}`;
   }
   getServiceDetailsURL(service) {
@@ -303,7 +307,7 @@ const RootlyPlugin = createPlugin({
 const RootlyPage = RootlyPlugin.provide(
   createRoutableExtension({
     name: "RootlyPage",
-    component: () => import('./index-BqlwhgrZ.esm.js').then((m) => m.RootlyPage),
+    component: () => import('./index-CK7AUoZP.esm.js').then((m) => m.RootlyPage),
     mountPoint: RootlyRouteRef
   })
 );
@@ -311,7 +315,7 @@ const RootlyOverviewCard = RootlyPlugin.provide(
   createComponentExtension({
     name: "RootlyOverviewCard",
     component: {
-      lazy: () => import('./index-Bl31_gsq.esm.js').then((m) => m.RootlyOverviewCard)
+      lazy: () => import('./index-Ba-zCZV3.esm.js').then((m) => m.RootlyOverviewCard)
     }
   })
 );
@@ -319,7 +323,7 @@ const RootlyIncidentsPage = RootlyPlugin.provide(
   createComponentExtension({
     name: "RootlyIncidentsPage",
     component: {
-      lazy: () => import('./index-D3Ylen0h.esm.js').then((m) => m.RootlyIncidentsPage)
+      lazy: () => import('./index-CUAWNkDb.esm.js').then((m) => m.RootlyIncidentsPage)
     }
   })
 );
@@ -886,5 +890,5 @@ const ServicesDialog = ({
   );
 };
 
-export { ColoredChip as C, IncidentsTable as I, RootlyApiRef as R, ServicesDialog as S, ROOTLY_ANNOTATION_SERVICE_ID as a, ROOTLY_ANNOTATION_SERVICE_SLUG as b, autoImportService as c, ServicesTable as d, ROOTLY_ANNOTATION_FUNCTIONALITY_ID as e, ROOTLY_ANNOTATION_FUNCTIONALITY_SLUG as f, autoImportFunctionality as g, StatusChip as h, RootlyPage as i, RootlyOverviewCard as j, RootlyIncidentsPage as k, RootlyPlugin as l, isRootlyAvailable as m, RootlyApi as n };
-//# sourceMappingURL=index-DCX11Rbu.esm.js.map
+export { ColoredChip as C, IncidentsTable as I, RootlyApiRef as R, ServicesDialog as S, ROOTLY_ANNOTATION_SERVICE_ID as a, ROOTLY_ANNOTATION_SERVICE_SLUG as b, autoImportService as c, ROOTLY_ANNOTATION_FUNCTIONALITY_ID as d, ROOTLY_ANNOTATION_FUNCTIONALITY_SLUG as e, ServicesTable as f, StatusChip as g, autoImportFunctionality as h, RootlyPage as i, RootlyOverviewCard as j, RootlyIncidentsPage as k, RootlyPlugin as l, isRootlyAvailable as m, RootlyApi as n };
+//# sourceMappingURL=index-C28X43rF.esm.js.map

@@ -1,2 +1,2 @@
 export { RootlyOverviewCard } from './RootlyOverviewCard';
-export { EntityActionsMenu } from './EntityActionsMenu';
+export { RootlyEntityActionsMenu } from './RootlyEntityActionsMenu';

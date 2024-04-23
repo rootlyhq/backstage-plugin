@@ -135,16 +135,31 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
 
 ```ts
 // packages/app/src/components/catalog/EntityPage.tsx
-import { RootlyOverviewCard, isRootlyAvailable } from '@rootly/backstage-plugin';
+import { RootlyOverviewCard, isRootlyAvailable, RootlyResourceType } from '@rootly/backstage-plugin';
 
-// ...
+// For a service
 const overviewContent = (
   <Grid container spacing={3} alignItems="stretch">
     // ...
     <EntitySwitch>
       <EntitySwitch.Case if={isRootlyAvailable}>
         <Grid item sm={6}>
-          <RootlyOverviewCard />
+          <RootlyOverviewCard resourceType={RootlyResourceType.Service} />
+        </Grid>
+      </EntitySwitch.Case>
+    </EntitySwitch>
+    // ...
+  </Grid>
+);
+
+// For a functionality
+const overviewContent = (
+  <Grid container spacing={3} alignItems="stretch">
+    // ...
+    <EntitySwitch>
+      <EntitySwitch.Case if={isRootlyAvailable}>
+        <Grid item sm={6}>
+          <RootlyOverviewCard resourceType={RootlyResourceType.Functionality} />
         </Grid>
       </EntitySwitch.Case>
     </EntitySwitch>

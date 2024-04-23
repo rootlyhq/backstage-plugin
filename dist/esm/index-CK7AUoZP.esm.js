@@ -2,63 +2,187 @@ import React, { useState, useEffect, useCallback, Children, isValidElement, Frag
 import { useOutlet } from 'react-router';
 import { catalogApiRef, EntityRefLink, EntityListProvider } from '@backstage/plugin-catalog-react';
 import { stringifyEntityRef, parseEntityRef } from '@backstage/catalog-model';
-import { Table, Progress, Page, Header, RoutedTabs } from '@backstage/core-components';
+import { Select, Table, Progress, Page, Header, RoutedTabs } from '@backstage/core-components';
 import { useApi, attachComponentData } from '@backstage/core-plugin-api';
 import Link from '@material-ui/core/Link';
 import { Alert } from '@material-ui/lab';
 import { useAsync } from 'react-use';
-import { R as RootlyApiRef, S as ServicesDialog, a as ROOTLY_ANNOTATION_SERVICE_ID, b as ROOTLY_ANNOTATION_SERVICE_SLUG, c as autoImportService, I as IncidentsTable, d as ServicesTable } from './index-DCX11Rbu.esm.js';
-import { IconButton, Menu, MenuItem, ListItemIcon, Typography, makeStyles, Tooltip } from '@material-ui/core';
+import { R as RootlyApiRef, S as ServicesDialog, a as ROOTLY_ANNOTATION_SERVICE_ID, b as ROOTLY_ANNOTATION_SERVICE_SLUG, c as autoImportService, d as ROOTLY_ANNOTATION_FUNCTIONALITY_ID, e as ROOTLY_ANNOTATION_FUNCTIONALITY_SLUG, I as IncidentsTable, f as ServicesTable } from './index-C28X43rF.esm.js';
+import { Dialog, DialogTitle, DialogContent, Box, Button, Typography, DialogActions, IconButton, Menu, MenuItem, ListItemIcon, makeStyles, Tooltip } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import SyncIcon from '@material-ui/icons/Sync';
 import Delete from '@material-ui/icons/Delete';
-import '@material-ui/core/Divider';
+import Divider from '@material-ui/core/Divider';
 import 'qs';
 
-const EntityActionsMenu = ({
+const FunctionalitiesDialog = ({
+  open,
   entity,
-  handleUpdate,
+  handleClose,
   handleImport,
-  handleDelete
+  handleUpdate
 }) => {
   const RootlyApi = useApi(RootlyApiRef);
-  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedItem, setSelectedItem] = useState("");
+  const {
+    value: response,
+    loading,
+    error
+  } = useAsync(
+    async () => await RootlyApi.getFunctionalities({
+      filter: {
+        backstage_id: null
+      },
+      page: { size: 999 }
+    })
+  );
+  const data = response ? response.data : [];
+  useEffect(() => {
+    var _a;
+    if (entity && data) {
+      const entityTriplet = stringifyEntityRef({
+        namespace: entity.metadata.namespace,
+        kind: entity.kind,
+        name: entity.metadata.name
+      });
+      const selectedItem2 = (_a = data.find(
+        (s) => s.attributes.backstage_id === entityTriplet
+      )) == null ? void 0 : _a.id;
+      if (selectedItem2) {
+        setSelectedItem(selectedItem2);
+      }
+    }
+  }, [data]);
+  const onSelectedFunctionalityChanged = (newSelectedItem) => {
+    setSelectedItem(newSelectedItem);
+  };
+  const onImportAsNewFunctionalityButtonClicked = () => {
+    handleImport(entity);
+  };
+  const onLinkToExistingFunctionalityButtonClicked = () => {
+    var _a;
+    handleUpdate(
+      entity,
+      { id: selectedItem },
+      { id: (_a = entity.linkedFunctionality) == null ? void 0 : _a.id }
+    );
+  };
+  if (loading) {
+    return /* @__PURE__ */ React.createElement(React.Fragment, null);
+  } else if (error) {
+    return /* @__PURE__ */ React.createElement(Alert, { severity: "error" }, error.message);
+  }
+  return /* @__PURE__ */ React.createElement(
+    Dialog,
+    {
+      open,
+      onClose: handleClose,
+      "aria-labelledby": "dialog-title",
+      "aria-describedby": "dialog-description"
+    },
+    /* @__PURE__ */ React.createElement(DialogTitle, { id: "dialog-title" }, "Functionalities"),
+    /* @__PURE__ */ React.createElement(DialogContent, null, entity && !entity.linkedFunctionality && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(Box, { sx: { mx: "auto" }, mb: 2 }, /* @__PURE__ */ React.createElement(
+      Button,
+      {
+        color: "primary",
+        variant: "contained",
+        onClick: onImportAsNewFunctionalityButtonClicked
+      },
+      "Import as new Functionality"
+    )), /* @__PURE__ */ React.createElement(Divider, null)), /* @__PURE__ */ React.createElement(Box, { sx: { mx: "auto" }, mt: 2 }, /* @__PURE__ */ React.createElement(Typography, null, "Select a Rootly Functionality you want to map this component to:"), /* @__PURE__ */ React.createElement(
+      Select,
+      {
+        onChange: onSelectedFunctionalityChanged,
+        selected: selectedItem,
+        placeholder: "Select",
+        label: "Functionalities",
+        items: (data || []).map((functionality) => {
+          return {
+            label: functionality.attributes.name,
+            value: functionality.id
+          };
+        })
+      }
+    ))),
+    /* @__PURE__ */ React.createElement(DialogActions, null, /* @__PURE__ */ React.createElement(Button, { color: "primary", onClick: onLinkToExistingFunctionalityButtonClicked }, "Link"))
+  );
+};
+
+const RootlyEntityActionsMenu = ({
+  entity,
+  handleServiceUpdate,
+  handleServiceImport,
+  handleServiceDelete,
+  handleFunctionalityUpdate,
+  handleFunctionalityImport,
+  handleFunctionalityDelete
+}) => {
+  const RootlyApi = useApi(RootlyApiRef);
+  const [openServiceDialog, setOpenServiceDialog] = useState(false);
+  const [openFunctionalityDialog, setOpenFunctionalityDialog] = useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
-  const handleCloseDialog = async () => {
-    setOpenDialog(false);
+  const handleCloseServiceDialog = async () => {
+    setOpenServiceDialog(false);
   };
-  const handleCloseImport = async (entity2) => {
-    setOpenDialog(false);
-    handleImport(entity2);
+  const handleCloseServiceImport = async (entity2) => {
+    setOpenServiceDialog(false);
+    handleServiceImport(entity2);
   };
-  const handleCloseUpdate = async (entity2, old_service, service) => {
-    setOpenDialog(false);
-    handleUpdate(entity2, old_service, service);
+  const handleCloseServiceUpdate = async (entity2, old_service, service) => {
+    setOpenServiceDialog(false);
+    handleServiceUpdate(entity2, old_service, service);
   };
-  const handleCloseMenu = () => {
+  const handleCloseServiceMenu = () => {
     setAnchorEl(null);
   };
   const handleOpenServicesDialog = async () => {
     setAnchorEl(null);
-    setOpenDialog(true);
+    setOpenServiceDialog(true);
+  };
+  const handleCloseFunctionalityDialog = async () => {
+    setOpenFunctionalityDialog(false);
+  };
+  const handleCloseFunctionalityImport = async (entity2) => {
+    setOpenFunctionalityDialog(false);
+    handleFunctionalityImport(entity2);
+  };
+  const handleCloseFunctionalityUpdate = async (entity2, old_functionality, functionality) => {
+    setOpenFunctionalityDialog(false);
+    handleFunctionalityUpdate(entity2, old_functionality, functionality);
+  };
+  const handleCloseFunctionalityMenu = () => {
+    setAnchorEl(null);
+  };
+  const handleOpenFunctionalitiesDialog = async () => {
+    setAnchorEl(null);
+    setOpenFunctionalityDialog(true);
   };
   const entityTriplet = stringifyEntityRef({
     namespace: entity.metadata.namespace,
     kind: entity.kind,
     name: entity.metadata.name
   });
-  return /* @__PURE__ */ React.createElement(React.Fragment, null, openDialog && /* @__PURE__ */ React.createElement(
+  return /* @__PURE__ */ React.createElement(React.Fragment, null, openServiceDialog && /* @__PURE__ */ React.createElement(
     ServicesDialog,
     {
-      open: openDialog,
+      open: openServiceDialog,
       entity,
-      handleClose: handleCloseDialog,
-      handleImport: handleCloseImport,
-      handleUpdate: handleCloseUpdate
+      handleClose: handleCloseServiceDialog,
+      handleImport: handleCloseServiceImport,
+      handleUpdate: handleCloseServiceUpdate
+    }
+  ), openFunctionalityDialog && /* @__PURE__ */ React.createElement(
+    FunctionalitiesDialog,
+    {
+      open: openFunctionalityDialog,
+      entity,
+      handleClose: handleCloseFunctionalityDialog,
+      handleImport: handleCloseFunctionalityImport,
+      handleUpdate: handleCloseFunctionalityUpdate
     }
   ), /* @__PURE__ */ React.createElement(
     IconButton,
@@ -76,26 +200,47 @@ const EntityActionsMenu = ({
       anchorEl,
       keepMounted: true,
       open: Boolean(anchorEl),
-      onClose: handleCloseMenu,
+      onClose: handleCloseServiceMenu,
       PaperProps: {
         style: { maxHeight: 48 * 4.5 }
       }
     },
-    !entity.linkedService && /* @__PURE__ */ React.createElement(MenuItem, { key: "import", onClick: handleOpenServicesDialog }, /* @__PURE__ */ React.createElement(ListItemIcon, null, /* @__PURE__ */ React.createElement(SyncIcon, { fontSize: "small" })), /* @__PURE__ */ React.createElement(Typography, { variant: "inherit", noWrap: true }, "Import service in Rootly")),
+    !entity.linkedService && /* @__PURE__ */ React.createElement(MenuItem, { key: "import", onClick: handleOpenServicesDialog }, /* @__PURE__ */ React.createElement(ListItemIcon, null, /* @__PURE__ */ React.createElement(SyncIcon, { fontSize: "small" })), /* @__PURE__ */ React.createElement(Typography, { variant: "inherit", noWrap: true }, "Import as a Service in Rootly")),
     /* @__PURE__ */ React.createElement(MenuItem, { key: "link", onClick: handleOpenServicesDialog }, /* @__PURE__ */ React.createElement(ListItemIcon, null, /* @__PURE__ */ React.createElement(SyncIcon, { fontSize: "small" })), /* @__PURE__ */ React.createElement(Typography, { variant: "inherit", noWrap: true }, "Link to another Rootly service")),
     entity.linkedService && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(
       MenuItem,
       {
         key: "unlink",
-        onClick: () => handleDelete(entity.linkedService)
+        onClick: () => handleServiceDelete(entity.linkedService)
       },
       /* @__PURE__ */ React.createElement(ListItemIcon, null, /* @__PURE__ */ React.createElement(Delete, { fontSize: "small" })),
       /* @__PURE__ */ React.createElement(Typography, { variant: "inherit", noWrap: true }, "Unlink")
-    ), /* @__PURE__ */ React.createElement(MenuItem, { key: "details", onClick: handleCloseMenu }, /* @__PURE__ */ React.createElement(ListItemIcon, null, /* @__PURE__ */ React.createElement(OpenInNewIcon, { fontSize: "small" })), /* @__PURE__ */ React.createElement(Typography, { variant: "inherit", noWrap: true }, /* @__PURE__ */ React.createElement(
+    ), /* @__PURE__ */ React.createElement(MenuItem, { key: "details", onClick: handleCloseServiceMenu }, /* @__PURE__ */ React.createElement(ListItemIcon, null, /* @__PURE__ */ React.createElement(OpenInNewIcon, { fontSize: "small" })), /* @__PURE__ */ React.createElement(Typography, { variant: "inherit", noWrap: true }, /* @__PURE__ */ React.createElement(
       Link,
       {
         target: "blank",
         href: RootlyApi.getServiceDetailsURL(entity.linkedService)
+      },
+      "View in Rootly"
+    )))),
+    /* @__PURE__ */ React.createElement(MenuItem, { divider: true }),
+    !entity.linkedFunctionality && /* @__PURE__ */ React.createElement(MenuItem, { key: "import", onClick: handleOpenFunctionalitiesDialog }, /* @__PURE__ */ React.createElement(ListItemIcon, null, /* @__PURE__ */ React.createElement(SyncIcon, { fontSize: "small" })), /* @__PURE__ */ React.createElement(Typography, { variant: "inherit", noWrap: true }, "Import as a Functionality in Rootly")),
+    /* @__PURE__ */ React.createElement(MenuItem, { key: "link", onClick: handleOpenFunctionalitiesDialog }, /* @__PURE__ */ React.createElement(ListItemIcon, null, /* @__PURE__ */ React.createElement(SyncIcon, { fontSize: "small" })), /* @__PURE__ */ React.createElement(Typography, { variant: "inherit", noWrap: true }, "Link to another Rootly functionality")),
+    entity.linkedFunctionality && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(
+      MenuItem,
+      {
+        key: "unlink",
+        onClick: () => handleFunctionalityDelete(entity.linkedFunctionality)
+      },
+      /* @__PURE__ */ React.createElement(ListItemIcon, null, /* @__PURE__ */ React.createElement(Delete, { fontSize: "small" })),
+      /* @__PURE__ */ React.createElement(Typography, { variant: "inherit", noWrap: true }, "Unlink")
+    ), /* @__PURE__ */ React.createElement(MenuItem, { key: "details", onClick: handleCloseFunctionalityMenu }, /* @__PURE__ */ React.createElement(ListItemIcon, null, /* @__PURE__ */ React.createElement(OpenInNewIcon, { fontSize: "small" })), /* @__PURE__ */ React.createElement(Typography, { variant: "inherit", noWrap: true }, /* @__PURE__ */ React.createElement(
+      Link,
+      {
+        target: "blank",
+        href: RootlyApi.getFunctionalityDetailsURL(
+          entity.linkedFunctionality
+        )
       },
       "View in Rootly"
     ))))
@@ -113,16 +258,28 @@ const EntitiesTable = () => {
   const { value, loading, error } = useAsync(
     async () => await catalogApi.getEntities()
   );
-  const handleUpdate = async (entity, service, old_service) => {
+  const handleServiceUpdate = async (entity, service, old_service) => {
     await RootlyApi.updateServiceEntity(entity, service, old_service);
     setTimeout(() => setReload(!reload), 500);
   };
-  const handleImport = async (entity) => {
+  const handleServiceImport = async (entity) => {
     await RootlyApi.importServiceEntity(entity);
     setTimeout(() => setReload(!reload), 500);
   };
-  const handleDelete = async (service) => {
+  const handleServiceDelete = async (service) => {
     await RootlyApi.deleteServiceEntity(service);
+    setTimeout(() => setReload(!reload), 500);
+  };
+  const handleFunctionalityUpdate = async (entity, service, old_service) => {
+    await RootlyApi.updateFunctionalityEntity(entity, service, old_service);
+    setTimeout(() => setReload(!reload), 500);
+  };
+  const handleFunctionalityImport = async (entity) => {
+    await RootlyApi.importFunctionalityEntity(entity);
+    setTimeout(() => setReload(!reload), 500);
+  };
+  const handleFunctionalityDelete = async (service) => {
+    await RootlyApi.deleteFunctionalityEntity(service);
     setTimeout(() => setReload(!reload), 500);
   };
   useEffect(() => {
@@ -205,6 +362,43 @@ const EntitiesTable = () => {
     entity.linkedService = void 0;
     return /* @__PURE__ */ React.createElement("div", null, "Not Linked");
   };
+  const fetchFunctionality = (entity, reload2) => {
+    const entityTriplet = stringifyEntityRef({
+      namespace: entity.metadata.namespace,
+      kind: entity.kind,
+      name: entity.metadata.name
+    });
+    const {
+      value: response,
+      loading: loading2,
+      error: error2
+    } = useAsync(
+      async () => await RootlyApi.getFunctionalities({
+        filter: {
+          backstage_id: entityTriplet
+        }
+      }),
+      [reload2]
+    );
+    if (loading2) {
+      return /* @__PURE__ */ React.createElement(Progress, null);
+    } else if (error2) {
+      return /* @__PURE__ */ React.createElement("div", null, "Error");
+    }
+    if (response && response.data.length > 0) {
+      entity.linkedFunctionality = response.data[0];
+      return /* @__PURE__ */ React.createElement(
+        Link,
+        {
+          target: "blank",
+          href: RootlyApi.getFunctionalityDetailsURL(entity.linkedFunctionality)
+        },
+        entity.linkedFunctionality.attributes.name
+      );
+    }
+    entity.linkedFunctionality = void 0;
+    return /* @__PURE__ */ React.createElement("div", null, "Not Linked");
+  };
   const columns = [
     {
       title: "Name",
@@ -232,20 +426,33 @@ const EntitiesTable = () => {
       }
     },
     {
+      title: "Rootly Functionality",
+      field: "linked",
+      cellStyle: smallColumnStyle,
+      headerStyle: smallColumnStyle,
+      render: (rowData) => {
+        return fetchFunctionality(rowData, reload);
+      }
+    },
+    {
       title: "Actions",
       field: "actions",
       cellStyle: smallColumnStyle,
       headerStyle: smallColumnStyle,
       render: (rowData) => {
-        var _a, _b;
+        var _a, _b, _c, _d;
         const service_id_annotation = ((_a = rowData.metadata.annotations) == null ? void 0 : _a[ROOTLY_ANNOTATION_SERVICE_ID]) || ((_b = rowData.metadata.annotations) == null ? void 0 : _b[ROOTLY_ANNOTATION_SERVICE_SLUG]);
-        return service_id_annotation ? /* @__PURE__ */ React.createElement("div", null, "Set through entity file") : /* @__PURE__ */ React.createElement(
-          EntityActionsMenu,
+        const functionality_id_annotation = ((_c = rowData.metadata.annotations) == null ? void 0 : _c[ROOTLY_ANNOTATION_FUNCTIONALITY_ID]) || ((_d = rowData.metadata.annotations) == null ? void 0 : _d[ROOTLY_ANNOTATION_FUNCTIONALITY_SLUG]);
+        return service_id_annotation || functionality_id_annotation ? /* @__PURE__ */ React.createElement("div", null, "Set through entity file") : /* @__PURE__ */ React.createElement(
+          RootlyEntityActionsMenu,
           {
             entity: rowData,
-            handleUpdate,
-            handleImport,
-            handleDelete
+            handleServiceUpdate,
+            handleServiceImport,
+            handleServiceDelete,
+            handleFunctionalityUpdate,
+            handleFunctionalityImport,
+            handleFunctionalityDelete
           }
         );
       }
@@ -260,7 +467,7 @@ const EntitiesTable = () => {
       kind: entity.kind,
       name: entity.metadata.name
     });
-    return { ...entity, id: entityTriplet, linkedService: void 0 };
+    return { ...entity, id: entityTriplet, linkedService: void 0, linkedFunctionality: void 0 };
   }) : [];
   return /* @__PURE__ */ React.createElement(
     Table,
@@ -452,4 +659,4 @@ const RootlyPage = () => {
 };
 
 export { DefaultRootlyPageLayout, RootlyPage };
-//# sourceMappingURL=index-BqlwhgrZ.esm.js.map
+//# sourceMappingURL=index-CK7AUoZP.esm.js.map

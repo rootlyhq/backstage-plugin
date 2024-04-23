@@ -11,9 +11,11 @@ import {
   autoImportService,
   ROOTLY_ANNOTATION_SERVICE_ID,
   ROOTLY_ANNOTATION_SERVICE_SLUG,
+  ROOTLY_ANNOTATION_FUNCTIONALITY_ID,
+  ROOTLY_ANNOTATION_FUNCTIONALITY_SLUG,
 } from '../../integration';
-import { Entity, Service } from '../../types';
-import { EntityActionsMenu } from '../Entity/EntityActionsMenu';
+import { Entity, Service, Functionality } from '../../types';
+import { RootlyEntityActionsMenu } from '../Entity/RootlyEntityActionsMenu';
 
 export const EntitiesTable = () => {
   const catalogApi = useApi(catalogApiRef);
@@ -29,7 +31,7 @@ export const EntitiesTable = () => {
     async () => await catalogApi.getEntities(),
   );
 
-  const handleUpdate = async (
+  const handleServiceUpdate = async (
     entity: Entity,
     service: Service,
     old_service?: Service,
@@ -38,13 +40,32 @@ export const EntitiesTable = () => {
     setTimeout(() => setReload(!reload), 500);
   };
 
-  const handleImport = async (entity: Entity) => {
+  const handleServiceImport = async (entity: Entity) => {
     await RootlyApi.importServiceEntity(entity);
     setTimeout(() => setReload(!reload), 500);
   };
 
-  const handleDelete = async (service: Service) => {
+  const handleServiceDelete = async (service: Service) => {
     await RootlyApi.deleteServiceEntity(service);
+    setTimeout(() => setReload(!reload), 500);
+  };
+
+  const handleFunctionalityUpdate = async (
+    entity: Entity,
+    service: Functionality,
+    old_service?: Functionality,
+  ) => {
+    await RootlyApi.updateFunctionalityEntity(entity, service, old_service);
+    setTimeout(() => setReload(!reload), 500);
+  };
+
+  const handleFunctionalityImport = async (entity: Entity) => {
+    await RootlyApi.importFunctionalityEntity(entity);
+    setTimeout(() => setReload(!reload), 500);
+  };
+
+  const handleFunctionalityDelete = async (service: Functionality) => {
+    await RootlyApi.deleteFunctionalityEntity(service);
     setTimeout(() => setReload(!reload), 500);
   };
 
@@ -139,7 +160,45 @@ export const EntitiesTable = () => {
     } 
       entity.linkedService = undefined;
       return <div>Not Linked</div>;
-    
+  };
+
+  const fetchFunctionality = (entity: Entity, reload: boolean) => {
+    const entityTriplet = stringifyEntityRef({
+      namespace: entity.metadata.namespace,
+      kind: entity.kind,
+      name: entity.metadata.name,
+    });
+    const {
+      value: response,
+      loading,
+      error,
+    } = useAsync(
+      async () =>
+        await RootlyApi.getFunctionalities({
+          filter: {
+            backstage_id: entityTriplet,
+          },
+        }),
+      [reload],
+    );
+    if (loading) {
+      return <Progress />;
+    } else if (error) {
+      return <div>Error</div>;
+    }
+    if (response && response.data.length > 0) {
+      entity.linkedFunctionality = response.data[0] as Functionality;
+      return (
+        <Link
+          target="blank"
+          href={RootlyApi.getFunctionalityDetailsURL(entity.linkedFunctionality)}
+        >
+          {entity.linkedFunctionality.attributes.name}
+        </Link>
+      );
+    } 
+      entity.linkedFunctionality = undefined;
+      return <div>Not Linked</div>;
   };
 
   const columns: TableColumn<Entity>[] = [
@@ -169,6 +228,15 @@ export const EntitiesTable = () => {
       },
     },
     {
+      title: 'Rootly Functionality',
+      field: 'linked',
+      cellStyle: smallColumnStyle,
+      headerStyle: smallColumnStyle,
+      render: rowData => {
+        return fetchFunctionality(rowData, reload);
+      },
+    },
+    {
       title: 'Actions',
       field: 'actions',
       cellStyle: smallColumnStyle,
@@ -178,14 +246,21 @@ export const EntitiesTable = () => {
           rowData.metadata.annotations?.[ROOTLY_ANNOTATION_SERVICE_ID] ||
           rowData.metadata.annotations?.[ROOTLY_ANNOTATION_SERVICE_SLUG];
 
-        return service_id_annotation ? (
+        const functionality_id_annotation =
+          rowData.metadata.annotations?.[ROOTLY_ANNOTATION_FUNCTIONALITY_ID] ||
+          rowData.metadata.annotations?.[ROOTLY_ANNOTATION_FUNCTIONALITY_SLUG];
+
+        return service_id_annotation || functionality_id_annotation ? (
           <div>Set through entity file</div>
         ) : (
-          <EntityActionsMenu
+          <RootlyEntityActionsMenu
             entity={rowData}
-            handleUpdate={handleUpdate}
-            handleImport={handleImport}
-            handleDelete={handleDelete}
+            handleServiceUpdate={handleServiceUpdate}
+            handleServiceImport={handleServiceImport}
+            handleServiceDelete={handleServiceDelete}
+            handleFunctionalityUpdate={handleFunctionalityUpdate}
+            handleFunctionalityImport={handleFunctionalityImport}
+            handleFunctionalityDelete={handleFunctionalityDelete}
           />
         );
       },
@@ -203,7 +278,7 @@ export const EntitiesTable = () => {
           kind: entity.kind,
           name: entity.metadata.name,
         });
-        return { ...entity, id: entityTriplet, linkedService: undefined };
+        return { ...entity, id: entityTriplet, linkedService: undefined, linkedFunctionality: undefined};
       })
     : [];
 

@@ -63,10 +63,14 @@ export interface Rootly {
 
   getCreateIncidentURL(): string;
   getListIncidents(): string;
+
   getListIncidentsForServiceURL(service: Service): string;
   getServiceDetailsURL(service: Service): string;
-
   getServiceIncidentsChart(service: Service, opts?: {period: string}): Promise<{data: object}>;
+  
+  getListIncidentsForFunctionalityURL(functionality: Functionality): string;
+  getFunctionalityDetailsURL(functionality: Functionality): string;
+  getFunctionalityIncidentsChart(functionality: Functionality, opts?: {period: string}): Promise<{data: object}>;
 }
 
 interface ServiceResponse {
@@ -401,7 +405,12 @@ export class RootlyApi implements Rootly {
   }
 
   getListIncidentsForServiceURL(service: Service): string {
-    const params = qs.stringify({services: [service.attributes.slug]}, { arrayFormat: 'brackets' });
+    const params = qs.stringify({filter:{filters:[{services: [service.id]}]}}, { arrayFormat: 'brackets' });
+    return `${this.domain}/account/incidents?${params}`;
+  }
+
+  getListIncidentsForFunctionalityURL(functionality: Functionality): string {
+    const params = qs.stringify({filter:{filters:[{functionalities: [functionality.id]}]}}, { arrayFormat: 'brackets' });
     return `${this.domain}/account/incidents?${params}`;
   }
 

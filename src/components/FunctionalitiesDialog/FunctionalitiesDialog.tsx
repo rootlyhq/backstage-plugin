@@ -119,10 +119,10 @@ export const FunctionalitiesDialog = ({
             selected={selectedItem}
             placeholder="Select"
             label="Functionalities"
-            items={(data || []).map((Functionality: Functionality): SelectItem => {
+            items={(data || []).map((functionality: Functionality): SelectItem => {
               return {
-                label: Functionality.attributes.name,
-                value: Functionality.id,
+                label: functionality.attributes.name,
+                value: functionality.id,
               };
             })}
           />

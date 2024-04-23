@@ -1,4 +1,4 @@
-export { I as IncidentsTable, n as RootlyApi, R as RootlyApiRef, k as RootlyIncidentsPage, j as RootlyOverviewCard, i as RootlyPage, l as RootlyPlugin, S as ServicesDialog, d as ServicesTable, m as isRootlyAvailable } from './esm/index-DCX11Rbu.esm.js';
+export { I as IncidentsTable, n as RootlyApi, R as RootlyApiRef, k as RootlyIncidentsPage, j as RootlyOverviewCard, i as RootlyPage, l as RootlyPlugin, S as ServicesDialog, f as ServicesTable, m as isRootlyAvailable } from './esm/index-C28X43rF.esm.js';
 import '@backstage/core-plugin-api';
 import '@backstage/catalog-model';
 import 'qs';

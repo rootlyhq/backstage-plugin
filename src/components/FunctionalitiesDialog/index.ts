@@ -1,1 +1,1 @@
-export { ServicesDialog } from './ServicesDialog';
+export { FunctionalitiesDialog } from './FunctionalitiesDialog';
