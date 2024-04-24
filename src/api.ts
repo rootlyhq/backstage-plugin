@@ -5,7 +5,7 @@ import {
   IdentityApi,
 } from '@backstage/core-plugin-api';
 import qs from 'qs';
-import { Entity, Incident, Service, Functionality } from './types';
+import { Entity, Incident, Service, Functionality, Team } from './types';
 
 export const RootlyApiRef = createApiRef<Rootly>({
   id: 'plugin.rootly.service',
@@ -29,6 +29,15 @@ export type FunctionalitiesFetchOpts = {
   include?: string;
 };
 
+export type TeamsFetchOpts = {
+  page?: {
+    number?: number;
+    size?: number;
+  };
+  filter?: object;
+  include?: string;
+};
+
 export type IncidentsFetchOpts = {
   page?: {
     number?: number;
@@ -42,7 +51,11 @@ export interface Rootly {
   getService(id_or_slug: String): Promise<ServiceResponse>;
   getServices(opts?: ServicesFetchOpts): Promise<ServicesResponse>;
   getFunctionality(id_or_slug: String): Promise<FunctionalityResponse>;
-  getFunctionalities(opts?: FunctionalitiesFetchOpts): Promise<FunctionalitiesResponse>;
+  getFunctionalities(
+    opts?: FunctionalitiesFetchOpts,
+  ): Promise<FunctionalitiesResponse>;
+  getTeam(id_or_slug: String): Promise<TeamResponse>;
+  getTeams(opts?: TeamsFetchOpts): Promise<TeamResponse>;
   getIncidents(opts?: IncidentsFetchOpts): Promise<IncidentsResponse>;
 
   importServiceEntity(entity: Entity): Promise<void>;
@@ -61,16 +74,37 @@ export interface Rootly {
   ): Promise<void>;
   deleteFunctionalityEntity(functionality: Functionality): Promise<void>;
 
+  importTeamEntity(entity: Entity): Promise<void>;
+  updateTeamEntity(
+    entity: Entity,
+    functionality: Team,
+    old_functionality?: Team,
+  ): Promise<void>;
+  deleteTeamEntity(team: Team): Promise<void>;
+
   getCreateIncidentURL(): string;
   getListIncidents(): string;
 
   getListIncidentsForServiceURL(service: Service): string;
   getServiceDetailsURL(service: Service): string;
-  getServiceIncidentsChart(service: Service, opts?: {period: string}): Promise<{data: object}>;
-  
+  getServiceIncidentsChart(
+    service: Service,
+    opts?: { period: string },
+  ): Promise<{ data: object }>;
+
   getListIncidentsForFunctionalityURL(functionality: Functionality): string;
   getFunctionalityDetailsURL(functionality: Functionality): string;
-  getFunctionalityIncidentsChart(functionality: Functionality, opts?: {period: string}): Promise<{data: object}>;
+  getFunctionalityIncidentsChart(
+    functionality: Functionality,
+    opts?: { period: string },
+  ): Promise<{ data: object }>;
+
+  getListIncidentsForTeamURL(team: Team): string;
+  getTeamDetailsURL(team: Team): string;
+  getTeamIncidentsChart(
+    team: Team,
+    opts?: { period: string },
+  ): Promise<{ data: object }>;
 }
 
 interface ServiceResponse {
@@ -95,6 +129,18 @@ interface FunctionalitiesResponse {
     total_pages: number;
   };
   data: Functionality[];
+}
+
+interface TeamResponse {
+  data: Team;
+}
+
+interface TeamsResponse {
+  meta: {
+    total_count: number;
+    total_pages: number;
+  };
+  data: Team[];
 }
 
 interface IncidentsResponse {
@@ -196,11 +242,32 @@ export class RootlyApi implements Rootly {
     return response;
   }
 
-  async getFunctionalities(opts?: FunctionalitiesFetchOpts): Promise<FunctionalityResponse> {
+  async getFunctionalities(
+    opts?: FunctionalitiesFetchOpts,
+  ): Promise<FunctionalityResponse> {
     const init = { headers: { 'Content-Type': 'application/vnd.api+json' } };
     const params = qs.stringify(opts, { encode: false });
     const response = await this.fetch<FunctionalityResponse>(
       `/v1/functionalities?${params}`,
+      init,
+    );
+    return response;
+  }
+
+  async getTeam(id_or_slug: String): Promise<TeamResponse> {
+    const init = { headers: { 'Content-Type': 'application/vnd.api+json' } };
+    const response = await this.fetch<TeamResponse>(
+      `/v1/teams/${id_or_slug}`,
+      init,
+    );
+    return response;
+  }
+
+  async getTeams(opts?: TeamsFetchOpts): Promise<TeamsResponse> {
+    const init = { headers: { 'Content-Type': 'application/vnd.api+json' } };
+    const params = qs.stringify(opts, { encode: false });
+    const response = await this.fetch<TeamResponse>(
+      `/v1/teams?${params}`,
       init,
     );
     return response;
@@ -216,10 +283,13 @@ export class RootlyApi implements Rootly {
     return response;
   }
 
-  async getServiceIncidentsChart(service: Service, opts?: {period: string}): Promise<{data: object}> {
+  async getServiceIncidentsChart(
+    service: Service,
+    opts?: { period: string },
+  ): Promise<{ data: object }> {
     const init = { headers: { 'Content-Type': 'application/vnd.api+json' } };
     const params = qs.stringify(opts, { encode: false });
-    const response = await this.fetch<{data: object}>(
+    const response = await this.fetch<{ data: object }>(
       `/v1/services/${service.id}/incidents_chart?${params}`,
       init,
     );
@@ -396,6 +466,91 @@ export class RootlyApi implements Rootly {
     await this.call(`/v1/functionalities/${functionality.id}`, init);
   }
 
+  async importTeamEntity(entity: Entity): Promise<void> {
+    const entityTriplet = stringifyEntityRef({
+      namespace: entity.metadata.namespace,
+      kind: entity.kind,
+      name: entity.metadata.name,
+    });
+    const init = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/vnd.api+json' },
+      body: JSON.stringify({
+        data: {
+          type: 'teams',
+          attributes: {
+            name: entity.metadata.name,
+            description: entity.metadata.description,
+            backstage_id: entityTriplet,
+          },
+        },
+      }),
+    };
+
+    await this.call(`/v1/teams`, init);
+  }
+
+  async updateTeamEntity(
+    entity: Entity,
+    team: Team,
+    old_team?: Team,
+  ): Promise<void> {
+    const entityTriplet = stringifyEntityRef({
+      namespace: entity.metadata.namespace,
+      kind: entity.kind,
+      name: entity.metadata.name,
+    });
+
+    if (old_team?.id) {
+      const init1 = {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/vnd.api+json' },
+        body: JSON.stringify({
+          data: {
+            type: 'teams',
+            attributes: {
+              backstage_id: null,
+            },
+          },
+        }),
+      };
+
+      await this.call(`/v1/teams/${old_team.id}`, init1);
+    }
+
+    const init2 = {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/vnd.api+json' },
+      body: JSON.stringify({
+        data: {
+          type: 'teams',
+          attributes: {
+            backstage_id: entityTriplet,
+          },
+        },
+      }),
+    };
+
+    await this.call(`/v1/teams/${team.id}`, init2);
+  }
+
+  async deleteTeamEntity(team: Team): Promise<void> {
+    const init = {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/vnd.api+json' },
+      body: JSON.stringify({
+        data: {
+          type: 'teams',
+          attributes: {
+            backstage_id: null,
+          },
+        },
+      }),
+    };
+
+    await this.call(`/v1/teams/${team.id}`, init);
+  }
+
   getCreateIncidentURL(): string {
     return `${this.domain}/account/incidents/new`;
   }
@@ -405,12 +560,18 @@ export class RootlyApi implements Rootly {
   }
 
   getListIncidentsForServiceURL(service: Service): string {
-    const params = qs.stringify({filter:{filters:[{services: [service.id]}]}}, { arrayFormat: 'brackets' });
+    const params = qs.stringify(
+      { filter: { filters: [{ services: [service.id] }] } },
+      { arrayFormat: 'brackets' },
+    );
     return `${this.domain}/account/incidents?${params}`;
   }
 
   getListIncidentsForFunctionalityURL(functionality: Functionality): string {
-    const params = qs.stringify({filter:{filters:[{functionalities: [functionality.id]}]}}, { arrayFormat: 'brackets' });
+    const params = qs.stringify(
+      { filter: { filters: [{ functionalities: [functionality.id] }] } },
+      { arrayFormat: 'brackets' },
+    );
     return `${this.domain}/account/incidents?${params}`;
   }
 
@@ -420,6 +581,10 @@ export class RootlyApi implements Rootly {
 
   getFunctionalityDetailsURL(functionality: Functionality): string {
     return `${this.domain}/account/functionalities/${functionality.attributes.slug}`;
+  }
+
+  getTeamDetailsURL(team: Team): string {
+    return `${this.domain}/account/teams/${team.attributes.slug}`;
   }
 
   private async apiUrl() {

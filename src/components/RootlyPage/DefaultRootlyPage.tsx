@@ -3,6 +3,7 @@ import { EntitiesList } from '../EntitiesTable';
 import { IncidentsTable } from '../IncidentsTable';
 import { ServicesTable } from '../ServicesTable';
 import { FunctionalitiesTable } from '../FunctionalitiesTable';
+import { TeamsTable } from '../TeamsTable';
 import { DefaultRootlyPageLayout } from './DefaultRootlyPageLayout';
 
 export const DefaultRootlyPage = () => {
@@ -24,6 +25,9 @@ export const DefaultRootlyPage = () => {
       </DefaultRootlyPageLayout.Route>
       <DefaultRootlyPageLayout.Route path="functionalities" title="Functionalities">
         <FunctionalitiesTable />
+      </DefaultRootlyPageLayout.Route>
+      <DefaultRootlyPageLayout.Route path="teams" title="Teams">
+        <TeamsTable />
       </DefaultRootlyPageLayout.Route>
     </DefaultRootlyPageLayout>
   );

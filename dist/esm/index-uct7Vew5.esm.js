@@ -7,7 +7,7 @@ import { useApi, attachComponentData } from '@backstage/core-plugin-api';
 import Link from '@material-ui/core/Link';
 import { Alert } from '@material-ui/lab';
 import { useAsync } from 'react-use';
-import { R as RootlyApiRef, S as ServicesDialog, a as ROOTLY_ANNOTATION_SERVICE_ID, b as ROOTLY_ANNOTATION_SERVICE_SLUG, c as autoImportService, d as ROOTLY_ANNOTATION_FUNCTIONALITY_ID, e as ROOTLY_ANNOTATION_FUNCTIONALITY_SLUG, I as IncidentsTable, f as ServicesTable } from './index-C28X43rF.esm.js';
+import { R as RootlyApiRef, S as ServicesDialog, a as ROOTLY_ANNOTATION_SERVICE_ID, b as ROOTLY_ANNOTATION_SERVICE_SLUG, c as autoImportService, d as ROOTLY_ANNOTATION_FUNCTIONALITY_ID, e as ROOTLY_ANNOTATION_FUNCTIONALITY_SLUG, f as ROOTLY_ANNOTATION_TEAM_ID, g as ROOTLY_ANNOTATION_TEAM_SLUG, I as IncidentsTable, h as ServicesTable } from './index-DRJvTOq5.esm.js';
 import { Dialog, DialogTitle, DialogContent, Box, Button, Typography, DialogActions, IconButton, Menu, MenuItem, ListItemIcon, makeStyles, Tooltip } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
@@ -109,6 +109,99 @@ const FunctionalitiesDialog = ({
   );
 };
 
+const TeamsDialog = ({
+  open,
+  entity,
+  handleClose,
+  handleImport,
+  handleUpdate
+}) => {
+  const RootlyApi = useApi(RootlyApiRef);
+  const [selectedItem, setSelectedItem] = useState("");
+  const {
+    value: response,
+    loading,
+    error
+  } = useAsync(
+    async () => await RootlyApi.getTeams({
+      filter: {
+        backstage_id: null
+      },
+      page: { size: 999 }
+    })
+  );
+  const data = response ? response.data : [];
+  useEffect(() => {
+    var _a;
+    if (entity && data) {
+      const entityTriplet = stringifyEntityRef({
+        namespace: entity.metadata.namespace,
+        kind: entity.kind,
+        name: entity.metadata.name
+      });
+      const selectedItem2 = (_a = data.find(
+        (s) => s.attributes.backstage_id === entityTriplet
+      )) == null ? void 0 : _a.id;
+      if (selectedItem2) {
+        setSelectedItem(selectedItem2);
+      }
+    }
+  }, [data]);
+  const onSelectedTeamChanged = (newSelectedItem) => {
+    setSelectedItem(newSelectedItem);
+  };
+  const onImportAsNewTeamButtonClicked = () => {
+    handleImport(entity);
+  };
+  const onLinkToExistingTeamButtonClicked = () => {
+    var _a;
+    handleUpdate(
+      entity,
+      { id: selectedItem },
+      { id: (_a = entity.linkedTeam) == null ? void 0 : _a.id }
+    );
+  };
+  if (loading) {
+    return /* @__PURE__ */ React.createElement(React.Fragment, null);
+  } else if (error) {
+    return /* @__PURE__ */ React.createElement(Alert, { severity: "error" }, error.message);
+  }
+  return /* @__PURE__ */ React.createElement(
+    Dialog,
+    {
+      open,
+      onClose: handleClose,
+      "aria-labelledby": "dialog-title",
+      "aria-describedby": "dialog-description"
+    },
+    /* @__PURE__ */ React.createElement(DialogTitle, { id: "dialog-title" }, "Teams"),
+    /* @__PURE__ */ React.createElement(DialogContent, null, entity && !entity.linkedTeam && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(Box, { sx: { mx: "auto" }, mb: 2 }, /* @__PURE__ */ React.createElement(
+      Button,
+      {
+        color: "primary",
+        variant: "contained",
+        onClick: onImportAsNewTeamButtonClicked
+      },
+      "Import as new Team"
+    )), /* @__PURE__ */ React.createElement(Divider, null)), /* @__PURE__ */ React.createElement(Box, { sx: { mx: "auto" }, mt: 2 }, /* @__PURE__ */ React.createElement(Typography, null, "Select a Rootly Team you want to map this component to:"), /* @__PURE__ */ React.createElement(
+      Select,
+      {
+        onChange: onSelectedTeamChanged,
+        selected: selectedItem,
+        placeholder: "Select",
+        label: "Teams",
+        items: (data || []).map((team) => {
+          return {
+            label: team.attributes.name,
+            value: team.id
+          };
+        })
+      }
+    ))),
+    /* @__PURE__ */ React.createElement(DialogActions, null, /* @__PURE__ */ React.createElement(Button, { color: "primary", onClick: onLinkToExistingTeamButtonClicked }, "Link"))
+  );
+};
+
 const RootlyEntityActionsMenu = ({
   entity,
   handleServiceUpdate,
@@ -116,11 +209,15 @@ const RootlyEntityActionsMenu = ({
   handleServiceDelete,
   handleFunctionalityUpdate,
   handleFunctionalityImport,
-  handleFunctionalityDelete
+  handleFunctionalityDelete,
+  handleTeamUpdate,
+  handleTeamImport,
+  handleTeamDelete
 }) => {
   const RootlyApi = useApi(RootlyApiRef);
   const [openServiceDialog, setOpenServiceDialog] = useState(false);
   const [openFunctionalityDialog, setOpenFunctionalityDialog] = useState(false);
+  const [openTeamDialog, setOpenTeamDialog] = useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -161,6 +258,24 @@ const RootlyEntityActionsMenu = ({
     setAnchorEl(null);
     setOpenFunctionalityDialog(true);
   };
+  const handleCloseTeamDialog = async () => {
+    setOpenTeamDialog(false);
+  };
+  const handleCloseTeamImport = async (entity2) => {
+    setOpenTeamDialog(false);
+    handleTeamImport(entity2);
+  };
+  const handleCloseTeamUpdate = async (entity2, old_team, team) => {
+    setOpenTeamDialog(false);
+    handleTeamUpdate(entity2, old_team, team);
+  };
+  const handleCloseTeamMenu = () => {
+    setAnchorEl(null);
+  };
+  const handleOpenTeamsDialog = async () => {
+    setAnchorEl(null);
+    setOpenTeamDialog(true);
+  };
   const entityTriplet = stringifyEntityRef({
     namespace: entity.metadata.namespace,
     kind: entity.kind,
@@ -183,6 +298,15 @@ const RootlyEntityActionsMenu = ({
       handleClose: handleCloseFunctionalityDialog,
       handleImport: handleCloseFunctionalityImport,
       handleUpdate: handleCloseFunctionalityUpdate
+    }
+  ), openTeamDialog && /* @__PURE__ */ React.createElement(
+    TeamsDialog,
+    {
+      open: openTeamDialog,
+      entity,
+      handleClose: handleCloseTeamDialog,
+      handleImport: handleCloseTeamImport,
+      handleUpdate: handleCloseTeamUpdate
     }
   ), /* @__PURE__ */ React.createElement(
     IconButton,
@@ -243,6 +367,25 @@ const RootlyEntityActionsMenu = ({
         )
       },
       "View in Rootly"
+    )))),
+    /* @__PURE__ */ React.createElement(MenuItem, { divider: true }),
+    !entity.linkedTeam && /* @__PURE__ */ React.createElement(MenuItem, { key: "import", onClick: handleOpenTeamsDialog }, /* @__PURE__ */ React.createElement(ListItemIcon, null, /* @__PURE__ */ React.createElement(SyncIcon, { fontSize: "small" })), /* @__PURE__ */ React.createElement(Typography, { variant: "inherit", noWrap: true }, "Import as a Team in Rootly")),
+    /* @__PURE__ */ React.createElement(MenuItem, { key: "link", onClick: handleOpenTeamsDialog }, /* @__PURE__ */ React.createElement(ListItemIcon, null, /* @__PURE__ */ React.createElement(SyncIcon, { fontSize: "small" })), /* @__PURE__ */ React.createElement(Typography, { variant: "inherit", noWrap: true }, "Link to another Rootly team")),
+    entity.linkedTeam && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(
+      MenuItem,
+      {
+        key: "unlink",
+        onClick: () => handleTeamDelete(entity.linkedTeam)
+      },
+      /* @__PURE__ */ React.createElement(ListItemIcon, null, /* @__PURE__ */ React.createElement(Delete, { fontSize: "small" })),
+      /* @__PURE__ */ React.createElement(Typography, { variant: "inherit", noWrap: true }, "Unlink")
+    ), /* @__PURE__ */ React.createElement(MenuItem, { key: "details", onClick: handleCloseTeamMenu }, /* @__PURE__ */ React.createElement(ListItemIcon, null, /* @__PURE__ */ React.createElement(OpenInNewIcon, { fontSize: "small" })), /* @__PURE__ */ React.createElement(Typography, { variant: "inherit", noWrap: true }, /* @__PURE__ */ React.createElement(
+      Link,
+      {
+        target: "blank",
+        href: RootlyApi.getTeamDetailsURL(entity.linkedTeam)
+      },
+      "View in Rootly"
     ))))
   ));
 };
@@ -280,6 +423,18 @@ const EntitiesTable = () => {
   };
   const handleFunctionalityDelete = async (service) => {
     await RootlyApi.deleteFunctionalityEntity(service);
+    setTimeout(() => setReload(!reload), 500);
+  };
+  const handleTeamUpdate = async (entity, team, old_team) => {
+    await RootlyApi.updateTeamEntity(entity, team, old_team);
+    setTimeout(() => setReload(!reload), 500);
+  };
+  const handleTeamImport = async (entity) => {
+    await RootlyApi.importTeamEntity(entity);
+    setTimeout(() => setReload(!reload), 500);
+  };
+  const handleTeamDelete = async (team) => {
+    await RootlyApi.deleteTeamEntity(team);
     setTimeout(() => setReload(!reload), 500);
   };
   useEffect(() => {
@@ -399,6 +554,43 @@ const EntitiesTable = () => {
     entity.linkedFunctionality = void 0;
     return /* @__PURE__ */ React.createElement("div", null, "Not Linked");
   };
+  const fetchTeam = (entity, reload2) => {
+    const entityTriplet = stringifyEntityRef({
+      namespace: entity.metadata.namespace,
+      kind: entity.kind,
+      name: entity.metadata.name
+    });
+    const {
+      value: response,
+      loading: loading2,
+      error: error2
+    } = useAsync(
+      async () => await RootlyApi.getTeams({
+        filter: {
+          backstage_id: entityTriplet
+        }
+      }),
+      [reload2]
+    );
+    if (loading2) {
+      return /* @__PURE__ */ React.createElement(Progress, null);
+    } else if (error2) {
+      return /* @__PURE__ */ React.createElement("div", null, "Error");
+    }
+    if (response && response.data.length > 0) {
+      entity.linkedTeam = response.data[0];
+      return /* @__PURE__ */ React.createElement(
+        Link,
+        {
+          target: "blank",
+          href: RootlyApi.getTeamDetailsURL(entity.linkedTeam)
+        },
+        entity.linkedTeam.attributes.name
+      );
+    }
+    entity.linkedTeam = void 0;
+    return /* @__PURE__ */ React.createElement("div", null, "Not Linked");
+  };
   const columns = [
     {
       title: "Name",
@@ -435,15 +627,25 @@ const EntitiesTable = () => {
       }
     },
     {
+      title: "Rootly Team",
+      field: "linked",
+      cellStyle: smallColumnStyle,
+      headerStyle: smallColumnStyle,
+      render: (rowData) => {
+        return fetchTeam(rowData, reload);
+      }
+    },
+    {
       title: "Actions",
       field: "actions",
       cellStyle: smallColumnStyle,
       headerStyle: smallColumnStyle,
       render: (rowData) => {
-        var _a, _b, _c, _d;
+        var _a, _b, _c, _d, _e, _f;
         const service_id_annotation = ((_a = rowData.metadata.annotations) == null ? void 0 : _a[ROOTLY_ANNOTATION_SERVICE_ID]) || ((_b = rowData.metadata.annotations) == null ? void 0 : _b[ROOTLY_ANNOTATION_SERVICE_SLUG]);
         const functionality_id_annotation = ((_c = rowData.metadata.annotations) == null ? void 0 : _c[ROOTLY_ANNOTATION_FUNCTIONALITY_ID]) || ((_d = rowData.metadata.annotations) == null ? void 0 : _d[ROOTLY_ANNOTATION_FUNCTIONALITY_SLUG]);
-        return service_id_annotation || functionality_id_annotation ? /* @__PURE__ */ React.createElement("div", null, "Set through entity file") : /* @__PURE__ */ React.createElement(
+        const team_id_annotation = ((_e = rowData.metadata.annotations) == null ? void 0 : _e[ROOTLY_ANNOTATION_TEAM_ID]) || ((_f = rowData.metadata.annotations) == null ? void 0 : _f[ROOTLY_ANNOTATION_TEAM_SLUG]);
+        return service_id_annotation || functionality_id_annotation || team_id_annotation ? /* @__PURE__ */ React.createElement("div", null, "Set through entity file") : /* @__PURE__ */ React.createElement(
           RootlyEntityActionsMenu,
           {
             entity: rowData,
@@ -452,7 +654,10 @@ const EntitiesTable = () => {
             handleServiceDelete,
             handleFunctionalityUpdate,
             handleFunctionalityImport,
-            handleFunctionalityDelete
+            handleFunctionalityDelete,
+            handleTeamUpdate,
+            handleTeamImport,
+            handleTeamDelete
           }
         );
       }
@@ -493,7 +698,7 @@ const EntitiesList = () => {
   return /* @__PURE__ */ React.createElement(EntityListProvider, null, /* @__PURE__ */ React.createElement(EntitiesTable, null));
 };
 
-const useStyles = makeStyles((theme) => ({
+const useStyles$1 = makeStyles((theme) => ({
   container: {
     width: 850
   },
@@ -503,10 +708,10 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center"
   }
 }));
-const DEFAULT_PAGE_NUMBER = 1;
-const DEFAULT_PAGE_SIZE = 10;
+const DEFAULT_PAGE_NUMBER$1 = 1;
+const DEFAULT_PAGE_SIZE$1 = 10;
 const FunctionalitiesTable = ({ params }) => {
-  const classes = useStyles();
+  const classes = useStyles$1();
   const RootlyApi = useApi(RootlyApiRef);
   const smallColumnStyle = {
     width: "5%",
@@ -517,8 +722,8 @@ const FunctionalitiesTable = ({ params }) => {
     maxWidth: "10%"
   };
   const [page, setPage] = useState({
-    number: DEFAULT_PAGE_NUMBER,
-    size: DEFAULT_PAGE_SIZE
+    number: DEFAULT_PAGE_NUMBER$1,
+    size: DEFAULT_PAGE_SIZE$1
   });
   const {
     value: response,
@@ -603,7 +808,7 @@ const FunctionalitiesTable = ({ params }) => {
         search: false,
         paging: true,
         actionsColumnIndex: -1,
-        pageSize: DEFAULT_PAGE_SIZE,
+        pageSize: DEFAULT_PAGE_SIZE$1,
         padding: "dense"
       },
       localization: { header: { actions: void 0 } },
@@ -612,6 +817,131 @@ const FunctionalitiesTable = ({ params }) => {
       page: page.number - 1,
       totalCount: response == null ? void 0 : response.meta.total_count,
       emptyContent: /* @__PURE__ */ React.createElement("div", { className: classes.empty }, "No functionalities"),
+      onPageChange: (pageIndex) => setPage({ ...page, number: pageIndex + 1 }),
+      onRowsPerPageChange: (rowsPerPage) => setPage({ ...page, size: rowsPerPage })
+    }
+  );
+};
+
+const useStyles = makeStyles((theme) => ({
+  container: {
+    width: 850
+  },
+  empty: {
+    padding: theme.spacing(2),
+    display: "flex",
+    justifyContent: "center"
+  }
+}));
+const DEFAULT_PAGE_NUMBER = 1;
+const DEFAULT_PAGE_SIZE = 10;
+const TeamsTable = ({ params }) => {
+  const classes = useStyles();
+  const RootlyApi = useApi(RootlyApiRef);
+  const smallColumnStyle = {
+    width: "5%",
+    maxWidth: "5%"
+  };
+  const mediumColumnStyle = {
+    width: "10%",
+    maxWidth: "10%"
+  };
+  const [page, setPage] = useState({
+    number: DEFAULT_PAGE_NUMBER,
+    size: DEFAULT_PAGE_SIZE
+  });
+  const {
+    value: response,
+    loading,
+    error
+  } = useAsync(
+    async () => await RootlyApi.getTeams({ ...params, page }),
+    [page]
+  );
+  const nameColumn = useCallback((rowData) => {
+    var _a;
+    return /* @__PURE__ */ React.createElement(
+      Tooltip,
+      {
+        title: ((_a = rowData.attributes.description) == null ? void 0 : _a.substring(0, 255)) || rowData.attributes.name
+      },
+      /* @__PURE__ */ React.createElement(Link, { target: "blank", href: RootlyApi.getTeamDetailsURL(rowData) }, rowData.attributes.name)
+    );
+  }, []);
+  const backstageColumn = useCallback((rowData) => {
+    if (rowData.attributes.backstage_id) {
+      return /* @__PURE__ */ React.createElement(
+        EntityRefLink,
+        {
+          entityRef: parseEntityRef(rowData.attributes.backstage_id)
+        }
+      );
+    } else {
+      return /* @__PURE__ */ React.createElement("div", null, "N/A");
+    }
+  }, []);
+  const columns = [
+    {
+      title: "Name",
+      field: "name",
+      highlight: true,
+      cellStyle: smallColumnStyle,
+      headerStyle: smallColumnStyle,
+      render: nameColumn
+    },
+    {
+      title: "Backstage",
+      field: "backstage",
+      cellStyle: smallColumnStyle,
+      headerStyle: smallColumnStyle,
+      render: backstageColumn
+    },
+    {
+      title: "Incidents",
+      field: "attributes.incidents_count",
+      type: "numeric",
+      cellStyle: mediumColumnStyle,
+      headerStyle: mediumColumnStyle
+    },
+    {
+      title: "Updated At",
+      field: "attributes.updated_at",
+      type: "datetime",
+      dateSetting: { locale: "en-US" },
+      cellStyle: mediumColumnStyle,
+      headerStyle: mediumColumnStyle
+    },
+    {
+      title: "Created At",
+      field: "attributes.created_at",
+      type: "datetime",
+      dateSetting: { locale: "en-US" },
+      cellStyle: mediumColumnStyle,
+      headerStyle: mediumColumnStyle
+    }
+  ];
+  if (error) {
+    return /* @__PURE__ */ React.createElement(Alert, { severity: "error" }, error.message);
+  }
+  const data = response ? response.data : [];
+  return /* @__PURE__ */ React.createElement(
+    Table,
+    {
+      isLoading: loading,
+      options: {
+        sorting: true,
+        search: false,
+        paging: true,
+        actionsColumnIndex: -1,
+        pageSize: DEFAULT_PAGE_SIZE,
+        padding: "dense"
+      },
+      localization: { header: { actions: void 0 } },
+      columns,
+      data,
+      page: page.number - 1,
+      totalCount: response == null ? void 0 : response.meta.total_count,
+      emptyContent: /* @__PURE__ */ React.createElement("div", { className: classes.empty }, "No teams"),
       onPageChange: (pageIndex) => setPage({ ...page, number: pageIndex + 1 }),
       onRowsPerPageChange: (rowsPerPage) => setPage({ ...page, size: rowsPerPage })
     }
@@ -650,7 +980,7 @@ const DefaultRootlyPage = () => {
         include: "environments,services,functionalities,groups,incident_types"
       }
     }
-  )), /* @__PURE__ */ React.createElement(DefaultRootlyPageLayout.Route, { path: "entities", title: "Entities" }, /* @__PURE__ */ React.createElement(EntitiesList, null)), /* @__PURE__ */ React.createElement(DefaultRootlyPageLayout.Route, { path: "services", title: "Services" }, /* @__PURE__ */ React.createElement(ServicesTable, null)), /* @__PURE__ */ React.createElement(DefaultRootlyPageLayout.Route, { path: "functionalities", title: "Functionalities" }, /* @__PURE__ */ React.createElement(FunctionalitiesTable, null)));
+  )), /* @__PURE__ */ React.createElement(DefaultRootlyPageLayout.Route, { path: "entities", title: "Entities" }, /* @__PURE__ */ React.createElement(EntitiesList, null)), /* @__PURE__ */ React.createElement(DefaultRootlyPageLayout.Route, { path: "services", title: "Services" }, /* @__PURE__ */ React.createElement(ServicesTable, null)), /* @__PURE__ */ React.createElement(DefaultRootlyPageLayout.Route, { path: "functionalities", title: "Functionalities" }, /* @__PURE__ */ React.createElement(FunctionalitiesTable, null)), /* @__PURE__ */ React.createElement(DefaultRootlyPageLayout.Route, { path: "teams", title: "Teams" }, /* @__PURE__ */ React.createElement(TeamsTable, null)));
 };
 
 const RootlyPage = () => {
@@ -659,4 +989,4 @@ const RootlyPage = () => {
 };
 
 export { DefaultRootlyPageLayout, RootlyPage };
-//# sourceMappingURL=index-CK7AUoZP.esm.js.map
+//# sourceMappingURL=index-uct7Vew5.esm.js.map

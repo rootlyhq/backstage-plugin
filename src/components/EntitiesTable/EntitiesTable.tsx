@@ -13,8 +13,10 @@ import {
   ROOTLY_ANNOTATION_SERVICE_SLUG,
   ROOTLY_ANNOTATION_FUNCTIONALITY_ID,
   ROOTLY_ANNOTATION_FUNCTIONALITY_SLUG,
+  ROOTLY_ANNOTATION_TEAM_ID,
+  ROOTLY_ANNOTATION_TEAM_SLUG,
 } from '../../integration';
-import { Entity, Service, Functionality } from '../../types';
+import { Entity, Service, Functionality, Team } from '../../types';
 import { RootlyEntityActionsMenu } from '../Entity/RootlyEntityActionsMenu';
 
 export const EntitiesTable = () => {
@@ -66,6 +68,25 @@ export const EntitiesTable = () => {
 
   const handleFunctionalityDelete = async (service: Functionality) => {
     await RootlyApi.deleteFunctionalityEntity(service);
+    setTimeout(() => setReload(!reload), 500);
+  };
+
+  const handleTeamUpdate = async (
+    entity: Entity,
+    team: Team,
+    old_team?: Team,
+  ) => {
+    await RootlyApi.updateTeamEntity(entity, team, old_team);
+    setTimeout(() => setReload(!reload), 500);
+  };
+
+  const handleTeamImport = async (entity: Entity) => {
+    await RootlyApi.importTeamEntity(entity);
+    setTimeout(() => setReload(!reload), 500);
+  };
+
+  const handleTeamDelete = async (team: Team) => {
+    await RootlyApi.deleteTeamEntity(team);
     setTimeout(() => setReload(!reload), 500);
   };
 
@@ -201,6 +222,45 @@ export const EntitiesTable = () => {
       return <div>Not Linked</div>;
   };
 
+  const fetchTeam = (entity: Entity, reload: boolean) => {
+    const entityTriplet = stringifyEntityRef({
+      namespace: entity.metadata.namespace,
+      kind: entity.kind,
+      name: entity.metadata.name,
+    });
+    const {
+      value: response,
+      loading,
+      error,
+    } = useAsync(
+      async () =>
+        await RootlyApi.getTeams({
+          filter: {
+            backstage_id: entityTriplet,
+          },
+        }),
+      [reload],
+    );
+    if (loading) {
+      return <Progress />;
+    } else if (error) {
+      return <div>Error</div>;
+    }
+    if (response && response.data.length > 0) {
+      entity.linkedTeam = response.data[0] as Team;
+      return (
+        <Link
+          target="blank"
+          href={RootlyApi.getTeamDetailsURL(entity.linkedTeam)}
+        >
+          {entity.linkedTeam.attributes.name}
+        </Link>
+      );
+    } 
+      entity.linkedTeam = undefined;
+      return <div>Not Linked</div>;
+  };
+
   const columns: TableColumn<Entity>[] = [
     {
       title: 'Name',
@@ -237,6 +297,15 @@ export const EntitiesTable = () => {
       },
     },
     {
+      title: 'Rootly Team',
+      field: 'linked',
+      cellStyle: smallColumnStyle,
+      headerStyle: smallColumnStyle,
+      render: rowData => {
+        return fetchTeam(rowData, reload);
+      },
+    },
+    {
       title: 'Actions',
       field: 'actions',
       cellStyle: smallColumnStyle,
@@ -250,7 +319,11 @@ export const EntitiesTable = () => {
           rowData.metadata.annotations?.[ROOTLY_ANNOTATION_FUNCTIONALITY_ID] ||
           rowData.metadata.annotations?.[ROOTLY_ANNOTATION_FUNCTIONALITY_SLUG];
 
-        return service_id_annotation || functionality_id_annotation ? (
+        const team_id_annotation =
+          rowData.metadata.annotations?.[ROOTLY_ANNOTATION_TEAM_ID] ||
+          rowData.metadata.annotations?.[ROOTLY_ANNOTATION_TEAM_SLUG];
+
+        return service_id_annotation || functionality_id_annotation || team_id_annotation ? (
           <div>Set through entity file</div>
         ) : (
           <RootlyEntityActionsMenu
@@ -261,6 +334,9 @@ export const EntitiesTable = () => {
             handleFunctionalityUpdate={handleFunctionalityUpdate}
             handleFunctionalityImport={handleFunctionalityImport}
             handleFunctionalityDelete={handleFunctionalityDelete}
+            handleTeamUpdate={handleTeamUpdate}
+            handleTeamImport={handleTeamImport}
+            handleTeamDelete={handleTeamDelete}
           />
         );
       },

@@ -16,6 +16,7 @@ import { RootlyApiRef } from '../../api';
 import { Entity, Service, Functionality } from '../../types';
 import { ServicesDialog } from '../ServicesDialog';
 import { FunctionalitiesDialog } from '../FunctionalitiesDialog';
+import { TeamsDialog } from '../TeamsDialog';
 import { stringifyEntityRef } from '@backstage/catalog-model';
 
 export const RootlyEntityActionsMenu = ({
@@ -26,6 +27,9 @@ export const RootlyEntityActionsMenu = ({
   handleFunctionalityUpdate,
   handleFunctionalityImport,
   handleFunctionalityDelete,
+  handleTeamUpdate,
+  handleTeamImport,
+  handleTeamDelete,
 }: {
   entity: Entity;
   handleServiceUpdate: Function;
@@ -34,10 +38,14 @@ export const RootlyEntityActionsMenu = ({
   handleFunctionalityUpdate: Function;
   handleFunctionalityImport: Function;
   handleFunctionalityDelete: Function;
+  handleTeamUpdate: Function;
+  handleTeamImport: Function;
+  handleTeamDelete: Function;
 }) => {
   const RootlyApi = useApi(RootlyApiRef);
   const [openServiceDialog, setOpenServiceDialog] = useState(false);
   const [openFunctionalityDialog, setOpenFunctionalityDialog] = useState(false);
+  const [openTeamDialog, setOpenTeamDialog] = useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -98,6 +106,33 @@ export const RootlyEntityActionsMenu = ({
     setOpenFunctionalityDialog(true);
   };
 
+  const handleCloseTeamDialog = async () => {
+    setOpenTeamDialog(false);
+  };
+
+  const handleCloseTeamImport = async (entity: Entity) => {
+    setOpenTeamDialog(false);
+    handleTeamImport(entity);
+  };
+
+  const handleCloseTeamUpdate = async (
+    entity: Entity,
+    old_team: Team,
+    team: Team,
+  ) => {
+    setOpenTeamDialog(false);
+    handleTeamUpdate(entity, old_team, team);
+  };
+
+  const handleCloseTeamMenu = () => {
+    setAnchorEl(null);
+  };
+
+  const handleOpenTeamsDialog = async (): Promise<void> => {
+    setAnchorEl(null);
+    setOpenTeamDialog(true);
+  };
+
   const entityTriplet = stringifyEntityRef({
     namespace: entity.metadata.namespace,
     kind: entity.kind,
@@ -122,6 +157,15 @@ export const RootlyEntityActionsMenu = ({
           handleClose={handleCloseFunctionalityDialog}
           handleImport={handleCloseFunctionalityImport}
           handleUpdate={handleCloseFunctionalityUpdate}
+        />
+      )}
+      {openTeamDialog && (
+        <TeamsDialog
+          open={openTeamDialog}
+          entity={entity}
+          handleClose={handleCloseTeamDialog}
+          handleImport={handleCloseTeamImport}
+          handleUpdate={handleCloseTeamUpdate}
         />
       )}
       <IconButton
@@ -217,7 +261,9 @@ export const RootlyEntityActionsMenu = ({
           <>
             <MenuItem
               key="unlink"
-              onClick={() => handleFunctionalityDelete(entity.linkedFunctionality)}
+              onClick={() =>
+                handleFunctionalityDelete(entity.linkedFunctionality)
+              }
             >
               <ListItemIcon>
                 <Delete fontSize="small" />
@@ -236,6 +282,57 @@ export const RootlyEntityActionsMenu = ({
                   href={RootlyApi.getFunctionalityDetailsURL(
                     entity.linkedFunctionality,
                   )}
+                >
+                  View in Rootly
+                </Link>
+              </Typography>
+            </MenuItem>
+          </>
+        )}
+
+        <MenuItem divider />
+
+        {!entity.linkedTeam && (
+          <MenuItem key="import" onClick={handleOpenTeamsDialog}>
+            <ListItemIcon>
+              <SyncIcon fontSize="small" />
+            </ListItemIcon>
+            <Typography variant="inherit" noWrap>
+              Import as a Team in Rootly
+            </Typography>
+          </MenuItem>
+        )}
+
+        <MenuItem key="link" onClick={handleOpenTeamsDialog}>
+          <ListItemIcon>
+            <SyncIcon fontSize="small" />
+          </ListItemIcon>
+          <Typography variant="inherit" noWrap>
+            Link to another Rootly team
+          </Typography>
+        </MenuItem>
+
+        {entity.linkedTeam && (
+          <>
+            <MenuItem
+              key="unlink"
+              onClick={() => handleTeamDelete(entity.linkedTeam)}
+            >
+              <ListItemIcon>
+                <Delete fontSize="small" />
+              </ListItemIcon>
+              <Typography variant="inherit" noWrap>
+                Unlink
+              </Typography>
+            </MenuItem>
+            <MenuItem key="details" onClick={handleCloseTeamMenu}>
+              <ListItemIcon>
+                <OpenInNewIcon fontSize="small" />
+              </ListItemIcon>
+              <Typography variant="inherit" noWrap>
+                <Link
+                  target="blank"
+                  href={RootlyApi.getTeamDetailsURL(entity.linkedTeam)}
                 >
                   View in Rootly
                 </Link>

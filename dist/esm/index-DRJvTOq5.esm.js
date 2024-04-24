@@ -82,6 +82,23 @@ class RootlyApi {
     );
     return response;
   }
+  async getTeam(id_or_slug) {
+    const init = { headers: { "Content-Type": "application/vnd.api+json" } };
+    const response = await this.fetch(
+      `/v1/teams/${id_or_slug}`,
+      init
+    );
+    return response;
+  }
+  async getTeams(opts) {
+    const init = { headers: { "Content-Type": "application/vnd.api+json" } };
+    const params = qs.stringify(opts, { encode: false });
+    const response = await this.fetch(
+      `/v1/teams?${params}`,
+      init
+    );
+    return response;
+  }
   async getIncidents(opts) {
     const init = { headers: { "Content-Type": "application/vnd.api+json" } };
     const params = qs.stringify(opts, { encode: false });
@@ -244,6 +261,78 @@ class RootlyApi {
     };
     await this.call(`/v1/functionalities/${functionality.id}`, init);
   }
+  async importTeamEntity(entity) {
+    const entityTriplet = stringifyEntityRef({
+      namespace: entity.metadata.namespace,
+      kind: entity.kind,
+      name: entity.metadata.name
+    });
+    const init = {
+      method: "POST",
+      headers: { "Content-Type": "application/vnd.api+json" },
+      body: JSON.stringify({
+        data: {
+          type: "teams",
+          attributes: {
+            name: entity.metadata.name,
+            description: entity.metadata.description,
+            backstage_id: entityTriplet
+          }
+        }
+      })
+    };
+    await this.call(`/v1/teams`, init);
+  }
+  async updateTeamEntity(entity, team, old_team) {
+    const entityTriplet = stringifyEntityRef({
+      namespace: entity.metadata.namespace,
+      kind: entity.kind,
+      name: entity.metadata.name
+    });
+    if (old_team == null ? void 0 : old_team.id) {
+      const init1 = {
+        method: "PUT",
+        headers: { "Content-Type": "application/vnd.api+json" },
+        body: JSON.stringify({
+          data: {
+            type: "teams",
+            attributes: {
+              backstage_id: null
+            }
+          }
+        })
+      };
+      await this.call(`/v1/teams/${old_team.id}`, init1);
+    }
+    const init2 = {
+      method: "PUT",
+      headers: { "Content-Type": "application/vnd.api+json" },
+      body: JSON.stringify({
+        data: {
+          type: "teams",
+          attributes: {
+            backstage_id: entityTriplet
+          }
+        }
+      })
+    };
+    await this.call(`/v1/teams/${team.id}`, init2);
+  }
+  async deleteTeamEntity(team) {
+    const init = {
+      method: "PUT",
+      headers: { "Content-Type": "application/vnd.api+json" },
+      body: JSON.stringify({
+        data: {
+          type: "teams",
+          attributes: {
+            backstage_id: null
+          }
+        }
+      })
+    };
+    await this.call(`/v1/teams/${team.id}`, init);
+  }
   getCreateIncidentURL() {
     return `${this.domain}/account/incidents/new`;
   }
@@ -251,11 +340,17 @@ class RootlyApi {
     return `${this.domain}/account/incidents`;
   }
   getListIncidentsForServiceURL(service) {
-    const params = qs.stringify({ filter: { filters: [{ services: [service.id] }] } }, { arrayFormat: "brackets" });
+    const params = qs.stringify(
+      { filter: { filters: [{ services: [service.id] }] } },
+      { arrayFormat: "brackets" }
+    );
     return `${this.domain}/account/incidents?${params}`;
   }
   getListIncidentsForFunctionalityURL(functionality) {
-    const params = qs.stringify({ filter: { filters: [{ functionalities: [functionality.id] }] } }, { arrayFormat: "brackets" });
+    const params = qs.stringify(
+      { filter: { filters: [{ functionalities: [functionality.id] }] } },
+      { arrayFormat: "brackets" }
+    );
     return `${this.domain}/account/incidents?${params}`;
   }
   getServiceDetailsURL(service) {
@@ -263,6 +358,9 @@ class RootlyApi {
   }
   getFunctionalityDetailsURL(functionality) {
     return `${this.domain}/account/functionalities/${functionality.attributes.slug}`;
+  }
+  getTeamDetailsURL(team) {
+    return `${this.domain}/account/teams/${team.attributes.slug}`;
   }
   async apiUrl() {
     const proxyUrl = await this.discoveryApi.getBaseUrl("proxy");
@@ -307,7 +405,7 @@ const RootlyPlugin = createPlugin({
 const RootlyPage = RootlyPlugin.provide(
   createRoutableExtension({
     name: "RootlyPage",
-    component: () => import('./index-CK7AUoZP.esm.js').then((m) => m.RootlyPage),
+    component: () => import('./index-uct7Vew5.esm.js').then((m) => m.RootlyPage),
     mountPoint: RootlyRouteRef
   })
 );
@@ -315,7 +413,7 @@ const RootlyOverviewCard = RootlyPlugin.provide(
   createComponentExtension({
     name: "RootlyOverviewCard",
     component: {
-      lazy: () => import('./index-Ba-zCZV3.esm.js').then((m) => m.RootlyOverviewCard)
+      lazy: () => import('./index-B93YF6I4.esm.js').then((m) => m.RootlyOverviewCard)
     }
   })
 );
@@ -323,7 +421,7 @@ const RootlyIncidentsPage = RootlyPlugin.provide(
   createComponentExtension({
     name: "RootlyIncidentsPage",
     component: {
-      lazy: () => import('./index-CUAWNkDb.esm.js').then((m) => m.RootlyIncidentsPage)
+      lazy: () => import('./index-CB_a2MmD.esm.js').then((m) => m.RootlyIncidentsPage)
     }
   })
 );
@@ -334,9 +432,12 @@ const ROOTLY_ANNOTATION_SERVICE_AUTO_IMPORT = "rootly.com/service-auto-import";
 const ROOTLY_ANNOTATION_FUNCTIONALITY_ID = "rootly.com/functionality-id";
 const ROOTLY_ANNOTATION_FUNCTIONALITY_SLUG = "rootly.com/functionality-slug";
 const ROOTLY_ANNOTATION_FUNCTIONALITY_AUTO_IMPORT = "rootly.com/functionality-auto-import";
+const ROOTLY_ANNOTATION_TEAM_ID = "rootly.com/team-id";
+const ROOTLY_ANNOTATION_TEAM_SLUG = "rootly.com/team-slug";
+const ROOTLY_ANNOTATION_TEAM_AUTO_IMPORT = "rootly.com/team-auto-import";
 const isRootlyAvailable = (entity) => {
-  var _a, _b, _c, _d, _e, _f, _g, _h;
-  return Boolean((_a = entity.metadata.annotations) == null ? void 0 : _a[ROOTLY_ANNOTATION_SERVICE_ID]) && Boolean((_b = entity.metadata.annotations) == null ? void 0 : _b[ROOTLY_ANNOTATION_SERVICE_ID]) || Boolean((_c = entity.metadata.annotations) == null ? void 0 : _c[ROOTLY_ANNOTATION_SERVICE_SLUG]) && Boolean((_d = entity.metadata.annotations) == null ? void 0 : _d[ROOTLY_ANNOTATION_SERVICE_SLUG]) || Boolean((_e = entity.metadata.annotations) == null ? void 0 : _e[ROOTLY_ANNOTATION_FUNCTIONALITY_ID]) && Boolean((_f = entity.metadata.annotations) == null ? void 0 : _f[ROOTLY_ANNOTATION_FUNCTIONALITY_ID]) || Boolean((_g = entity.metadata.annotations) == null ? void 0 : _g[ROOTLY_ANNOTATION_FUNCTIONALITY_SLUG]) && Boolean((_h = entity.metadata.annotations) == null ? void 0 : _h[ROOTLY_ANNOTATION_FUNCTIONALITY_SLUG]);
+  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l;
+  return Boolean((_a = entity.metadata.annotations) == null ? void 0 : _a[ROOTLY_ANNOTATION_SERVICE_ID]) && Boolean((_b = entity.metadata.annotations) == null ? void 0 : _b[ROOTLY_ANNOTATION_SERVICE_ID]) || Boolean((_c = entity.metadata.annotations) == null ? void 0 : _c[ROOTLY_ANNOTATION_SERVICE_SLUG]) && Boolean((_d = entity.metadata.annotations) == null ? void 0 : _d[ROOTLY_ANNOTATION_SERVICE_SLUG]) || Boolean((_e = entity.metadata.annotations) == null ? void 0 : _e[ROOTLY_ANNOTATION_FUNCTIONALITY_ID]) && Boolean((_f = entity.metadata.annotations) == null ? void 0 : _f[ROOTLY_ANNOTATION_FUNCTIONALITY_ID]) || Boolean((_g = entity.metadata.annotations) == null ? void 0 : _g[ROOTLY_ANNOTATION_FUNCTIONALITY_SLUG]) && Boolean((_h = entity.metadata.annotations) == null ? void 0 : _h[ROOTLY_ANNOTATION_FUNCTIONALITY_SLUG]) || Boolean((_i = entity.metadata.annotations) == null ? void 0 : _i[ROOTLY_ANNOTATION_TEAM_ID]) && Boolean((_j = entity.metadata.annotations) == null ? void 0 : _j[ROOTLY_ANNOTATION_TEAM_ID]) || Boolean((_k = entity.metadata.annotations) == null ? void 0 : _k[ROOTLY_ANNOTATION_TEAM_SLUG]) && Boolean((_l = entity.metadata.annotations) == null ? void 0 : _l[ROOTLY_ANNOTATION_TEAM_SLUG]);
 };
 const autoImportService = (entity) => {
   var _a, _b;
@@ -345,6 +446,10 @@ const autoImportService = (entity) => {
 const autoImportFunctionality = (entity) => {
   var _a, _b;
   return Boolean((_a = entity.metadata.annotations) == null ? void 0 : _a[ROOTLY_ANNOTATION_FUNCTIONALITY_AUTO_IMPORT]) && Boolean((_b = entity.metadata.annotations) == null ? void 0 : _b[ROOTLY_ANNOTATION_FUNCTIONALITY_AUTO_IMPORT]);
+};
+const autoImportTeam = (entity) => {
+  var _a, _b;
+  return Boolean((_a = entity.metadata.annotations) == null ? void 0 : _a[ROOTLY_ANNOTATION_TEAM_AUTO_IMPORT]) && Boolean((_b = entity.metadata.annotations) == null ? void 0 : _b[ROOTLY_ANNOTATION_TEAM_AUTO_IMPORT]);
 };
 
 const useStyles$1 = makeStyles((theme) => ({
@@ -890,5 +995,5 @@ const ServicesDialog = ({
   );
 };
 
-export { ColoredChip as C, IncidentsTable as I, RootlyApiRef as R, ServicesDialog as S, ROOTLY_ANNOTATION_SERVICE_ID as a, ROOTLY_ANNOTATION_SERVICE_SLUG as b, autoImportService as c, ROOTLY_ANNOTATION_FUNCTIONALITY_ID as d, ROOTLY_ANNOTATION_FUNCTIONALITY_SLUG as e, ServicesTable as f, StatusChip as g, autoImportFunctionality as h, RootlyPage as i, RootlyOverviewCard as j, RootlyIncidentsPage as k, RootlyPlugin as l, isRootlyAvailable as m, RootlyApi as n };
-//# sourceMappingURL=index-C28X43rF.esm.js.map
+export { ColoredChip as C, IncidentsTable as I, RootlyApiRef as R, ServicesDialog as S, ROOTLY_ANNOTATION_SERVICE_ID as a, ROOTLY_ANNOTATION_SERVICE_SLUG as b, autoImportService as c, ROOTLY_ANNOTATION_FUNCTIONALITY_ID as d, ROOTLY_ANNOTATION_FUNCTIONALITY_SLUG as e, ROOTLY_ANNOTATION_TEAM_ID as f, ROOTLY_ANNOTATION_TEAM_SLUG as g, ServicesTable as h, StatusChip as i, autoImportFunctionality as j, autoImportTeam as k, RootlyPage as l, RootlyOverviewCard as m, RootlyIncidentsPage as n, RootlyPlugin as o, isRootlyAvailable as p, RootlyApi as q };
+//# sourceMappingURL=index-DRJvTOq5.esm.js.map

@@ -62,6 +62,9 @@ rootly.com/service-auto-import: enabled # This will auto import the entity as a 
 rootly.com/functionality-id: 7a328a08-694f4e1b-abbc-4cf7-bba0-a403df30ed88 # Use functionality-id or functionality-slug. Not both.
 rootly.com/functionality-slug: login # Use functionality-id or functionality-slug. Not both.
 rootly.com/functionality-auto-import: enabled # This will auto import the entity as a rootly functionality if we don't find any.
+rootly.com/team-id: 39e77dcc-e056-4849-9dda-a362b2413e5c # Use team-id or team-slug. Not both.
+rootly.com/team-slug: infrastucture # Use team-id or team-slug. Not both.
+rootly.com/team-auto-import: enabled # This will auto import the entity as a rootly team if we don't find any.
 ```
 
 #### Example
@@ -160,6 +163,21 @@ const overviewContent = (
       <EntitySwitch.Case if={isRootlyAvailable}>
         <Grid item sm={6}>
           <RootlyOverviewCard resourceType={RootlyResourceType.Functionality} />
+        </Grid>
+      </EntitySwitch.Case>
+    </EntitySwitch>
+    // ...
+  </Grid>
+);
+
+// For a team
+const overviewContent = (
+  <Grid container spacing={3} alignItems="stretch">
+    // ...
+    <EntitySwitch>
+      <EntitySwitch.Case if={isRootlyAvailable}>
+        <Grid item sm={6}>
+          <RootlyOverviewCard resourceType={RootlyResourceType.Team} />
         </Grid>
       </EntitySwitch.Case>
     </EntitySwitch>

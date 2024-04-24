@@ -36,6 +36,7 @@ export interface Functionality {
         slack_channels: object[];
         slack_aliases: object[];
         backstage_id: string | undefined;
+        incidents_count: BigInteger;
         created_at: string;
         updated_at: string;
     };
@@ -57,7 +58,7 @@ export interface User {
         full_name: string;
     };
 }
-export interface Group {
+export interface Team {
     id: string;
     type: string;
     attributes: {
@@ -65,6 +66,10 @@ export interface Group {
         slug: string;
         description: string | undefined;
         color: string;
+        backstage_id: string | undefined;
+        incidents_count: BigInteger;
+        created_at: string;
+        updated_at: string;
     };
 }
 export interface IncidentType {
@@ -133,11 +138,12 @@ export interface Incident {
         {
             id: string;
             type: string;
-            attributes: Group | Environment | Service | Functionality | IncidentType;
+            attributes: Team | Environment | Service | Functionality | IncidentType;
         }
     ];
 }
 export interface Entity extends BackstageEntity {
     linkedService: Service | undefined;
     linkedFunctionality: Functionality | undefined;
+    linkedTeam: Team | undefined;
 }

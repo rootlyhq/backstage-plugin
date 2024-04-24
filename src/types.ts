@@ -55,7 +55,7 @@ export interface User {
   };
 }
 
-export interface Group {
+export interface Team {
   id: string;
   type: string;
   attributes: {
@@ -140,10 +140,11 @@ export interface Incident {
 export interface Entity extends BackstageEntity {
   linkedService: Service | undefined;
   linkedFunctionality: Functionality | undefined;
+  linkedTeam: Team | undefined;
 }
 
 export enum RootlyResourceType {
   Service = "Service",
   Functionality = "Functionality",
-  Group = "Group",
+  Team = "Team",
 }
