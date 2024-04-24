@@ -263,6 +263,13 @@ export const EntitiesTable = () => {
 
   const columns: TableColumn<Entity>[] = [
     {
+      title: 'Kind',
+      field: 'kind',
+      highlight: true,
+      cellStyle: smallColumnStyle,
+      headerStyle: smallColumnStyle,
+    },
+    {
       title: 'Name',
       field: 'metadata.name',
       highlight: true,
