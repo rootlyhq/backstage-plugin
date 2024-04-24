@@ -14,16 +14,8 @@ import { blue } from '@material-ui/core/colors';
 import 'chartkick/chart.js';
 import moment from 'moment';
 import { useAsync } from 'react-use';
-import { R as RootlyApiRef, a as ROOTLY_ANNOTATION_SERVICE_ID, b as ROOTLY_ANNOTATION_SERVICE_SLUG, c as autoImportService, C as ColoredChip, i as StatusChip, d as ROOTLY_ANNOTATION_FUNCTIONALITY_ID, e as ROOTLY_ANNOTATION_FUNCTIONALITY_SLUG, j as autoImportFunctionality, f as ROOTLY_ANNOTATION_TEAM_ID, g as ROOTLY_ANNOTATION_TEAM_SLUG, k as autoImportTeam } from './index-I6A_5BT0.esm.js';
+import { R as RootlyApiRef, a as ROOTLY_ANNOTATION_SERVICE_ID, b as ROOTLY_ANNOTATION_SERVICE_SLUG, c as autoImportService, C as ColoredChip, h as StatusChip, d as ROOTLY_ANNOTATION_FUNCTIONALITY_ID, e as ROOTLY_ANNOTATION_FUNCTIONALITY_SLUG, i as autoImportFunctionality, f as ROOTLY_ANNOTATION_TEAM_ID, g as ROOTLY_ANNOTATION_TEAM_SLUG, j as autoImportTeam } from './index-BWCj2b_g.esm.js';
 import 'qs';
-import '@material-ui/core/Divider';
-
-var RootlyResourceType = /* @__PURE__ */ ((RootlyResourceType2) => {
-  RootlyResourceType2["Service"] = "Service";
-  RootlyResourceType2["Functionality"] = "Functionality";
-  RootlyResourceType2["Team"] = "Team";
-  return RootlyResourceType2;
-})(RootlyResourceType || {});
 
 const truncate$2 = (input, length) => input.length > length ? `${input.substring(0, length)}...` : input;
 const IncidentListItem$2 = ({
@@ -535,21 +527,24 @@ const RootlyOverviewTeamCard = () => {
   ))))));
 };
 
-const RootlyOverviewCard = (resourceType) => {
+const RootlyOverviewCard = () => {
+  var _a, _b, _c, _d, _e, _f;
+  const { entity } = useEntity();
+  const service_id_annotation = ((_a = entity.metadata.annotations) == null ? void 0 : _a[ROOTLY_ANNOTATION_SERVICE_ID]) || ((_b = entity.metadata.annotations) == null ? void 0 : _b[ROOTLY_ANNOTATION_SERVICE_SLUG]);
+  const functionality_id_annotation = ((_c = entity.metadata.annotations) == null ? void 0 : _c[ROOTLY_ANNOTATION_FUNCTIONALITY_ID]) || ((_d = entity.metadata.annotations) == null ? void 0 : _d[ROOTLY_ANNOTATION_FUNCTIONALITY_SLUG]);
+  const team_id_annotation = ((_e = entity.metadata.annotations) == null ? void 0 : _e[ROOTLY_ANNOTATION_TEAM_ID]) || ((_f = entity.metadata.annotations) == null ? void 0 : _f[ROOTLY_ANNOTATION_TEAM_SLUG]);
   const resource = () => {
-    switch (resourceType) {
-      case RootlyResourceType.Service:
-        return RootlyOverviewServiceCard();
-      case RootlyResourceType.Functionality:
-        return RootlyOverviewFunctionalityCard();
-      case RootlyResourceType.Team:
-        return RootlyOverviewTeamCard();
-      default:
-        return RootlyOverviewServiceCard();
+    if (service_id_annotation) {
+      return /* @__PURE__ */ React.createElement(RootlyOverviewServiceCard, null);
+    } else if (functionality_id_annotation) {
+      return /* @__PURE__ */ React.createElement(RootlyOverviewFunctionalityCard, null);
+    } else if (team_id_annotation) {
+      return /* @__PURE__ */ React.createElement(RootlyOverviewTeamCard, null);
     }
+    return /* @__PURE__ */ React.createElement("div", null, "No Rootly annotations found");
   };
   return /* @__PURE__ */ React.createElement("div", null, resource());
 };
 
 export { RootlyOverviewCard };
-//# sourceMappingURL=index-CbU7kUOr.esm.js.map
+//# sourceMappingURL=index-BUWY6Xa3.esm.js.map

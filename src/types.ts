@@ -149,9 +149,3 @@ export interface Entity extends BackstageEntity {
   linkedFunctionality: Functionality | undefined;
   linkedTeam: Team | undefined;
 }
-
-export enum RootlyResourceType {
-  Service = "Service",
-  Functionality = "Functionality",
-  Team = "Team",
-}

@@ -138,7 +138,7 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
 
 ```ts
 // packages/app/src/components/catalog/EntityPage.tsx
-import { RootlyOverviewCard, isRootlyAvailable, RootlyResourceType } from '@rootly/backstage-plugin';
+import { RootlyOverviewCard, isRootlyAvailable } from '@rootly/backstage-plugin';
 
 // For a service
 const overviewContent = (
@@ -147,44 +147,13 @@ const overviewContent = (
     <EntitySwitch>
       <EntitySwitch.Case if={isRootlyAvailable}>
         <Grid item sm={6}>
-          <RootlyOverviewCard resourceType={RootlyResourceType.Service} />
+          <RootlyOverviewCard />
         </Grid>
       </EntitySwitch.Case>
     </EntitySwitch>
     // ...
   </Grid>
 );
-
-// For a functionality
-const overviewContent = (
-  <Grid container spacing={3} alignItems="stretch">
-    // ...
-    <EntitySwitch>
-      <EntitySwitch.Case if={isRootlyAvailable}>
-        <Grid item sm={6}>
-          <RootlyOverviewCard resourceType={RootlyResourceType.Functionality} />
-        </Grid>
-      </EntitySwitch.Case>
-    </EntitySwitch>
-    // ...
-  </Grid>
-);
-
-// For a team
-const overviewContent = (
-  <Grid container spacing={3} alignItems="stretch">
-    // ...
-    <EntitySwitch>
-      <EntitySwitch.Case if={isRootlyAvailable}>
-        <Grid item sm={6}>
-          <RootlyOverviewCard resourceType={RootlyResourceType.Team} />
-        </Grid>
-      </EntitySwitch.Case>
-    </EntitySwitch>
-    // ...
-  </Grid>
-);
-```
 
 #### `RootlyIncidentsPage` component
 

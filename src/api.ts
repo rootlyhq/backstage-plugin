@@ -7,7 +7,7 @@ import {
 import qs from 'qs';
 import { Entity, Incident, Service, Functionality, Team } from './types';
 
-export const RootlyApiRef = createApiRef<Rootly>({
+export const RootlyApiRef = createApiRef<RootlyApi>({
   id: 'plugin.rootly.service',
 });
 
@@ -180,7 +180,7 @@ type Options = {
 /**
  * API to talk to Rootly.
  */
-export class RootlyApi implements Rootly {
+export class RootlyApi {
   private readonly discoveryApi: DiscoveryApi;
   private readonly identityApi: IdentityApi;
   private readonly proxyPath: string;

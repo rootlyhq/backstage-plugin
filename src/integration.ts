@@ -1,5 +1,4 @@
 import { Entity } from '@backstage/catalog-model';
-import { RootlyResourceType as Types } from './types';
 
 export const ROOTLY_ANNOTATION_SERVICE_ID = 'rootly.com/service-id';
 export const ROOTLY_ANNOTATION_SERVICE_SLUG = 'rootly.com/service-slug';
@@ -10,8 +9,6 @@ export const ROOTLY_ANNOTATION_FUNCTIONALITY_AUTO_IMPORT = 'rootly.com/functiona
 export const ROOTLY_ANNOTATION_TEAM_ID = 'rootly.com/team-id';
 export const ROOTLY_ANNOTATION_TEAM_SLUG = 'rootly.com/team-slug';
 export const ROOTLY_ANNOTATION_TEAM_AUTO_IMPORT = 'rootly.com/team-auto-import';
-
-export const RootlyResourceType = Types;
 
 export const isRootlyAvailable = (entity: Entity) =>
   Boolean(entity.metadata.annotations?.[ROOTLY_ANNOTATION_SERVICE_ID]) && Boolean(entity.metadata.annotations?.[ROOTLY_ANNOTATION_SERVICE_ID]) ||

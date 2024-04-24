@@ -1,18 +1,19 @@
-import React, { useState, useEffect, useCallback, Children, isValidElement, Fragment } from 'react';
+import React, { useState, useEffect, Children, isValidElement, Fragment } from 'react';
 import { useOutlet } from 'react-router';
 import { catalogApiRef, EntityRefLink, EntityListProvider } from '@backstage/plugin-catalog-react';
-import { stringifyEntityRef, parseEntityRef } from '@backstage/catalog-model';
+import { stringifyEntityRef } from '@backstage/catalog-model';
 import { Select, Table, Progress, Page, Header, RoutedTabs } from '@backstage/core-components';
 import { useApi, attachComponentData } from '@backstage/core-plugin-api';
 import Link from '@material-ui/core/Link';
 import { Alert } from '@material-ui/lab';
 import { useAsync } from 'react-use';
-import { R as RootlyApiRef, S as ServicesDialog, a as ROOTLY_ANNOTATION_SERVICE_ID, b as ROOTLY_ANNOTATION_SERVICE_SLUG, c as autoImportService, d as ROOTLY_ANNOTATION_FUNCTIONALITY_ID, e as ROOTLY_ANNOTATION_FUNCTIONALITY_SLUG, f as ROOTLY_ANNOTATION_TEAM_ID, g as ROOTLY_ANNOTATION_TEAM_SLUG, I as IncidentsTable, h as ServicesTable } from './index-I6A_5BT0.esm.js';
-import { Dialog, DialogTitle, DialogContent, Box, Button, Typography, DialogActions, IconButton, Menu, MenuItem, ListItemIcon, makeStyles, Tooltip } from '@material-ui/core';
+import { R as RootlyApiRef, a as ROOTLY_ANNOTATION_SERVICE_ID, b as ROOTLY_ANNOTATION_SERVICE_SLUG, c as autoImportService, d as ROOTLY_ANNOTATION_FUNCTIONALITY_ID, e as ROOTLY_ANNOTATION_FUNCTIONALITY_SLUG, f as ROOTLY_ANNOTATION_TEAM_ID, g as ROOTLY_ANNOTATION_TEAM_SLUG, I as IncidentsTable, S as ServicesTable, F as FunctionalitiesTable, T as TeamsTable } from './index-BWCj2b_g.esm.js';
+import { Dialog, DialogTitle, DialogContent, Box, Button, Typography, DialogActions, IconButton, Menu, MenuItem, ListItemIcon } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import SyncIcon from '@material-ui/icons/Sync';
 import Delete from '@material-ui/icons/Delete';
+import { S as ServicesDialog } from './ServicesDialog-D-CHhrHJ.esm.js';
 import Divider from '@material-ui/core/Divider';
 import 'qs';
 
@@ -705,254 +706,6 @@ const EntitiesList = () => {
   return /* @__PURE__ */ React.createElement(EntityListProvider, null, /* @__PURE__ */ React.createElement(EntitiesTable, null));
 };
 
-const useStyles$1 = makeStyles((theme) => ({
-  container: {
-    width: 850
-  },
-  empty: {
-    padding: theme.spacing(2),
-    display: "flex",
-    justifyContent: "center"
-  }
-}));
-const DEFAULT_PAGE_NUMBER$1 = 1;
-const DEFAULT_PAGE_SIZE$1 = 10;
-const FunctionalitiesTable = ({ params }) => {
-  const classes = useStyles$1();
-  const RootlyApi = useApi(RootlyApiRef);
-  const smallColumnStyle = {
-    width: "5%",
-    maxWidth: "5%"
-  };
-  const mediumColumnStyle = {
-    width: "10%",
-    maxWidth: "10%"
-  };
-  const [page, setPage] = useState({
-    number: DEFAULT_PAGE_NUMBER$1,
-    size: DEFAULT_PAGE_SIZE$1
-  });
-  const {
-    value: response,
-    loading,
-    error
-  } = useAsync(
-    async () => await RootlyApi.getFunctionalities({ ...params, page }),
-    [page]
-  );
-  const nameColumn = useCallback((rowData) => {
-    var _a;
-    return /* @__PURE__ */ React.createElement(
-      Tooltip,
-      {
-        title: ((_a = rowData.attributes.description) == null ? void 0 : _a.substring(0, 255)) || rowData.attributes.name
-      },
-      /* @__PURE__ */ React.createElement(Link, { target: "blank", href: RootlyApi.getFunctionalityDetailsURL(rowData) }, rowData.attributes.name)
-    );
-  }, []);
-  const backstageColumn = useCallback((rowData) => {
-    if (rowData.attributes.backstage_id) {
-      return /* @__PURE__ */ React.createElement(
-        EntityRefLink,
-        {
-          entityRef: parseEntityRef(rowData.attributes.backstage_id)
-        }
-      );
-    }
-    return /* @__PURE__ */ React.createElement("div", null, "N/A");
-  }, []);
-  const columns = [
-    {
-      title: "Name",
-      field: "name",
-      highlight: true,
-      cellStyle: smallColumnStyle,
-      headerStyle: smallColumnStyle,
-      render: nameColumn
-    },
-    {
-      title: "Backstage",
-      field: "backstage",
-      cellStyle: smallColumnStyle,
-      headerStyle: smallColumnStyle,
-      render: backstageColumn
-    },
-    {
-      title: "Incidents",
-      field: "attributes.incidents_count",
-      type: "numeric",
-      cellStyle: mediumColumnStyle,
-      headerStyle: mediumColumnStyle
-    },
-    {
-      title: "Updated At",
-      field: "attributes.updated_at",
-      type: "datetime",
-      dateSetting: { locale: "en-US" },
-      cellStyle: mediumColumnStyle,
-      headerStyle: mediumColumnStyle
-    },
-    {
-      title: "Created At",
-      field: "attributes.created_at",
-      type: "datetime",
-      dateSetting: { locale: "en-US" },
-      cellStyle: mediumColumnStyle,
-      headerStyle: mediumColumnStyle
-    }
-  ];
-  if (error) {
-    return /* @__PURE__ */ React.createElement(Alert, { severity: "error" }, error.message);
-  }
-  const data = response ? response.data : [];
-  return /* @__PURE__ */ React.createElement(
-    Table,
-    {
-      isLoading: loading,
-      options: {
-        sorting: true,
-        search: false,
-        paging: true,
-        actionsColumnIndex: -1,
-        pageSize: DEFAULT_PAGE_SIZE$1,
-        padding: "dense"
-      },
-      localization: { header: { actions: void 0 } },
-      columns,
-      data,
-      page: page.number - 1,
-      totalCount: response == null ? void 0 : response.meta.total_count,
-      emptyContent: /* @__PURE__ */ React.createElement("div", { className: classes.empty }, "No functionalities"),
-      onPageChange: (pageIndex) => setPage({ ...page, number: pageIndex + 1 }),
-      onRowsPerPageChange: (rowsPerPage) => setPage({ ...page, size: rowsPerPage })
-    }
-  );
-};
-
-const useStyles = makeStyles((theme) => ({
-  container: {
-    width: 850
-  },
-  empty: {
-    padding: theme.spacing(2),
-    display: "flex",
-    justifyContent: "center"
-  }
-}));
-const DEFAULT_PAGE_NUMBER = 1;
-const DEFAULT_PAGE_SIZE = 10;
-const TeamsTable = ({ params }) => {
-  const classes = useStyles();
-  const RootlyApi = useApi(RootlyApiRef);
-  const smallColumnStyle = {
-    width: "5%",
-    maxWidth: "5%"
-  };
-  const mediumColumnStyle = {
-    width: "10%",
-    maxWidth: "10%"
-  };
-  const [page, setPage] = useState({
-    number: DEFAULT_PAGE_NUMBER,
-    size: DEFAULT_PAGE_SIZE
-  });
-  const {
-    value: response,
-    loading,
-    error
-  } = useAsync(
-    async () => await RootlyApi.getTeams({ ...params, page }),
-    [page]
-  );
-  const nameColumn = useCallback((rowData) => {
-    var _a;
-    return /* @__PURE__ */ React.createElement(
-      Tooltip,
-      {
-        title: ((_a = rowData.attributes.description) == null ? void 0 : _a.substring(0, 255)) || rowData.attributes.name
-      },
-      /* @__PURE__ */ React.createElement(Link, { target: "blank", href: RootlyApi.getTeamDetailsURL(rowData) }, rowData.attributes.name)
-    );
-  }, []);
-  const backstageColumn = useCallback((rowData) => {
-    if (rowData.attributes.backstage_id) {
-      return /* @__PURE__ */ React.createElement(
-        EntityRefLink,
-        {
-          entityRef: parseEntityRef(rowData.attributes.backstage_id)
-        }
-      );
-    }
-    return /* @__PURE__ */ React.createElement("div", null, "N/A");
-  }, []);
-  const columns = [
-    {
-      title: "Name",
-      field: "name",
-      highlight: true,
-      cellStyle: smallColumnStyle,
-      headerStyle: smallColumnStyle,
-      render: nameColumn
-    },
-    {
-      title: "Backstage",
-      field: "backstage",
-      cellStyle: smallColumnStyle,
-      headerStyle: smallColumnStyle,
-      render: backstageColumn
-    },
-    {
-      title: "Incidents",
-      field: "attributes.incidents_count",
-      type: "numeric",
-      cellStyle: mediumColumnStyle,
-      headerStyle: mediumColumnStyle
-    },
-    {
-      title: "Updated At",
-      field: "attributes.updated_at",
-      type: "datetime",
-      dateSetting: { locale: "en-US" },
-      cellStyle: mediumColumnStyle,
-      headerStyle: mediumColumnStyle
-    },
-    {
-      title: "Created At",
-      field: "attributes.created_at",
-      type: "datetime",
-      dateSetting: { locale: "en-US" },
-      cellStyle: mediumColumnStyle,
-      headerStyle: mediumColumnStyle
-    }
-  ];
-  if (error) {
-    return /* @__PURE__ */ React.createElement(Alert, { severity: "error" }, error.message);
-  }
-  const data = response ? response.data : [];
-  return /* @__PURE__ */ React.createElement(
-    Table,
-    {
-      isLoading: loading,
-      options: {
-        sorting: true,
-        search: false,
-        paging: true,
-        actionsColumnIndex: -1,
-        pageSize: DEFAULT_PAGE_SIZE,
-        padding: "dense"
-      },
-      localization: { header: { actions: void 0 } },
-      columns,
-      data,
-      page: page.number - 1,
-      totalCount: response == null ? void 0 : response.meta.total_count,
-      emptyContent: /* @__PURE__ */ React.createElement("div", { className: classes.empty }, "No teams"),
-      onPageChange: (pageIndex) => setPage({ ...page, number: pageIndex + 1 }),
-      onRowsPerPageChange: (rowsPerPage) => setPage({ ...page, size: rowsPerPage })
-    }
-  );
-};
-
 const Route = () => null;
 attachComponentData(Route, "core.gatherMountPoints", true);
 function createSubRoutesFromChildren(childrenProps) {
@@ -994,4 +747,4 @@ const RootlyPage = () => {
 };
 
 export { DefaultRootlyPageLayout, RootlyPage };
-//# sourceMappingURL=index-soVEktiY.esm.js.map
+//# sourceMappingURL=index-DatimJu6.esm.js.map
