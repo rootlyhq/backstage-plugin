@@ -338,6 +338,7 @@ export class RootlyApi implements Rootly {
             name: entity.metadata.name,
             description: entity.metadata.description,
             backstage_id: entityTriplet,
+            pagerduty_id: entity.metadata.annotations?.['pagerduty.com/service-id'],
           },
         },
       }),
@@ -382,6 +383,7 @@ export class RootlyApi implements Rootly {
           type: 'services',
           attributes: {
             backstage_id: entityTriplet,
+            pagerduty_id: entity.metadata.annotations?.['pagerduty.com/service-id'],
           },
         },
       }),
@@ -423,6 +425,7 @@ export class RootlyApi implements Rootly {
             name: entity.metadata.name,
             description: entity.metadata.description,
             backstage_id: entityTriplet,
+            pagerduty_id: entity.metadata.annotations?.['pagerduty.com/service-id'],
           },
         },
       }),
@@ -467,6 +470,7 @@ export class RootlyApi implements Rootly {
           type: 'functionalities',
           attributes: {
             backstage_id: entityTriplet,
+            pagerduty_id: entity.metadata.annotations?.['pagerduty.com/service-id'],
           },
         },
       }),
@@ -508,6 +512,7 @@ export class RootlyApi implements Rootly {
             name: entity.metadata.name,
             description: entity.metadata.description,
             backstage_id: entityTriplet,
+            pagerduty_id: entity.metadata.annotations?.['pagerduty.com/service-id'],
           },
         },
       }),
@@ -552,6 +557,7 @@ export class RootlyApi implements Rootly {
           type: 'teams',
           attributes: {
             backstage_id: entityTriplet,
+            pagerduty_id: entity.metadata.annotations?.['pagerduty.com/service-id'],
           },
         },
       }),
