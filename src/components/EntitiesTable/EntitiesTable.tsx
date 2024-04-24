@@ -144,7 +144,7 @@ export const EntitiesTable = () => {
     });
   }, []);
 
-  const fetchService = (entity: Entity, reload: boolean) => {
+  const fetchService = (entity: Entity, reloadService: boolean) => {
     const entityTriplet = stringifyEntityRef({
       namespace: entity.metadata.namespace,
       kind: entity.kind,
@@ -183,7 +183,7 @@ export const EntitiesTable = () => {
       return <div>Not Linked</div>;
   };
 
-  const fetchFunctionality = (entity: Entity, reload: boolean) => {
+  const fetchFunctionality = (entity: Entity, reloadFunc: boolean) => {
     const entityTriplet = stringifyEntityRef({
       namespace: entity.metadata.namespace,
       kind: entity.kind,
@@ -200,7 +200,7 @@ export const EntitiesTable = () => {
             backstage_id: entityTriplet,
           },
         }),
-      [reload],
+      [reloadFunc],
     );
     if (loading) {
       return <Progress />;
@@ -222,7 +222,7 @@ export const EntitiesTable = () => {
       return <div>Not Linked</div>;
   };
 
-  const fetchTeam = (entity: Entity, reload: boolean) => {
+  const fetchTeam = (entity: Entity, reloadTeam: boolean) => {
     const entityTriplet = stringifyEntityRef({
       namespace: entity.metadata.namespace,
       kind: entity.kind,
@@ -239,7 +239,7 @@ export const EntitiesTable = () => {
             backstage_id: entityTriplet,
           },
         }),
-      [reload],
+      [reloadTeam],
     );
     if (loading) {
       return <Progress />;

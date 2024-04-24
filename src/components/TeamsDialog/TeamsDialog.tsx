@@ -56,11 +56,11 @@ export const TeamsDialog = ({
         kind: entity.kind,
         name: entity.metadata.name,
       });
-      const selectedItem = data.find(
+      const item = data.find(
         s => s.attributes.backstage_id === entityTriplet,
       )?.id;
-      if (selectedItem) {
-        setSelectedItem(selectedItem);
+      if (item) {
+        setSelectedItem(item);
       }
     }
   }, [data]);
