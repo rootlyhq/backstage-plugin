@@ -9,6 +9,6 @@ metadata:
     backstage.io/techdocs-ref: dir:.
     lighthouse.com/website-url: https://rootly.com
 spec:
-  type: grpc
+  type: service
   owner: guests
   lifecycle: experimental

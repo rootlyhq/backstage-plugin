@@ -11,6 +11,6 @@ metadata:
     rootly.com/service-slug: elasticsearch-prod
     rootly.com/service-auto-import: enabled
 spec:
-  type: grpc
+  type: service
   owner: guests
   lifecycle: experimental

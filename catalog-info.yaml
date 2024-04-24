@@ -47,7 +47,7 @@ metadata:
     rootly.com/service-slug: elasticsearch-prod
     rootly.com/service-auto-import: enabled
 spec:
-  type: grpc
+  type: service
   owner: guests
   lifecycle: experimental
 
@@ -65,7 +65,7 @@ metadata:
     rootly.com/service-slug: elasticsearch-staging
     rootly.com/service-auto-import: enabled
 spec:
-  type: grpc
+  type: service
   owner: guests
   lifecycle: experimental
 
@@ -83,4 +83,9 @@ metadata:
     rootly.com/team-slug: infrastructure
     rootly.com/team-auto-import: enabled
     pagerduty.com/service-id: PPXDDC7
+spec:
+  type: team
+  owner: guests
+  lifecycle: experimental
+  children: [backstage]
 
