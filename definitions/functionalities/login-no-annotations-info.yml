@@ -8,8 +8,6 @@ metadata:
     github.com/project-slug: backstage/backstage
     backstage.io/techdocs-ref: dir:.
     lighthouse.com/website-url: https://rootly.com
-    rootly.com/functionality-slug: login
-    rootly.com/functionality-auto-import: enabled
 spec:
   type: grpc
   owner: guests

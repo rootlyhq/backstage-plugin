@@ -1,15 +1,86 @@
 apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: Checkout
+  description: |
+   checkout
+  annotations:
+    github.com/project-slug: backstage/backstage
+    backstage.io/techdocs-ref: dir:.
+    lighthouse.com/website-url: https://rootly.com
+    rootly.com/functionality-slug: checkout
+    rootly.com/functionality-auto-import: enabled
+spec:
+  type: grpc
+  owner: guests
+  lifecycle: experimental
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: Login
+  description: |
+   Controls the ability for users to login.
+  annotations:
+    github.com/project-slug: backstage/backstage
+    backstage.io/techdocs-ref: dir:.
+    lighthouse.com/website-url: https://rootly.com
+    rootly.com/functionality-slug: login
+    rootly.com/functionality-auto-import: enabled
+spec:
+  type: grpc
+  owner: guests
+  lifecycle: experimental
+
+---
+apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: backstage-plugin
+  name: elasticsearch-prod
   description: |
-    Backstage plugin to integrate Rootly.
+   elasticsearch-prod
   annotations:
-    github.com/project-slug: rootlyhq/backstage-plugin
-  tags:
-    - plugin
-    - oss
+    github.com/project-slug: backstage/backstage
+    backstage.io/techdocs-ref: dir:.
+    lighthouse.com/website-url: https://rootly.com
+    rootly.com/service-slug: elasticsearch-prod
+    rootly.com/service-auto-import: enabled
 spec:
-  type: library
-  owner: user:rootlyhq
-lifecycle: stable
+  type: grpc
+  owner: guests
+  lifecycle: experimental
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: elasticsearch-staging
+  description: |
+   elasticsearch-staging
+  annotations:
+    github.com/project-slug: backstage/backstage
+    backstage.io/techdocs-ref: dir:.
+    lighthouse.com/website-url: https://rootly.com
+    rootly.com/service-slug: elasticsearch-staging
+    rootly.com/service-auto-import: enabled
+spec:
+  type: grpc
+  owner: guests
+  lifecycle: experimental
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: infrastructure
+  description: |
+   Infrastucture
+  annotations:
+    github.com/project-slug: backstage/backstage
+    backstage.io/techdocs-ref: dir:.
+    lighthouse.com/website-url: https://rootly.com
+    rootly.com/team-slug: infrastructure
+    rootly.com/team-auto-import: enabled
+    pagerduty.com/service-id: PPXDDC7
+

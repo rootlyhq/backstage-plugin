@@ -1,14 +1,13 @@
 apiVersion: backstage.io/v1alpha1
-kind: System
+kind: Group
 metadata:
-  name: System
+  name: infrastructure
   description: |
-   checkout
+   Infrastucture
   annotations:
     github.com/project-slug: backstage/backstage
     backstage.io/techdocs-ref: dir:.
     lighthouse.com/website-url: https://rootly.com
-spec:
-  type: grpc
-  owner: guests
-  lifecycle: experimental
+    rootly.com/team-slug: infrastructure
+    rootly.com/team-auto-import: enabled
+    pagerduty.com/service-id: PPXDDC7
