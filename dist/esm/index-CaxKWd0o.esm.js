@@ -7,7 +7,7 @@ import { useApi, attachComponentData } from '@backstage/core-plugin-api';
 import Link from '@material-ui/core/Link';
 import { Alert } from '@material-ui/lab';
 import { useAsync } from 'react-use';
-import { R as RootlyApiRef, S as ServicesDialog, a as ROOTLY_ANNOTATION_SERVICE_ID, b as ROOTLY_ANNOTATION_SERVICE_SLUG, c as autoImportService, d as ROOTLY_ANNOTATION_FUNCTIONALITY_ID, e as ROOTLY_ANNOTATION_FUNCTIONALITY_SLUG, f as ROOTLY_ANNOTATION_TEAM_ID, g as ROOTLY_ANNOTATION_TEAM_SLUG, I as IncidentsTable, h as ServicesTable } from './index-Dk5kgccq.esm.js';
+import { R as RootlyApiRef, S as ServicesDialog, a as ROOTLY_ANNOTATION_SERVICE_ID, b as ROOTLY_ANNOTATION_SERVICE_SLUG, c as autoImportService, d as ROOTLY_ANNOTATION_FUNCTIONALITY_ID, e as ROOTLY_ANNOTATION_FUNCTIONALITY_SLUG, f as ROOTLY_ANNOTATION_TEAM_ID, g as ROOTLY_ANNOTATION_TEAM_SLUG, I as IncidentsTable, h as ServicesTable } from './index-CSqOVTPz.esm.js';
 import { Dialog, DialogTitle, DialogContent, Box, Button, Typography, DialogActions, IconButton, Menu, MenuItem, ListItemIcon, makeStyles, Tooltip } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
@@ -46,11 +46,11 @@ const FunctionalitiesDialog = ({
         kind: entity.kind,
         name: entity.metadata.name
       });
-      const selectedItem2 = (_a = data.find(
+      const item = (_a = data.find(
         (s) => s.attributes.backstage_id === entityTriplet
       )) == null ? void 0 : _a.id;
-      if (selectedItem2) {
-        setSelectedItem(selectedItem2);
+      if (item) {
+        setSelectedItem(item);
       }
     }
   }, [data]);
@@ -139,11 +139,11 @@ const TeamsDialog = ({
         kind: entity.kind,
         name: entity.metadata.name
       });
-      const selectedItem2 = (_a = data.find(
+      const item = (_a = data.find(
         (s) => s.attributes.backstage_id === entityTriplet
       )) == null ? void 0 : _a.id;
-      if (selectedItem2) {
-        setSelectedItem(selectedItem2);
+      if (item) {
+        setSelectedItem(item);
       }
     }
   }, [data]);
@@ -480,7 +480,7 @@ const EntitiesTable = () => {
       });
     });
   }, []);
-  const fetchService = (entity, reload2) => {
+  const fetchService = (entity, reloadService) => {
     const entityTriplet = stringifyEntityRef({
       namespace: entity.metadata.namespace,
       kind: entity.kind,
@@ -496,7 +496,7 @@ const EntitiesTable = () => {
           backstage_id: entityTriplet
         }
       }),
-      [reload2]
+      [reloadService]
     );
     if (loading2) {
       return /* @__PURE__ */ React.createElement(Progress, null);
@@ -517,7 +517,7 @@ const EntitiesTable = () => {
     entity.linkedService = void 0;
     return /* @__PURE__ */ React.createElement("div", null, "Not Linked");
   };
-  const fetchFunctionality = (entity, reload2) => {
+  const fetchFunctionality = (entity, reloadFunc) => {
     const entityTriplet = stringifyEntityRef({
       namespace: entity.metadata.namespace,
       kind: entity.kind,
@@ -533,7 +533,7 @@ const EntitiesTable = () => {
           backstage_id: entityTriplet
         }
       }),
-      [reload2]
+      [reloadFunc]
     );
     if (loading2) {
       return /* @__PURE__ */ React.createElement(Progress, null);
@@ -554,7 +554,7 @@ const EntitiesTable = () => {
     entity.linkedFunctionality = void 0;
     return /* @__PURE__ */ React.createElement("div", null, "Not Linked");
   };
-  const fetchTeam = (entity, reload2) => {
+  const fetchTeam = (entity, reloadTeam) => {
     const entityTriplet = stringifyEntityRef({
       namespace: entity.metadata.namespace,
       kind: entity.kind,
@@ -570,7 +570,7 @@ const EntitiesTable = () => {
           backstage_id: entityTriplet
         }
       }),
-      [reload2]
+      [reloadTeam]
     );
     if (loading2) {
       return /* @__PURE__ */ React.createElement(Progress, null);
@@ -751,9 +751,8 @@ const FunctionalitiesTable = ({ params }) => {
           entityRef: parseEntityRef(rowData.attributes.backstage_id)
         }
       );
-    } else {
-      return /* @__PURE__ */ React.createElement("div", null, "N/A");
     }
+    return /* @__PURE__ */ React.createElement("div", null, "N/A");
   }, []);
   const columns = [
     {
@@ -876,9 +875,8 @@ const TeamsTable = ({ params }) => {
           entityRef: parseEntityRef(rowData.attributes.backstage_id)
         }
       );
-    } else {
-      return /* @__PURE__ */ React.createElement("div", null, "N/A");
     }
+    return /* @__PURE__ */ React.createElement("div", null, "N/A");
   }, []);
   const columns = [
     {
@@ -989,4 +987,4 @@ const RootlyPage = () => {
 };
 
 export { DefaultRootlyPageLayout, RootlyPage };
-//# sourceMappingURL=index-BKEbLQla.esm.js.map
+//# sourceMappingURL=index-CaxKWd0o.esm.js.map

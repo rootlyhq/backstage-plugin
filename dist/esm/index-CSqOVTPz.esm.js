@@ -136,6 +136,7 @@ class RootlyApi {
     return response;
   }
   async importServiceEntity(entity) {
+    var _a;
     const entityTriplet = stringifyEntityRef({
       namespace: entity.metadata.namespace,
       kind: entity.kind,
@@ -150,7 +151,8 @@ class RootlyApi {
           attributes: {
             name: entity.metadata.name,
             description: entity.metadata.description,
-            backstage_id: entityTriplet
+            backstage_id: entityTriplet,
+            pagerduty_id: (_a = entity.metadata.annotations) == null ? void 0 : _a["pagerduty.com/service-id"]
           }
         }
       })
@@ -158,6 +160,7 @@ class RootlyApi {
     await this.call(`/v1/services`, init);
   }
   async updateServiceEntity(entity, service, old_service) {
+    var _a;
     const entityTriplet = stringifyEntityRef({
       namespace: entity.metadata.namespace,
       kind: entity.kind,
@@ -185,7 +188,8 @@ class RootlyApi {
         data: {
           type: "services",
           attributes: {
-            backstage_id: entityTriplet
+            backstage_id: entityTriplet,
+            pagerduty_id: (_a = entity.metadata.annotations) == null ? void 0 : _a["pagerduty.com/service-id"]
           }
         }
       })
@@ -208,6 +212,7 @@ class RootlyApi {
     await this.call(`/v1/services/${service.id}`, init);
   }
   async importFunctionalityEntity(entity) {
+    var _a;
     const entityTriplet = stringifyEntityRef({
       namespace: entity.metadata.namespace,
       kind: entity.kind,
@@ -222,7 +227,8 @@ class RootlyApi {
           attributes: {
             name: entity.metadata.name,
             description: entity.metadata.description,
-            backstage_id: entityTriplet
+            backstage_id: entityTriplet,
+            pagerduty_id: (_a = entity.metadata.annotations) == null ? void 0 : _a["pagerduty.com/service-id"]
           }
         }
       })
@@ -230,6 +236,7 @@ class RootlyApi {
     await this.call(`/v1/functionalities`, init);
   }
   async updateFunctionalityEntity(entity, functionality, old_functionality) {
+    var _a;
     const entityTriplet = stringifyEntityRef({
       namespace: entity.metadata.namespace,
       kind: entity.kind,
@@ -257,7 +264,8 @@ class RootlyApi {
         data: {
           type: "functionalities",
           attributes: {
-            backstage_id: entityTriplet
+            backstage_id: entityTriplet,
+            pagerduty_id: (_a = entity.metadata.annotations) == null ? void 0 : _a["pagerduty.com/service-id"]
           }
         }
       })
@@ -280,6 +288,7 @@ class RootlyApi {
     await this.call(`/v1/functionalities/${functionality.id}`, init);
   }
   async importTeamEntity(entity) {
+    var _a;
     const entityTriplet = stringifyEntityRef({
       namespace: entity.metadata.namespace,
       kind: entity.kind,
@@ -294,7 +303,8 @@ class RootlyApi {
           attributes: {
             name: entity.metadata.name,
             description: entity.metadata.description,
-            backstage_id: entityTriplet
+            backstage_id: entityTriplet,
+            pagerduty_id: (_a = entity.metadata.annotations) == null ? void 0 : _a["pagerduty.com/service-id"]
           }
         }
       })
@@ -302,6 +312,7 @@ class RootlyApi {
     await this.call(`/v1/teams`, init);
   }
   async updateTeamEntity(entity, team, old_team) {
+    var _a;
     const entityTriplet = stringifyEntityRef({
       namespace: entity.metadata.namespace,
       kind: entity.kind,
@@ -329,7 +340,8 @@ class RootlyApi {
         data: {
           type: "teams",
           attributes: {
-            backstage_id: entityTriplet
+            backstage_id: entityTriplet,
+            pagerduty_id: (_a = entity.metadata.annotations) == null ? void 0 : _a["pagerduty.com/service-id"]
           }
         }
       })
@@ -430,7 +442,7 @@ const RootlyPlugin = createPlugin({
 const RootlyPage = RootlyPlugin.provide(
   createRoutableExtension({
     name: "RootlyPage",
-    component: () => import('./index-BKEbLQla.esm.js').then((m) => m.RootlyPage),
+    component: () => import('./index-CaxKWd0o.esm.js').then((m) => m.RootlyPage),
     mountPoint: RootlyRouteRef
   })
 );
@@ -438,7 +450,7 @@ const RootlyOverviewCard = RootlyPlugin.provide(
   createComponentExtension({
     name: "RootlyOverviewCard",
     component: {
-      lazy: () => import('./index-BZ42tY03.esm.js').then((m) => m.RootlyOverviewCard)
+      lazy: () => import('./index-CFY9c4HG.esm.js').then((m) => m.RootlyOverviewCard)
     }
   })
 );
@@ -446,7 +458,7 @@ const RootlyIncidentsPage = RootlyPlugin.provide(
   createComponentExtension({
     name: "RootlyIncidentsPage",
     component: {
-      lazy: () => import('./index-B3K6H1qD.esm.js').then((m) => m.RootlyIncidentsPage)
+      lazy: () => import('./index-Bp3XKD8G.esm.js').then((m) => m.RootlyIncidentsPage)
     }
   })
 );
@@ -530,9 +542,8 @@ const ServicesTable = ({ params }) => {
           entityRef: parseEntityRef(rowData.attributes.backstage_id)
         }
       );
-    } else {
-      return /* @__PURE__ */ React.createElement("div", null, "N/A");
     }
+    return /* @__PURE__ */ React.createElement("div", null, "N/A");
   }, []);
   const columns = [
     {
@@ -621,9 +632,8 @@ class IncidentWrapper {
         return (_e = this.included) == null ? void 0 : _e.filter((i) => {
           return i.type === "environments" && ids.includes(i.id);
         });
-      } else {
-        return [];
       }
+      return [];
     });
     __publicField(this, "services", () => {
       var _a, _b, _c, _d, _e;
@@ -634,9 +644,8 @@ class IncidentWrapper {
         return (_e = this.included) == null ? void 0 : _e.filter((i) => {
           return i.type === "services" && ids.includes(i.id);
         });
-      } else {
-        return [];
       }
+      return [];
     });
     __publicField(this, "functionalities", () => {
       var _a, _b, _c, _d, _e;
@@ -647,9 +656,8 @@ class IncidentWrapper {
         return (_e = this.included) == null ? void 0 : _e.filter((i) => {
           return i.type === "functionalities" && ids.includes(i.id);
         });
-      } else {
-        return [];
       }
+      return [];
     });
     __publicField(this, "groups", () => {
       var _a, _b, _c, _d, _e;
@@ -660,9 +668,8 @@ class IncidentWrapper {
         return (_e = this.included) == null ? void 0 : _e.filter((i) => {
           return i.type === "groups" && ids.includes(i.id);
         });
-      } else {
-        return [];
       }
+      return [];
     });
     __publicField(this, "types", () => {
       var _a, _b, _c, _d, _e;
@@ -673,9 +680,8 @@ class IncidentWrapper {
         return (_e = this.included) == null ? void 0 : _e.filter((i) => {
           return i.type === "incident_types" && ids.includes(i.id);
         });
-      } else {
-        return [];
       }
+      return [];
     });
     this.incident = incident;
     this.included = included;
@@ -696,9 +702,8 @@ const ColoredChip = ({
         size: "small"
       }
     ));
-  } else {
-    return /* @__PURE__ */ React.createElement(Chip, { label: "N/A", size: "small" });
   }
+  return /* @__PURE__ */ React.createElement(Chip, { label: "N/A", size: "small" });
 };
 
 const ColoredChips = ({
@@ -957,11 +962,11 @@ const ServicesDialog = ({
         kind: entity.kind,
         name: entity.metadata.name
       });
-      const selectedItem2 = (_a = data.find(
+      const item = (_a = data.find(
         (s) => s.attributes.backstage_id === entityTriplet
       )) == null ? void 0 : _a.id;
-      if (selectedItem2) {
-        setSelectedItem(selectedItem2);
+      if (item) {
+        setSelectedItem(selectedItem);
       }
     }
   }, [data]);
@@ -1021,4 +1026,4 @@ const ServicesDialog = ({
 };
 
 export { ColoredChip as C, IncidentsTable as I, RootlyApiRef as R, ServicesDialog as S, ROOTLY_ANNOTATION_SERVICE_ID as a, ROOTLY_ANNOTATION_SERVICE_SLUG as b, autoImportService as c, ROOTLY_ANNOTATION_FUNCTIONALITY_ID as d, ROOTLY_ANNOTATION_FUNCTIONALITY_SLUG as e, ROOTLY_ANNOTATION_TEAM_ID as f, ROOTLY_ANNOTATION_TEAM_SLUG as g, ServicesTable as h, StatusChip as i, autoImportFunctionality as j, autoImportTeam as k, RootlyPage as l, RootlyOverviewCard as m, RootlyIncidentsPage as n, RootlyPlugin as o, isRootlyAvailable as p, RootlyApi as q };
-//# sourceMappingURL=index-Dk5kgccq.esm.js.map
+//# sourceMappingURL=index-CSqOVTPz.esm.js.map

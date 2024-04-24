@@ -7,7 +7,7 @@ import { useEntity } from '@backstage/plugin-catalog-react';
 import { Grid, Box, Button } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import { useAsync } from 'react-use';
-import { R as RootlyApiRef, S as ServicesDialog, I as IncidentsTable } from './index-Dk5kgccq.esm.js';
+import { R as RootlyApiRef, S as ServicesDialog, I as IncidentsTable } from './index-CSqOVTPz.esm.js';
 import 'qs';
 import '@material-ui/core/Link';
 import '@material-ui/core/Divider';
@@ -75,30 +75,29 @@ const RootlyIncidentsPageLayout = () => {
         handleUpdate: handleCloseUpdate
       }
     ))));
-  } else {
-    return /* @__PURE__ */ React.createElement(Page, { themeId: "tool" }, /* @__PURE__ */ React.createElement(Content, null, /* @__PURE__ */ React.createElement(ContentHeader, { title: "Ongoing incidents" }), /* @__PURE__ */ React.createElement(Grid, { container: true, spacing: 3, direction: "column" }, /* @__PURE__ */ React.createElement(Grid, { item: true }, /* @__PURE__ */ React.createElement(
-      IncidentsTable,
-      {
-        params: {
-          filter: {
-            services: service.attributes.slug,
-            status: "started,mitigated"
-          },
-          include: "environments,services,functionalities,groups,incident_types"
-        }
-      }
-    ))), /* @__PURE__ */ React.createElement(ContentHeader, { title: "Past incidents" }), /* @__PURE__ */ React.createElement(Grid, { container: true, spacing: 3, direction: "column" }, /* @__PURE__ */ React.createElement(Grid, { item: true }, /* @__PURE__ */ React.createElement(
-      IncidentsTable,
-      {
-        params: {
-          filter: {
-            services: service.attributes.slug
-          },
-          include: "environments,services,functionalities,groups,incident_types"
-        }
-      }
-    )))));
   }
+  return /* @__PURE__ */ React.createElement(Page, { themeId: "tool" }, /* @__PURE__ */ React.createElement(Content, null, /* @__PURE__ */ React.createElement(ContentHeader, { title: "Ongoing incidents" }), /* @__PURE__ */ React.createElement(Grid, { container: true, spacing: 3, direction: "column" }, /* @__PURE__ */ React.createElement(Grid, { item: true }, /* @__PURE__ */ React.createElement(
+    IncidentsTable,
+    {
+      params: {
+        filter: {
+          services: service.attributes.slug,
+          status: "started,mitigated"
+        },
+        include: "environments,services,functionalities,groups,incident_types"
+      }
+    }
+  ))), /* @__PURE__ */ React.createElement(ContentHeader, { title: "Past incidents" }), /* @__PURE__ */ React.createElement(Grid, { container: true, spacing: 3, direction: "column" }, /* @__PURE__ */ React.createElement(Grid, { item: true }, /* @__PURE__ */ React.createElement(
+    IncidentsTable,
+    {
+      params: {
+        filter: {
+          services: service.attributes.slug
+        },
+        include: "environments,services,functionalities,groups,incident_types"
+      }
+    }
+  )))));
 };
 RootlyIncidentsPageLayout.Route = Route;
 
@@ -112,4 +111,4 @@ const RootlyIncidentsPage = () => {
 };
 
 export { RootlyIncidentsPage, RootlyIncidentsPageLayout };
-//# sourceMappingURL=index-B3K6H1qD.esm.js.map
+//# sourceMappingURL=index-Bp3XKD8G.esm.js.map
