@@ -20,7 +20,7 @@ export const ColoredChip = ({
         />
       </Tooltip>
     );
-  } else {
+  } 
     return <Chip label="N/A" size="small" />;
-  }
+  
 };

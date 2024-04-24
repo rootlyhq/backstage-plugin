@@ -120,7 +120,7 @@ export const RootlyIncidentsPageLayout = () => {
         </Content>
       </Page>
     );
-  } else {
+  } 
     return (
       <Page themeId="tool">
         <Content>
@@ -156,7 +156,7 @@ export const RootlyIncidentsPageLayout = () => {
         </Content>
       </Page>
     );
-  }
+  
 };
 
 RootlyIncidentsPageLayout.Route = Route;

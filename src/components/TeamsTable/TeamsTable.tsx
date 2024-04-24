@@ -73,9 +73,9 @@ export const TeamsTable = ({ params }: { params?: TeamsFetchOpts }) => {
           entityRef={parseEntityRef(rowData.attributes.backstage_id)}
         />
       );
-    } else {
+    } 
       return <div>N/A</div>;
-    }
+    
   }, []);
 
   const columns: TableColumn<Team>[] = [

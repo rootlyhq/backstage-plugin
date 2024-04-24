@@ -73,9 +73,9 @@ export const ServicesTable = ({ params }: { params?: ServicesFetchOpts }) => {
           entityRef={parseEntityRef(rowData.attributes.backstage_id)}
         />
       );
-    } else {
+    } 
       return <div>N/A</div>;
-    }
+    
   }, []);
 
   const columns: TableColumn<Service>[] = [
