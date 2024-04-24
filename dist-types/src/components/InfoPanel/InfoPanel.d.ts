@@ -12,5 +12,5 @@ declare type Props = {
  * @param {Object} [children] Objects to provide context, such as a stack trace or detailed error reporting.
  *  Will be available inside an unfolded accordion.
  */
-export declare const InfoPanel: (props: Props) => JSX.Element;
+export declare const InfoPanel: (props: Props) => React.JSX.Element;
 export {};

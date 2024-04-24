@@ -1,5 +1,5 @@
-/// <reference types="react" />
-import { Environment, Functionality, Group, IncidentType, Service } from '../../types';
+import React from 'react';
+import { Environment, Functionality, Team, IncidentType, Service } from '../../types';
 export declare const ColoredChips: ({ objects, }: {
-    objects: Service[] | Functionality[] | Environment[] | IncidentType[] | Group[];
-}) => JSX.Element;
+    objects: Service[] | Functionality[] | Environment[] | IncidentType[] | Team[];
+}) => React.JSX.Element;

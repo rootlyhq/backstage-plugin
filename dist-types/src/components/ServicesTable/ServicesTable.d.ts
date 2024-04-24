@@ -1,5 +1,5 @@
-/// <reference types="react" />
+import React from 'react';
 import { ServicesFetchOpts } from '../../api';
 export declare const ServicesTable: ({ params }: {
     params?: ServicesFetchOpts | undefined;
-}) => JSX.Element;
+}) => React.JSX.Element;

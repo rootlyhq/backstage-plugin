@@ -3,7 +3,7 @@ import React from 'react';
 import {
   Environment,
   Functionality,
-  Group,
+  Team,
   IncidentType,
   Service,
 } from '../../types';
@@ -17,7 +17,7 @@ export const ColoredChips = ({
     | Functionality[]
     | Environment[]
     | IncidentType[]
-    | Group[];
+    | Team[];
 }) => {
   if (objects?.length > 0) {
     return (

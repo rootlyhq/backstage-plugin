@@ -117,6 +117,24 @@ class RootlyApi {
     );
     return response;
   }
+  async getFunctionalityIncidentsChart(functionality, opts) {
+    const init = { headers: { "Content-Type": "application/vnd.api+json" } };
+    const params = qs.stringify(opts, { encode: false });
+    const response = await this.fetch(
+      `/v1/functionalities/${functionality.id}/incidents_chart?${params}`,
+      init
+    );
+    return response;
+  }
+  async getTeamIncidentsChart(team, opts) {
+    const init = { headers: { "Content-Type": "application/vnd.api+json" } };
+    const params = qs.stringify(opts, { encode: false });
+    const response = await this.fetch(
+      `/v1/teams/${team.id}/incidents_chart?${params}`,
+      init
+    );
+    return response;
+  }
   async importServiceEntity(entity) {
     const entityTriplet = stringifyEntityRef({
       namespace: entity.metadata.namespace,
@@ -353,6 +371,13 @@ class RootlyApi {
     );
     return `${this.domain}/account/incidents?${params}`;
   }
+  getListIncidentsForTeamURL(team) {
+    const params = qs.stringify(
+      { filter: { filters: [{ groups: [team.id] }] } },
+      { arrayFormat: "brackets" }
+    );
+    return `${this.domain}/account/incidents?${params}`;
+  }
   getServiceDetailsURL(service) {
     return `${this.domain}/account/services/${service.attributes.slug}`;
   }
@@ -405,7 +430,7 @@ const RootlyPlugin = createPlugin({
 const RootlyPage = RootlyPlugin.provide(
   createRoutableExtension({
     name: "RootlyPage",
-    component: () => import('./index-uct7Vew5.esm.js').then((m) => m.RootlyPage),
+    component: () => import('./index-BKEbLQla.esm.js').then((m) => m.RootlyPage),
     mountPoint: RootlyRouteRef
   })
 );
@@ -413,7 +438,7 @@ const RootlyOverviewCard = RootlyPlugin.provide(
   createComponentExtension({
     name: "RootlyOverviewCard",
     component: {
-      lazy: () => import('./index-B93YF6I4.esm.js').then((m) => m.RootlyOverviewCard)
+      lazy: () => import('./index-BZ42tY03.esm.js').then((m) => m.RootlyOverviewCard)
     }
   })
 );
@@ -421,7 +446,7 @@ const RootlyIncidentsPage = RootlyPlugin.provide(
   createComponentExtension({
     name: "RootlyIncidentsPage",
     component: {
-      lazy: () => import('./index-CB_a2MmD.esm.js').then((m) => m.RootlyIncidentsPage)
+      lazy: () => import('./index-B3K6H1qD.esm.js').then((m) => m.RootlyIncidentsPage)
     }
   })
 );
@@ -594,7 +619,7 @@ class IncidentWrapper {
           return r.id;
         });
         return (_e = this.included) == null ? void 0 : _e.filter((i) => {
-          return i.type == "environments" && ids.includes(i.id);
+          return i.type === "environments" && ids.includes(i.id);
         });
       } else {
         return [];
@@ -607,7 +632,7 @@ class IncidentWrapper {
           return r.id;
         });
         return (_e = this.included) == null ? void 0 : _e.filter((i) => {
-          return i.type == "services" && ids.includes(i.id);
+          return i.type === "services" && ids.includes(i.id);
         });
       } else {
         return [];
@@ -620,7 +645,7 @@ class IncidentWrapper {
           return r.id;
         });
         return (_e = this.included) == null ? void 0 : _e.filter((i) => {
-          return i.type == "functionalities" && ids.includes(i.id);
+          return i.type === "functionalities" && ids.includes(i.id);
         });
       } else {
         return [];
@@ -633,7 +658,7 @@ class IncidentWrapper {
           return r.id;
         });
         return (_e = this.included) == null ? void 0 : _e.filter((i) => {
-          return i.type == "groups" && ids.includes(i.id);
+          return i.type === "groups" && ids.includes(i.id);
         });
       } else {
         return [];
@@ -646,7 +671,7 @@ class IncidentWrapper {
           return r.id;
         });
         return (_e = this.included) == null ? void 0 : _e.filter((i) => {
-          return i.type == "incident_types" && ids.includes(i.id);
+          return i.type === "incident_types" && ids.includes(i.id);
         });
       } else {
         return [];
@@ -996,4 +1021,4 @@ const ServicesDialog = ({
 };
 
 export { ColoredChip as C, IncidentsTable as I, RootlyApiRef as R, ServicesDialog as S, ROOTLY_ANNOTATION_SERVICE_ID as a, ROOTLY_ANNOTATION_SERVICE_SLUG as b, autoImportService as c, ROOTLY_ANNOTATION_FUNCTIONALITY_ID as d, ROOTLY_ANNOTATION_FUNCTIONALITY_SLUG as e, ROOTLY_ANNOTATION_TEAM_ID as f, ROOTLY_ANNOTATION_TEAM_SLUG as g, ServicesTable as h, StatusChip as i, autoImportFunctionality as j, autoImportTeam as k, RootlyPage as l, RootlyOverviewCard as m, RootlyIncidentsPage as n, RootlyPlugin as o, isRootlyAvailable as p, RootlyApi as q };
-//# sourceMappingURL=index-DRJvTOq5.esm.js.map
+//# sourceMappingURL=index-Dk5kgccq.esm.js.map

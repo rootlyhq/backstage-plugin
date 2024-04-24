@@ -1,4 +1,4 @@
-import { Environment, Functionality, Group, Incident, IncidentType, Service } from '../../types';
+import { Environment, Functionality, Team, Incident, IncidentType, Service } from '../../types';
 export declare class IncidentWrapper {
     incident: Incident;
     included: any;
@@ -6,6 +6,6 @@ export declare class IncidentWrapper {
     environments: () => Environment[];
     services: () => Service[];
     functionalities: () => Functionality[];
-    groups: () => Group[];
+    groups: () => Team[];
     types: () => IncidentType[];
 }

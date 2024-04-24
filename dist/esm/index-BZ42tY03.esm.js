@@ -14,7 +14,7 @@ import { blue } from '@material-ui/core/colors';
 import 'chartkick/chart.js';
 import moment from 'moment';
 import { useAsync } from 'react-use';
-import { R as RootlyApiRef, a as ROOTLY_ANNOTATION_SERVICE_ID, b as ROOTLY_ANNOTATION_SERVICE_SLUG, c as autoImportService, C as ColoredChip, i as StatusChip, d as ROOTLY_ANNOTATION_FUNCTIONALITY_ID, e as ROOTLY_ANNOTATION_FUNCTIONALITY_SLUG, j as autoImportFunctionality, f as ROOTLY_ANNOTATION_TEAM_ID, g as ROOTLY_ANNOTATION_TEAM_SLUG, k as autoImportTeam } from './index-DRJvTOq5.esm.js';
+import { R as RootlyApiRef, a as ROOTLY_ANNOTATION_SERVICE_ID, b as ROOTLY_ANNOTATION_SERVICE_SLUG, c as autoImportService, C as ColoredChip, i as StatusChip, d as ROOTLY_ANNOTATION_FUNCTIONALITY_ID, e as ROOTLY_ANNOTATION_FUNCTIONALITY_SLUG, j as autoImportFunctionality, f as ROOTLY_ANNOTATION_TEAM_ID, g as ROOTLY_ANNOTATION_TEAM_SLUG, k as autoImportTeam } from './index-Dk5kgccq.esm.js';
 import 'qs';
 import '@material-ui/core/Divider';
 
@@ -552,4 +552,4 @@ const RootlyOverviewCard = (resourceType) => {
 };
 
 export { RootlyOverviewCard };
-//# sourceMappingURL=index-B93YF6I4.esm.js.map
+//# sourceMappingURL=index-BZ42tY03.esm.js.map

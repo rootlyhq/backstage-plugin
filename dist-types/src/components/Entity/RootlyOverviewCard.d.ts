@@ -1,3 +1,3 @@
-/// <reference types="react" />
-import 'chartkick/chart.js';
-export declare const RootlyOverviewCard: () => JSX.Element;
+import React from 'react';
+import { RootlyResourceType } from '../../types';
+export declare const RootlyOverviewCard: (resourceType: RootlyResourceType) => React.JSX.Element;

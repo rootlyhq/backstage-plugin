@@ -1,15 +1,9 @@
 /// <reference types="react" />
+import { Entity as Entity$1 } from '@backstage/catalog-model';
+import * as react from 'react';
+import react__default from 'react';
 import * as _backstage_core_plugin_api from '@backstage/core-plugin-api';
 import { DiscoveryApi, IdentityApi } from '@backstage/core-plugin-api';
-import { Entity as Entity$1 } from '@backstage/catalog-model';
-
-declare const RootlyPage: () => JSX.Element;
-declare const RootlyOverviewCard: () => JSX.Element;
-declare const RootlyIncidentsPage: () => JSX.Element;
-
-declare const RootlyPlugin: _backstage_core_plugin_api.BackstagePlugin<{
-    explore: _backstage_core_plugin_api.RouteRef<undefined>;
-}, {}>;
 
 interface Service {
     id: string;
@@ -69,7 +63,7 @@ interface User {
         full_name: string;
     };
 }
-interface Group {
+interface Team {
     id: string;
     type: string;
     attributes: {
@@ -140,7 +134,7 @@ interface Incident {
         {
             id: string;
             type: string;
-            attributes: Group | Environment | Service | Functionality | IncidentType;
+            attributes: Team | Environment | Service | Functionality | IncidentType;
         }
     ];
 }
@@ -148,8 +142,38 @@ interface Entity extends Entity$1 {
     linkedService: Service | undefined;
 }
 
+declare enum RootlyResourceType {
+    Service = "Service",
+    Functionality = "Functionality",
+    Team = "Team",
+  }
+
+declare const RootlyPage: () => react.JSX.Element;
+declare const RootlyOverviewCard: (resourceType: RootlyResourceType) => react.JSX.Element;
+declare const RootlyIncidentsPage: () => react.JSX.Element;
+
+declare const RootlyPlugin: _backstage_core_plugin_api.BackstagePlugin<{
+    explore: _backstage_core_plugin_api.RouteRef<undefined>;
+}, {}, {}>;
+
 declare const RootlyApiRef: _backstage_core_plugin_api.ApiRef<Rootly>;
 declare type ServicesFetchOpts = {
+    page?: {
+        number?: number;
+        size?: number;
+    };
+    filter?: object;
+    include?: string;
+};
+declare type FunctionalitiesFetchOpts = {
+    page?: {
+        number?: number;
+        size?: number;
+    };
+    filter?: object;
+    include?: string;
+};
+declare type TeamsFetchOpts = {
     page?: {
         number?: number;
         size?: number;
@@ -166,21 +190,48 @@ declare type IncidentsFetchOpts = {
     include?: string;
 };
 interface Rootly {
+    getService(id_or_slug: String): Promise<ServiceResponse>;
     getServices(opts?: ServicesFetchOpts): Promise<ServicesResponse>;
+    getFunctionality(id_or_slug: String): Promise<FunctionalityResponse>;
+    getFunctionalities(opts?: FunctionalitiesFetchOpts): Promise<FunctionalitiesResponse>;
+    getTeam(id_or_slug: String): Promise<TeamResponse>;
+    getTeams(opts?: TeamsFetchOpts): Promise<TeamResponse>;
     getIncidents(opts?: IncidentsFetchOpts): Promise<IncidentsResponse>;
-    importEntity(entity: Entity): Promise<void>;
-    updateEntity(entity: Entity, old_service: Service, service: Service): Promise<void>;
-    deleteEntity(service: Service): Promise<void>;
+    importServiceEntity(entity: Entity): Promise<void>;
+    updateServiceEntity(entity: Entity, service: Service, old_service?: Service): Promise<void>;
+    deleteServiceEntity(service: Service): Promise<void>;
+    importFunctionalityEntity(entity: Entity): Promise<void>;
+    updateFunctionalityEntity(entity: Entity, functionality: Functionality, old_functionality?: Functionality): Promise<void>;
+    deleteFunctionalityEntity(functionality: Functionality): Promise<void>;
+    importTeamEntity(entity: Entity): Promise<void>;
+    updateTeamEntity(entity: Entity, functionality: Team, old_functionality?: Team): Promise<void>;
+    deleteTeamEntity(team: Team): Promise<void>;
     getCreateIncidentURL(): string;
     getListIncidents(): string;
     getListIncidentsForServiceURL(service: Service): string;
     getServiceDetailsURL(service: Service): string;
-    getIncidentDetailsURL(incident: Incident): string;
     getServiceIncidentsChart(service: Service, opts?: {
         period: string;
     }): Promise<{
         data: object;
     }>;
+    getListIncidentsForFunctionalityURL(functionality: Functionality): string;
+    getFunctionalityDetailsURL(functionality: Functionality): string;
+    getFunctionalityIncidentsChart(functionality: Functionality, opts?: {
+        period: string;
+    }): Promise<{
+        data: object;
+    }>;
+    getListIncidentsForTeamURL(team: Team): string;
+    getTeamDetailsURL(team: Team): string;
+    getTeamIncidentsChart(team: Team, opts?: {
+        period: string;
+    }): Promise<{
+        data: object;
+    }>;
+}
+interface ServiceResponse {
+    data: Service;
 }
 interface ServicesResponse {
     meta: {
@@ -188,6 +239,26 @@ interface ServicesResponse {
         total_pages: number;
     };
     data: Service[];
+}
+interface FunctionalityResponse {
+    data: Functionality;
+}
+interface FunctionalitiesResponse {
+    meta: {
+        total_count: number;
+        total_pages: number;
+    };
+    data: Functionality[];
+}
+interface TeamResponse {
+    data: Team;
+}
+interface TeamsResponse {
+    meta: {
+        total_count: number;
+        total_pages: number;
+    };
+    data: Team[];
 }
 interface IncidentsResponse {
     meta: {
@@ -228,21 +299,34 @@ declare class RootlyApi implements Rootly {
     constructor(opts: Options);
     private fetch;
     private call;
+    getService(id_or_slug: String): Promise<ServiceResponse>;
     getServices(opts?: ServicesFetchOpts): Promise<ServicesResponse>;
+    getFunctionality(id_or_slug: String): Promise<FunctionalityResponse>;
+    getFunctionalities(opts?: FunctionalitiesFetchOpts): Promise<FunctionalityResponse>;
+    getTeam(id_or_slug: String): Promise<TeamResponse>;
+    getTeams(opts?: TeamsFetchOpts): Promise<TeamsResponse>;
     getIncidents(opts?: IncidentsFetchOpts): Promise<IncidentsResponse>;
     getServiceIncidentsChart(service: Service, opts?: {
         period: string;
     }): Promise<{
         data: object;
     }>;
-    importEntity(entity: Entity): Promise<void>;
-    updateEntity(entity: Entity, old_service: Service, service: Service): Promise<void>;
-    deleteEntity(service: Service): Promise<void>;
+    importServiceEntity(entity: Entity): Promise<void>;
+    updateServiceEntity(entity: Entity, service: Service, old_service?: Service): Promise<void>;
+    deleteServiceEntity(service: Service): Promise<void>;
+    importFunctionalityEntity(entity: Entity): Promise<void>;
+    updateFunctionalityEntity(entity: Entity, functionality: Functionality, old_functionality?: Functionality): Promise<void>;
+    deleteFunctionalityEntity(functionality: Functionality): Promise<void>;
+    importTeamEntity(entity: Entity): Promise<void>;
+    updateTeamEntity(entity: Entity, team: Team, old_team?: Team): Promise<void>;
+    deleteTeamEntity(team: Team): Promise<void>;
     getCreateIncidentURL(): string;
     getListIncidents(): string;
     getListIncidentsForServiceURL(service: Service): string;
+    getListIncidentsForFunctionalityURL(functionality: Functionality): string;
     getServiceDetailsURL(service: Service): string;
-    getIncidentDetailsURL(incident: Incident): string;
+    getFunctionalityDetailsURL(functionality: Functionality): string;
+    getTeamDetailsURL(team: Team): string;
     private apiUrl;
     private addAuthHeaders;
 }
@@ -251,11 +335,11 @@ declare const isRootlyAvailable: (entity: Entity$1) => boolean;
 
 declare const ServicesTable: ({ params }: {
     params?: ServicesFetchOpts | undefined;
-}) => JSX.Element;
+}) => react__default.JSX.Element;
 
 declare const IncidentsTable: ({ params }: {
     params?: IncidentsFetchOpts | undefined;
-}) => JSX.Element;
+}) => react__default.JSX.Element;
 
 declare const ServicesDialog: ({ open, entity, handleClose, handleImport, handleUpdate, }: {
     open: boolean;
@@ -263,6 +347,6 @@ declare const ServicesDialog: ({ open, entity, handleClose, handleImport, handle
     handleClose: (event: {}, reason: 'backdropClick' | 'escapeKeyDown') => void;
     handleImport: Function;
     handleUpdate: Function;
-}) => JSX.Element;
+}) => react__default.JSX.Element;
 
-export { type IncidentsFetchOpts, IncidentsTable, type Rootly, RootlyApi, RootlyApiRef, RootlyIncidentsPage, RootlyOverviewCard, RootlyPage, RootlyPlugin, ServicesDialog, type ServicesFetchOpts, ServicesTable, isRootlyAvailable };
+export { type FunctionalitiesFetchOpts, type IncidentsFetchOpts, IncidentsTable, type Rootly, RootlyApi, RootlyApiRef, RootlyIncidentsPage, RootlyOverviewCard, RootlyPage, RootlyPlugin, ServicesDialog, type ServicesFetchOpts, ServicesTable, type TeamsFetchOpts, isRootlyAvailable };

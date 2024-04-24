@@ -13,7 +13,7 @@ import SyncIcon from '@material-ui/icons/Sync';
 import Delete from '@material-ui/icons/Delete';
 import React, { useState } from 'react';
 import { RootlyApiRef } from '../../api';
-import { Entity, Service, Functionality } from '../../types';
+import { Entity, Service, Functionality, Team } from '../../types';
 import { ServicesDialog } from '../ServicesDialog';
 import { FunctionalitiesDialog } from '../FunctionalitiesDialog';
 import { TeamsDialog } from '../TeamsDialog';

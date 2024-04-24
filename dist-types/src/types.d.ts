@@ -36,7 +36,6 @@ export interface Functionality {
         slack_channels: object[];
         slack_aliases: object[];
         backstage_id: string | undefined;
-        incidents_count: BigInteger;
         created_at: string;
         updated_at: string;
     };
@@ -67,7 +66,6 @@ export interface Team {
         description: string | undefined;
         color: string;
         backstage_id: string | undefined;
-        incidents_count: BigInteger;
         created_at: string;
         updated_at: string;
     };
@@ -80,6 +78,8 @@ export interface IncidentType {
         slug: string;
         description: string | undefined;
         color: string;
+        created_at: string;
+        updated_at: string;
     };
 }
 export interface Environment {
@@ -90,6 +90,8 @@ export interface Environment {
         slug: string;
         description: string | undefined;
         color: string;
+        created_at: string;
+        updated_at: string;
     };
 }
 export interface Severity {
@@ -146,4 +148,9 @@ export interface Entity extends BackstageEntity {
     linkedService: Service | undefined;
     linkedFunctionality: Functionality | undefined;
     linkedTeam: Team | undefined;
+}
+export declare enum RootlyResourceType {
+    Service = "Service",
+    Functionality = "Functionality",
+    Team = "Team"
 }

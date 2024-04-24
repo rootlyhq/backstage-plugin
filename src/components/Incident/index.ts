@@ -1,7 +1,7 @@
 import {
   Environment,
   Functionality,
-  Group,
+  Team,
   Incident,
   IncidentType,
   Service,
@@ -21,7 +21,7 @@ export class IncidentWrapper {
         return r.id;
       });
       return this.included?.filter((i: { type: string; id: string }) => {
-        return i.type == 'environments' && ids.includes(i.id);
+        return i.type === 'environments' && ids.includes(i.id);
       });
     } else {
       return [];
@@ -34,7 +34,7 @@ export class IncidentWrapper {
         return r.id;
       });
       return this.included?.filter((i: { type: string; id: string }) => {
-        return i.type == 'services' && ids.includes(i.id);
+        return i.type === 'services' && ids.includes(i.id);
       });
     } else {
       return [];
@@ -47,20 +47,20 @@ export class IncidentWrapper {
         return r.id;
       });
       return this.included?.filter((i: { type: string; id: string }) => {
-        return i.type == 'functionalities' && ids.includes(i.id);
+        return i.type === 'functionalities' && ids.includes(i.id);
       });
     } else {
       return [];
     }
   };
 
-  groups = (): Group[] => {
+  groups = (): Team[] => {
     if (this.incident.relationships?.groups?.data) {
       const ids = this.incident.relationships?.groups?.data.map(r => {
         return r.id;
       });
       return this.included?.filter((i: { type: string; id: string }) => {
-        return i.type == 'groups' && ids.includes(i.id);
+        return i.type === 'groups' && ids.includes(i.id);
       });
     } else {
       return [];
@@ -73,7 +73,7 @@ export class IncidentWrapper {
         return r.id;
       });
       return this.included?.filter((i: { type: string; id: string }) => {
-        return i.type == 'incident_types' && ids.includes(i.id);
+        return i.type === 'incident_types' && ids.includes(i.id);
       });
     } else {
       return [];

@@ -1,2 +1,2 @@
-/// <reference types="react" />
-export declare const RootlyPage: () => JSX.Element;
+import React from 'react';
+export declare const RootlyPage: () => React.JSX.Element;

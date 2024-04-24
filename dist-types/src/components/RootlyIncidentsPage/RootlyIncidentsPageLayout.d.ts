@@ -9,7 +9,7 @@ declare type SubRoute = {
     }>;
 };
 export declare const RootlyIncidentsPageLayout: {
-    (): JSX.Element;
+    (): React.JSX.Element;
     Route: (props: SubRoute) => null;
 };
 export {};

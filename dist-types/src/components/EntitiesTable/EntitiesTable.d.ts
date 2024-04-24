@@ -1,2 +1,2 @@
-/// <reference types="react" />
-export declare const EntitiesTable: () => JSX.Element;
+import React from 'react';
+export declare const EntitiesTable: () => React.JSX.Element;

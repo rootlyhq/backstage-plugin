@@ -1,6 +1,6 @@
 import React from 'react';
 import { Entity } from '../../types';
-export declare const ServicesDialog: ({ open, entity, handleClose, handleImport, handleUpdate, }: {
+export declare const FunctionalitiesDialog: ({ open, entity, handleClose, handleImport, handleUpdate, }: {
     open: boolean;
     entity: Entity;
     handleClose: (event: {}, reason: 'backdropClick' | 'escapeKeyDown') => void;

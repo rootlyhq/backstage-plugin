@@ -354,7 +354,7 @@ export const EntitiesTable = () => {
           kind: entity.kind,
           name: entity.metadata.name,
         });
-        return { ...entity, id: entityTriplet, linkedService: undefined, linkedFunctionality: undefined};
+        return { ...entity, id: entityTriplet, linkedService: undefined, linkedFunctionality: undefined, linkedTeam: undefined};
       })
     : [];
 

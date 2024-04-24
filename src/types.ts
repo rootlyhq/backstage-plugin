@@ -63,6 +63,9 @@ export interface Team {
     slug: string;
     description: string | undefined;
     color: string;
+    backstage_id: string | undefined;
+    created_at: string;
+    updated_at: string;
   };
 }
 
@@ -74,6 +77,8 @@ export interface IncidentType {
     slug: string;
     description: string | undefined;
     color: string;
+    created_at: string;
+    updated_at: string;
   };
 }
 
@@ -85,6 +90,8 @@ export interface Environment {
     slug: string;
     description: string | undefined;
     color: string;
+    created_at: string;
+    updated_at: string;
   };
 }
 
@@ -132,7 +139,7 @@ export interface Incident {
     {
       id: string;
       type: string;
-      attributes: Group | Environment | Service | Functionality | IncidentType;
+      attributes: Team | Environment | Service | Functionality | IncidentType;
     },
   ];
 }

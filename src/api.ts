@@ -55,7 +55,7 @@ export interface Rootly {
     opts?: FunctionalitiesFetchOpts,
   ): Promise<FunctionalitiesResponse>;
   getTeam(id_or_slug: String): Promise<TeamResponse>;
-  getTeams(opts?: TeamsFetchOpts): Promise<TeamResponse>;
+  getTeams(opts?: TeamsFetchOpts): Promise<TeamsResponse>;
   getIncidents(opts?: IncidentsFetchOpts): Promise<IncidentsResponse>;
 
   importServiceEntity(entity: Entity): Promise<void>;
@@ -244,10 +244,10 @@ export class RootlyApi implements Rootly {
 
   async getFunctionalities(
     opts?: FunctionalitiesFetchOpts,
-  ): Promise<FunctionalityResponse> {
+  ): Promise<FunctionalitiesResponse> {
     const init = { headers: { 'Content-Type': 'application/vnd.api+json' } };
     const params = qs.stringify(opts, { encode: false });
-    const response = await this.fetch<FunctionalityResponse>(
+    const response = await this.fetch<FunctionalitiesResponse>(
       `/v1/functionalities?${params}`,
       init,
     );
@@ -266,7 +266,7 @@ export class RootlyApi implements Rootly {
   async getTeams(opts?: TeamsFetchOpts): Promise<TeamsResponse> {
     const init = { headers: { 'Content-Type': 'application/vnd.api+json' } };
     const params = qs.stringify(opts, { encode: false });
-    const response = await this.fetch<TeamResponse>(
+    const response = await this.fetch<TeamsResponse>(
       `/v1/teams?${params}`,
       init,
     );
@@ -291,6 +291,32 @@ export class RootlyApi implements Rootly {
     const params = qs.stringify(opts, { encode: false });
     const response = await this.fetch<{ data: object }>(
       `/v1/services/${service.id}/incidents_chart?${params}`,
+      init,
+    );
+    return response;
+  }
+
+  async getFunctionalityIncidentsChart(
+    functionality: Functionality,
+    opts?: { period: string },
+  ): Promise<{ data: object }> {
+    const init = { headers: { 'Content-Type': 'application/vnd.api+json' } };
+    const params = qs.stringify(opts, { encode: false });
+    const response = await this.fetch<{ data: object }>(
+      `/v1/functionalities/${functionality.id}/incidents_chart?${params}`,
+      init,
+    );
+    return response;
+  }
+
+  async getTeamIncidentsChart(
+    team: Team,
+    opts?: { period: string },
+  ): Promise<{ data: object }> {
+    const init = { headers: { 'Content-Type': 'application/vnd.api+json' } };
+    const params = qs.stringify(opts, { encode: false });
+    const response = await this.fetch<{ data: object }>(
+      `/v1/teams/${team.id}/incidents_chart?${params}`,
       init,
     );
     return response;
@@ -570,6 +596,14 @@ export class RootlyApi implements Rootly {
   getListIncidentsForFunctionalityURL(functionality: Functionality): string {
     const params = qs.stringify(
       { filter: { filters: [{ functionalities: [functionality.id] }] } },
+      { arrayFormat: 'brackets' },
+    );
+    return `${this.domain}/account/incidents?${params}`;
+  }
+
+  getListIncidentsForTeamURL(team: Team): string {
+    const params = qs.stringify(
+      { filter: { filters: [{ groups: [team.id] }] } },
       { arrayFormat: 'brackets' },
     );
     return `${this.domain}/account/incidents?${params}`;

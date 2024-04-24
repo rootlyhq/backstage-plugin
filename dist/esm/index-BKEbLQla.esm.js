@@ -7,7 +7,7 @@ import { useApi, attachComponentData } from '@backstage/core-plugin-api';
 import Link from '@material-ui/core/Link';
 import { Alert } from '@material-ui/lab';
 import { useAsync } from 'react-use';
-import { R as RootlyApiRef, S as ServicesDialog, a as ROOTLY_ANNOTATION_SERVICE_ID, b as ROOTLY_ANNOTATION_SERVICE_SLUG, c as autoImportService, d as ROOTLY_ANNOTATION_FUNCTIONALITY_ID, e as ROOTLY_ANNOTATION_FUNCTIONALITY_SLUG, f as ROOTLY_ANNOTATION_TEAM_ID, g as ROOTLY_ANNOTATION_TEAM_SLUG, I as IncidentsTable, h as ServicesTable } from './index-DRJvTOq5.esm.js';
+import { R as RootlyApiRef, S as ServicesDialog, a as ROOTLY_ANNOTATION_SERVICE_ID, b as ROOTLY_ANNOTATION_SERVICE_SLUG, c as autoImportService, d as ROOTLY_ANNOTATION_FUNCTIONALITY_ID, e as ROOTLY_ANNOTATION_FUNCTIONALITY_SLUG, f as ROOTLY_ANNOTATION_TEAM_ID, g as ROOTLY_ANNOTATION_TEAM_SLUG, I as IncidentsTable, h as ServicesTable } from './index-Dk5kgccq.esm.js';
 import { Dialog, DialogTitle, DialogContent, Box, Button, Typography, DialogActions, IconButton, Menu, MenuItem, ListItemIcon, makeStyles, Tooltip } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
@@ -672,7 +672,7 @@ const EntitiesTable = () => {
       kind: entity.kind,
       name: entity.metadata.name
     });
-    return { ...entity, id: entityTriplet, linkedService: void 0, linkedFunctionality: void 0 };
+    return { ...entity, id: entityTriplet, linkedService: void 0, linkedFunctionality: void 0, linkedTeam: void 0 };
   }) : [];
   return /* @__PURE__ */ React.createElement(
     Table,
@@ -989,4 +989,4 @@ const RootlyPage = () => {
 };
 
 export { DefaultRootlyPageLayout, RootlyPage };
-//# sourceMappingURL=index-uct7Vew5.esm.js.map
+//# sourceMappingURL=index-BKEbLQla.esm.js.map

@@ -12,7 +12,7 @@ declare type LayoutProps = {
     children?: React.ReactNode;
 };
 export declare const DefaultRootlyPageLayout: {
-    ({ children }: LayoutProps): JSX.Element;
+    ({ children }: LayoutProps): React.JSX.Element;
     Route: (props: SubRoute) => null;
 };
 export {};

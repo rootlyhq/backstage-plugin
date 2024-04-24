@@ -1,4 +1,4 @@
-/// <reference types="react" />
+import React from 'react';
 export declare const StatusChip: ({ status }: {
     status: string;
-}) => JSX.Element;
+}) => React.JSX.Element;
