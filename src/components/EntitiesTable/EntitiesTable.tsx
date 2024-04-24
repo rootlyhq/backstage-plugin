@@ -161,7 +161,7 @@ export const EntitiesTable = () => {
             backstage_id: entityTriplet,
           },
         }),
-      [reload],
+      [reloadService],
     );
     if (loading) {
       return <Progress />;
