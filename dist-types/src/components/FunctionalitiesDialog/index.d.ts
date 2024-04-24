@@ -1,1 +1,0 @@
-export { FunctionalitiesDialog } from './FunctionalitiesDialog';
