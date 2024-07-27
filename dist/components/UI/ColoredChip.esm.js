@@ -1,5 +1,6 @@
 import { Tooltip, Chip } from '@material-ui/core';
 import React from 'react';
+import { contrastColor } from 'contrast-color';
 
 const ColoredChip = ({
   label,
@@ -11,7 +12,7 @@ const ColoredChip = ({
       Chip,
       {
         label,
-        style: { backgroundColor: color || "#FFF" },
+        style: { backgroundColor: color || "#FFF", color: contrastColor({ bgColor: color || "#FFF" }) },
         size: "small"
       }
     ));
