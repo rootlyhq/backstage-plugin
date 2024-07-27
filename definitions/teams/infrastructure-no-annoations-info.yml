@@ -11,6 +11,9 @@ metadata:
     pagerduty.com/service-id: PPXDDC7
 spec:
   type: team
+  profile:
+    displayName: Infrastructure
+    email: infrastructure@example.com
   owner: guests
   lifecycle: experimental
-  children: [backstage]
+  children: []
