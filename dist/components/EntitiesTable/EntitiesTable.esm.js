@@ -7,8 +7,7 @@ import { Alert } from '@material-ui/lab';
 import React, { useState, useEffect } from 'react';
 import { useAsync } from 'react-use';
 import { RootlyApiRef } from '../../api.esm.js';
-import { ROOTLY_ANNOTATION_SERVICE_ID, ROOTLY_ANNOTATION_SERVICE_SLUG, autoImportService, ROOTLY_ANNOTATION_FUNCTIONALITY_ID, ROOTLY_ANNOTATION_FUNCTIONALITY_SLUG, ROOTLY_ANNOTATION_TEAM_ID, ROOTLY_ANNOTATION_TEAM_SLUG } from '../../integration.esm.js';
-import { RootlyEntityActionsMenu } from '../Entity/RootlyEntityActionsMenu.esm.js';
+import { ROOTLY_ANNOTATION_SERVICE_ID, ROOTLY_ANNOTATION_SERVICE_SLUG, autoImportService } from '../../integration.esm.js';
 
 const EntitiesTable = () => {
   const catalogApi = useApi(catalogApiRef);
@@ -21,42 +20,6 @@ const EntitiesTable = () => {
   const { value, loading, error } = useAsync(
     async () => await catalogApi.getEntities()
   );
-  const handleServiceUpdate = async (entity, service, old_service) => {
-    await RootlyApi.updateServiceEntity(entity, service, old_service);
-    setTimeout(() => setReload(!reload), 500);
-  };
-  const handleServiceImport = async (entity) => {
-    await RootlyApi.importServiceEntity(entity);
-    setTimeout(() => setReload(!reload), 500);
-  };
-  const handleServiceDelete = async (service) => {
-    await RootlyApi.deleteServiceEntity(service);
-    setTimeout(() => setReload(!reload), 500);
-  };
-  const handleFunctionalityUpdate = async (entity, service, old_service) => {
-    await RootlyApi.updateFunctionalityEntity(entity, service, old_service);
-    setTimeout(() => setReload(!reload), 500);
-  };
-  const handleFunctionalityImport = async (entity) => {
-    await RootlyApi.importFunctionalityEntity(entity);
-    setTimeout(() => setReload(!reload), 500);
-  };
-  const handleFunctionalityDelete = async (service) => {
-    await RootlyApi.deleteFunctionalityEntity(service);
-    setTimeout(() => setReload(!reload), 500);
-  };
-  const handleTeamUpdate = async (entity, team, old_team) => {
-    await RootlyApi.updateTeamEntity(entity, team, old_team);
-    setTimeout(() => setReload(!reload), 500);
-  };
-  const handleTeamImport = async (entity) => {
-    await RootlyApi.importTeamEntity(entity);
-    setTimeout(() => setReload(!reload), 500);
-  };
-  const handleTeamDelete = async (team) => {
-    await RootlyApi.deleteTeamEntity(team);
-    setTimeout(() => setReload(!reload), 500);
-  };
   useEffect(() => {
     catalogApi.getEntities().then((entities) => {
       entities.items.forEach((entity) => {
@@ -259,32 +222,6 @@ const EntitiesTable = () => {
       headerStyle: smallColumnStyle,
       render: (rowData) => {
         return fetchTeam(rowData, reload);
-      }
-    },
-    {
-      title: "Actions",
-      field: "actions",
-      cellStyle: smallColumnStyle,
-      headerStyle: smallColumnStyle,
-      render: (rowData) => {
-        const service_id_annotation = rowData.metadata.annotations?.[ROOTLY_ANNOTATION_SERVICE_ID] || rowData.metadata.annotations?.[ROOTLY_ANNOTATION_SERVICE_SLUG];
-        const functionality_id_annotation = rowData.metadata.annotations?.[ROOTLY_ANNOTATION_FUNCTIONALITY_ID] || rowData.metadata.annotations?.[ROOTLY_ANNOTATION_FUNCTIONALITY_SLUG];
-        const team_id_annotation = rowData.metadata.annotations?.[ROOTLY_ANNOTATION_TEAM_ID] || rowData.metadata.annotations?.[ROOTLY_ANNOTATION_TEAM_SLUG];
-        return service_id_annotation || functionality_id_annotation || team_id_annotation ? /* @__PURE__ */ React.createElement("div", null, "Set through entity file") : /* @__PURE__ */ React.createElement(
-          RootlyEntityActionsMenu,
-          {
-            entity: rowData,
-            handleServiceUpdate,
-            handleServiceImport,
-            handleServiceDelete,
-            handleFunctionalityUpdate,
-            handleFunctionalityImport,
-            handleFunctionalityDelete,
-            handleTeamUpdate,
-            handleTeamImport,
-            handleTeamDelete
-          }
-        );
       }
     }
   ];

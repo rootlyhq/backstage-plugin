@@ -17,7 +17,6 @@ import {
   ROOTLY_ANNOTATION_TEAM_SLUG,
 } from '../../integration';
 import { Entity, Service, Functionality, Team } from '../../types';
-import { RootlyEntityActionsMenu } from '../Entity/RootlyEntityActionsMenu';
 
 export const EntitiesTable = () => {
   const catalogApi = useApi(catalogApiRef);
@@ -310,42 +309,6 @@ export const EntitiesTable = () => {
       headerStyle: smallColumnStyle,
       render: rowData => {
         return fetchTeam(rowData, reload);
-      },
-    },
-    {
-      title: 'Actions',
-      field: 'actions',
-      cellStyle: smallColumnStyle,
-      headerStyle: smallColumnStyle,
-      render: rowData => {
-        const service_id_annotation =
-          rowData.metadata.annotations?.[ROOTLY_ANNOTATION_SERVICE_ID] ||
-          rowData.metadata.annotations?.[ROOTLY_ANNOTATION_SERVICE_SLUG];
-
-        const functionality_id_annotation =
-          rowData.metadata.annotations?.[ROOTLY_ANNOTATION_FUNCTIONALITY_ID] ||
-          rowData.metadata.annotations?.[ROOTLY_ANNOTATION_FUNCTIONALITY_SLUG];
-
-        const team_id_annotation =
-          rowData.metadata.annotations?.[ROOTLY_ANNOTATION_TEAM_ID] ||
-          rowData.metadata.annotations?.[ROOTLY_ANNOTATION_TEAM_SLUG];
-
-        return service_id_annotation || functionality_id_annotation || team_id_annotation ? (
-          <div>Set through entity file</div>
-        ) : (
-          <RootlyEntityActionsMenu
-            entity={rowData}
-            handleServiceUpdate={handleServiceUpdate}
-            handleServiceImport={handleServiceImport}
-            handleServiceDelete={handleServiceDelete}
-            handleFunctionalityUpdate={handleFunctionalityUpdate}
-            handleFunctionalityImport={handleFunctionalityImport}
-            handleFunctionalityDelete={handleFunctionalityDelete}
-            handleTeamUpdate={handleTeamUpdate}
-            handleTeamImport={handleTeamImport}
-            handleTeamDelete={handleTeamDelete}
-          />
-        );
       },
     },
   ];
