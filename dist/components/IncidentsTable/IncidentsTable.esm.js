@@ -5,11 +5,11 @@ import Link from '@material-ui/core/Link';
 import { Alert } from '@material-ui/lab';
 import React, { useState } from 'react';
 import { useAsync } from 'react-use';
-import { RootlyApiRef } from '../../api.esm.js';
 import { IncidentWrapper } from '../Incident/index.esm.js';
 import { ColoredChip } from '../UI/ColoredChip.esm.js';
 import { ColoredChips } from '../UI/ColoredChips.esm.js';
 import { StatusChip } from '../UI/StatusChip.esm.js';
+import { RootlyApiRef } from '@rootly/backstage-plugin-common';
 
 const useStyles = makeStyles((theme) => ({
   container: {

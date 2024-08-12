@@ -4,10 +4,10 @@ import { useApi } from '@backstage/core-plugin-api';
 import { catalogApiRef, EntityRefLink } from '@backstage/plugin-catalog-react';
 import Link from '@material-ui/core/Link';
 import { Alert } from '@material-ui/lab';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useAsync } from 'react-use';
-import { RootlyApiRef } from '../../api.esm.js';
-import { ROOTLY_ANNOTATION_SERVICE_ID, ROOTLY_ANNOTATION_SERVICE_SLUG, autoImportService } from '../../integration.esm.js';
+import { autoImportService } from '../../integration.esm.js';
+import { RootlyApiRef, ROOTLY_ANNOTATION_SERVICE_ID, ROOTLY_ANNOTATION_SERVICE_SLUG } from '@rootly/backstage-plugin-common';
 
 const EntitiesTable = () => {
   const catalogApi = useApi(catalogApiRef);
@@ -16,7 +16,6 @@ const EntitiesTable = () => {
     width: "5%",
     maxWidth: "5%"
   };
-  const [reload, setReload] = useState(false);
   const { value, loading, error } = useAsync(
     async () => await catalogApi.getEntities()
   );
@@ -62,7 +61,7 @@ const EntitiesTable = () => {
       });
     });
   }, []);
-  const fetchService = (entity, reloadService) => {
+  const fetchService = (entity) => {
     const entityTriplet = stringifyEntityRef({
       namespace: entity.metadata.namespace,
       kind: entity.kind,
@@ -78,7 +77,7 @@ const EntitiesTable = () => {
           backstage_id: entityTriplet
         }
       }),
-      [reloadService]
+      []
     );
     if (loading2) {
       return /* @__PURE__ */ React.createElement(Progress, null);
@@ -99,7 +98,7 @@ const EntitiesTable = () => {
     entity.linkedService = void 0;
     return /* @__PURE__ */ React.createElement("div", null, "Not Linked");
   };
-  const fetchFunctionality = (entity, reloadFunc) => {
+  const fetchFunctionality = (entity) => {
     const entityTriplet = stringifyEntityRef({
       namespace: entity.metadata.namespace,
       kind: entity.kind,
@@ -115,7 +114,7 @@ const EntitiesTable = () => {
           backstage_id: entityTriplet
         }
       }),
-      [reloadFunc]
+      []
     );
     if (loading2) {
       return /* @__PURE__ */ React.createElement(Progress, null);
@@ -136,7 +135,7 @@ const EntitiesTable = () => {
     entity.linkedFunctionality = void 0;
     return /* @__PURE__ */ React.createElement("div", null, "Not Linked");
   };
-  const fetchTeam = (entity, reloadTeam) => {
+  const fetchTeam = (entity) => {
     const entityTriplet = stringifyEntityRef({
       namespace: entity.metadata.namespace,
       kind: entity.kind,
@@ -152,7 +151,7 @@ const EntitiesTable = () => {
           backstage_id: entityTriplet
         }
       }),
-      [reloadTeam]
+      []
     );
     if (loading2) {
       return /* @__PURE__ */ React.createElement(Progress, null);
@@ -203,7 +202,7 @@ const EntitiesTable = () => {
       cellStyle: smallColumnStyle,
       headerStyle: smallColumnStyle,
       render: (rowData) => {
-        return fetchService(rowData, reload);
+        return fetchService(rowData);
       }
     },
     {
@@ -212,7 +211,7 @@ const EntitiesTable = () => {
       cellStyle: smallColumnStyle,
       headerStyle: smallColumnStyle,
       render: (rowData) => {
-        return fetchFunctionality(rowData, reload);
+        return fetchFunctionality(rowData);
       }
     },
     {
@@ -221,7 +220,7 @@ const EntitiesTable = () => {
       cellStyle: smallColumnStyle,
       headerStyle: smallColumnStyle,
       render: (rowData) => {
-        return fetchTeam(rowData, reload);
+        return fetchTeam(rowData);
       }
     }
   ];

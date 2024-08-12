@@ -1,5 +1,5 @@
 import React from 'react';
-import { TeamsFetchOpts } from '../../api';
+import { RootlyTeamsFetchOpts } from '@rootly/backstage-plugin-common';
 export declare const TeamsTable: ({ params }: {
-    params?: TeamsFetchOpts | undefined;
+    params?: RootlyTeamsFetchOpts | undefined;
 }) => React.JSX.Element;

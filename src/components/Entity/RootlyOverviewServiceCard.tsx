@@ -29,15 +29,21 @@ import 'chartkick/chart.js';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { useAsync } from 'react-use';
-import { Rootly, RootlyApiRef } from '../../api';
-import { Entity, Incident, Service } from '../../types';
 import { ColoredChip } from '../UI/ColoredChip';
 import { StatusChip } from '../UI/StatusChip';
 import {
   autoImportService,
+} from '../../integration';
+
+import {
+  RootlyApi,
+  RootlyApiRef,
+  RootlyEntity,
+  RootlyIncident,
+  RootlyService,
   ROOTLY_ANNOTATION_SERVICE_ID,
   ROOTLY_ANNOTATION_SERVICE_SLUG,
-} from '../../integration';
+} from '@rootly/backstage-plugin-common';
 
 const truncate = (input: string, length: number) =>
   input.length > length ? `${input.substring(0, length)}...` : input;
@@ -45,8 +51,8 @@ const truncate = (input: string, length: number) =>
 const IncidentListItem = ({
   incident,
 }: {
-  incident: Incident;
-  rootlyApi: Rootly;
+  incident: RootlyIncident;
+  rootlyApi: RootlyApi;
 }) => {
   return (
     <ListItem dense key={incident.id} style={{ paddingLeft: 0 }}>
@@ -86,8 +92,8 @@ const IncidentListItem = ({
 };
 
 const getViewIncidentsForServiceLink = (
-  service: Service,
-  rootlyApi: Rootly,
+  service: RootlyService,
+  rootlyApi: RootlyApi,
 ) => {
   return {
     label: 'View Incidents',
@@ -149,19 +155,19 @@ export const RootlyOverviewServiceCard = () => {
                   : null;
               if (service) {
                 RootlyApi.updateServiceEntity(
-                  entity as Entity,
+                  entity as RootlyEntity,
                   annotationService,
                   service,
                 );
               }
             });
           } else {
-            RootlyApi.updateServiceEntity(entity as Entity, annotationService);
+            RootlyApi.updateServiceEntity(entity as RootlyEntity, annotationService);
           }
         })
         .catch(() => {
           if (autoImportService(entity)) {
-            RootlyApi.importServiceEntity(entity as Entity);
+            RootlyApi.importServiceEntity(entity as RootlyEntity);
           }
         });
     }
@@ -301,7 +307,7 @@ export const RootlyOverviewServiceCard = () => {
               )}
               <List dense>
                 {incidents &&
-                  incidents.map((incident: Incident) => (
+                  incidents.map((incident: RootlyIncident) => (
                     <IncidentListItem
                       incident={incident}
                       rootlyApi={RootlyApi}

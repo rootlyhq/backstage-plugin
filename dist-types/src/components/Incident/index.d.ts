@@ -1,11 +1,11 @@
-import { Environment, Functionality, Team, Incident, IncidentType, Service } from '../../types';
+import { RootlyIncident, RootlyIncidentType, RootlyEnvironment, RootlyFunctionality, RootlyService, RootlyTeam } from '@rootly/backstage-plugin-common';
 export declare class IncidentWrapper {
-    incident: Incident;
+    incident: RootlyIncident;
     included: any;
-    constructor(incident: Incident, included: any);
-    environments: () => Environment[];
-    services: () => Service[];
-    functionalities: () => Functionality[];
-    groups: () => Team[];
-    types: () => IncidentType[];
+    constructor(incident: RootlyIncident, included: any);
+    environments: () => RootlyEnvironment[];
+    services: () => RootlyService[];
+    functionalities: () => RootlyFunctionality[];
+    groups: () => RootlyTeam[];
+    types: () => RootlyIncidentType[];
 }

@@ -1,8 +1,8 @@
 import React from 'react';
-import { Entity } from '../../types';
+import { RootlyEntity } from '@rootly/backstage-plugin-common';
 export declare const ServicesDialog: ({ open, entity, handleClose, handleImport, handleUpdate, }: {
     open: boolean;
-    entity: Entity;
+    entity: RootlyEntity;
     handleClose: (event: {}, reason: 'backdropClick' | 'escapeKeyDown') => void;
     handleImport: Function;
     handleUpdate: Function;

@@ -29,15 +29,22 @@ import 'chartkick/chart.js';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { useAsync } from 'react-use';
-import { Rootly, RootlyApiRef } from '../../api';
-import { Entity, Incident, Functionality } from '../../types';
 import { ColoredChip } from '../UI/ColoredChip';
 import { StatusChip } from '../UI/StatusChip';
+
 import {
   autoImportFunctionality,
+} from '../../integration';
+
+import {
+  RootlyApi,
+  RootlyApiRef,
+  RootlyEntity,
+  RootlyIncident,
+  RootlyFunctionality,
   ROOTLY_ANNOTATION_FUNCTIONALITY_ID,
   ROOTLY_ANNOTATION_FUNCTIONALITY_SLUG,
-} from '../../integration';
+} from '@rootly/backstage-plugin-common';
 
 const truncate = (input: string, length: number) =>
   input.length > length ? `${input.substring(0, length)}...` : input;
@@ -45,8 +52,8 @@ const truncate = (input: string, length: number) =>
 const IncidentListItem = ({
   incident,
 }: {
-  incident: Incident;
-  rootlyApi: Rootly;
+  incident: RootlyIncident;
+  rootlyApi: RootlyApi;
 }) => {
   return (
     <ListItem dense key={incident.id} style={{ paddingLeft: 0 }}>
@@ -86,8 +93,8 @@ const IncidentListItem = ({
 };
 
 const getViewIncidentsForFunctionalityLink = (
-  functionality: Functionality,
-  rootlyApi: Rootly,
+  functionality: RootlyFunctionality,
+  rootlyApi: RootlyApi,
 ) => {
   return {
     label: 'View Incidents',
@@ -149,19 +156,19 @@ export const RootlyOverviewFunctionalityCard = () => {
                   : null;
               if (functionality) {
                 RootlyApi.updateFunctionalityEntity(
-                  entity as Entity,
+                  entity as RootlyEntity,
                   annotationFunctionality,
                   functionality,
                 );
               }
             });
           } else {
-            RootlyApi.updateFunctionalityEntity(entity as Entity, annotationFunctionality);
+            RootlyApi.updateFunctionalityEntity(entity as RootlyEntity, annotationFunctionality);
           }
         })
         .catch(() => {
           if (autoImportFunctionality(entity)) {
-            RootlyApi.importFunctionalityEntity(entity as Entity);
+            RootlyApi.importFunctionalityEntity(entity as RootlyEntity);
           }
         });
     }
@@ -301,7 +308,7 @@ export const RootlyOverviewFunctionalityCard = () => {
               )}
               <List dense>
                 {incidents &&
-                  incidents.map((incident: Incident) => (
+                  incidents.map((incident: RootlyIncident) => (
                     <IncidentListItem
                       incident={incident}
                       rootlyApi={RootlyApi}

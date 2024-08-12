@@ -7,7 +7,7 @@ import Link from '@material-ui/core/Link';
 import { Alert } from '@material-ui/lab';
 import React, { useState, useCallback } from 'react';
 import { useAsync } from 'react-use';
-import { RootlyApiRef } from '../../api.esm.js';
+import { RootlyApiRef } from '@rootly/backstage-plugin-common';
 
 const useStyles = makeStyles((theme) => ({
   container: {

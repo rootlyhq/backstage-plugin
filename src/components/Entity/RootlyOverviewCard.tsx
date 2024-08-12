@@ -2,7 +2,16 @@ import React from 'react';
 import { RootlyOverviewServiceCard } from './RootlyOverviewServiceCard';
 import { RootlyOverviewFunctionalityCard } from './RootlyOverviewFunctionalityCard';
 import { RootlyOverviewTeamCard } from './RootlyOverviewTeamCard';
-import { ROOTLY_ANNOTATION_FUNCTIONALITY_ID, ROOTLY_ANNOTATION_FUNCTIONALITY_SLUG, ROOTLY_ANNOTATION_SERVICE_ID, ROOTLY_ANNOTATION_SERVICE_SLUG, ROOTLY_ANNOTATION_TEAM_ID, ROOTLY_ANNOTATION_TEAM_SLUG } from '../../integration';
+
+import {
+  ROOTLY_ANNOTATION_SERVICE_ID,
+  ROOTLY_ANNOTATION_SERVICE_SLUG,
+  ROOTLY_ANNOTATION_FUNCTIONALITY_ID,
+  ROOTLY_ANNOTATION_FUNCTIONALITY_SLUG,
+  ROOTLY_ANNOTATION_TEAM_ID,
+  ROOTLY_ANNOTATION_TEAM_SLUG,
+} from '@rootly/backstage-plugin-common';
+
 import { useEntity } from '@backstage/plugin-catalog-react';
 
 export const RootlyOverviewCard = () => {

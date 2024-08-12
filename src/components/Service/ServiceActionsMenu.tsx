@@ -10,10 +10,13 @@ import Link from '@material-ui/core/Link';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import React from 'react';
-import { RootlyApiRef } from '../../api';
-import { Service } from '../../types';
 
-export const ServiceActionsMenu = ({ service }: { service: Service }) => {
+import {
+  RootlyApiRef,
+  RootlyService,
+} from '@rootly/backstage-plugin-common';
+
+export const ServiceActionsMenu = ({ service }: { service: RootlyService }) => {
   const RootlyApi = useApi(RootlyApiRef);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 

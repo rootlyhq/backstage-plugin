@@ -6,7 +6,7 @@ import Divider from '@material-ui/core/Divider';
 import { Alert } from '@material-ui/lab';
 import React, { useState, useEffect } from 'react';
 import { useAsync } from 'react-use';
-import { RootlyApiRef } from '../../api.esm.js';
+import { RootlyApiRef } from '@rootly/backstage-plugin-common';
 
 const ServicesDialog = ({
   open,

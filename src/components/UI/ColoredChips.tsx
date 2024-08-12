@@ -1,23 +1,23 @@
 import { Chip } from '@material-ui/core';
 import React from 'react';
 import {
-  Environment,
-  Functionality,
-  Team,
-  IncidentType,
-  Service,
-} from '../../types';
+  RootlyEnvironment,
+  RootlyFunctionality,
+  RootlyTeam,
+  RootlyIncidentType,
+  RootlyService,
+} from '@rootly/backstage-plugin-common';
 import { ColoredChip } from './ColoredChip';
 
 export const ColoredChips = ({
   objects,
 }: {
   objects:
-    | Service[]
-    | Functionality[]
-    | Environment[]
-    | IncidentType[]
-    | Team[];
+    | RootlyService[]
+    | RootlyFunctionality[]
+    | RootlyEnvironment[]
+    | RootlyIncidentType[]
+    | RootlyTeam[];
 }) => {
   if (objects?.length > 0) {
     return (

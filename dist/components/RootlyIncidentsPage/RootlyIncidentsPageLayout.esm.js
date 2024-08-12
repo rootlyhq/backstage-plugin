@@ -6,9 +6,9 @@ import { Grid, Box, Button } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import React, { useState } from 'react';
 import { useAsync } from 'react-use';
-import { RootlyApiRef } from '../../api.esm.js';
 import { IncidentsTable } from '../IncidentsTable/IncidentsTable.esm.js';
 import { ServicesDialog } from '../ServicesDialog/ServicesDialog.esm.js';
+import { RootlyApiRef } from '@rootly/backstage-plugin-common';
 
 const Route = () => null;
 attachComponentData(Route, "core.gatherMountPoints", true);

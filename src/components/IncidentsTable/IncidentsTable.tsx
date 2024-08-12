@@ -5,11 +5,16 @@ import Link from '@material-ui/core/Link';
 import { Alert } from '@material-ui/lab';
 import React, { useState } from 'react';
 import { useAsync } from 'react-use';
-import { IncidentsFetchOpts, RootlyApiRef } from '../../api';
 import { IncidentWrapper } from '../Incident';
 import { ColoredChip } from '../UI/ColoredChip';
 import { ColoredChips } from '../UI/ColoredChips';
 import { StatusChip } from '../UI/StatusChip';
+
+import {
+  RootlyApiRef,
+  RootlyIncident,
+  RootlyIncidentsFetchOpts,
+} from '@rootly/backstage-plugin-common';
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -25,7 +30,7 @@ const useStyles = makeStyles(theme => ({
 const DEFAULT_PAGE_NUMBER = 1;
 const DEFAULT_PAGE_SIZE = 10;
 
-export const IncidentsTable = ({ params }: { params?: IncidentsFetchOpts }) => {
+export const IncidentsTable = ({ params }: { params?: RootlyIncidentsFetchOpts }) => {
   const classes = useStyles();
   const RootlyApi = useApi(RootlyApiRef);
 
@@ -153,7 +158,7 @@ export const IncidentsTable = ({ params }: { params?: IncidentsFetchOpts }) => {
   }
 
   const data = response
-    ? response.data.map(i => {
+    ? response.data.map((i: RootlyIncident) => {
         return new IncidentWrapper(i, response.included);
       })
     : [];

@@ -7,8 +7,12 @@ import Link from '@material-ui/core/Link';
 import { Alert } from '@material-ui/lab';
 import React, { useCallback, useState } from 'react';
 import { useAsync } from 'react-use';
-import { RootlyApiRef, TeamsFetchOpts } from '../../api';
-import { Team } from '../../types';
+
+import {
+  RootlyApiRef,
+  RootlyTeamsFetchOpts,
+  RootlyTeam,
+} from '@rootly/backstage-plugin-common';
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -24,7 +28,7 @@ const useStyles = makeStyles(theme => ({
 const DEFAULT_PAGE_NUMBER = 1;
 const DEFAULT_PAGE_SIZE = 10;
 
-export const TeamsTable = ({ params }: { params?: TeamsFetchOpts }) => {
+export const TeamsTable = ({ params }: { params?: RootlyTeamsFetchOpts }) => {
   const classes = useStyles();
   const RootlyApi = useApi(RootlyApiRef);
 
@@ -51,7 +55,7 @@ export const TeamsTable = ({ params }: { params?: TeamsFetchOpts }) => {
     [page],
   );
 
-  const nameColumn = useCallback(rowData => {
+  const nameColumn = useCallback((rowData: RootlyTeam) => {
     return (
       <Tooltip
         title={
@@ -66,7 +70,7 @@ export const TeamsTable = ({ params }: { params?: TeamsFetchOpts }) => {
     );
   }, []);
 
-  const backstageColumn = useCallback(rowData => {
+  const backstageColumn = useCallback((rowData: RootlyTeam) => {
     if (rowData.attributes.backstage_id) {
       return (
         <EntityRefLink
@@ -78,7 +82,7 @@ export const TeamsTable = ({ params }: { params?: TeamsFetchOpts }) => {
     
   }, []);
 
-  const columns: TableColumn<Team>[] = [
+  const columns: TableColumn<RootlyTeam>[] = [
     {
       title: 'Name',
       field: 'name',

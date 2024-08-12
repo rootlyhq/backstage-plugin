@@ -14,8 +14,12 @@ import Divider from '@material-ui/core/Divider';
 import { Alert } from '@material-ui/lab';
 import React, { useEffect, useState } from 'react';
 import { useAsync } from 'react-use';
-import { RootlyApiRef } from '../../api';
-import { Entity, Team } from '../../types';
+
+import {
+  RootlyApiRef,
+  RootlyEntity,
+  RootlyTeam,
+} from '@rootly/backstage-plugin-common';
 
 export const TeamsDialog = ({
   open,
@@ -25,7 +29,7 @@ export const TeamsDialog = ({
   handleUpdate,
 }: {
   open: boolean;
-  entity: Entity;
+  entity: RootlyEntity;
   handleClose: (event: {}, reason: 'backdropClick' | 'escapeKeyDown') => void;
   handleImport: Function;
   handleUpdate: Function;
@@ -76,8 +80,8 @@ export const TeamsDialog = ({
   const onLinkToExistingTeamButtonClicked = () => {
     handleUpdate(
       entity,
-      { id: selectedItem } as Team,
-      { id: entity.linkedTeam?.id } as Team,
+      { id: selectedItem } as RootlyTeam,
+      { id: entity.linkedTeam?.id } as RootlyTeam,
     );
   };
 
@@ -119,7 +123,7 @@ export const TeamsDialog = ({
             selected={selectedItem}
             placeholder="Select"
             label="Teams"
-            items={(data || []).map((team: Team): SelectItem => {
+            items={(data || []).map((team: RootlyTeam): SelectItem => {
               return {
                 label: team.attributes.name,
                 value: team.id,

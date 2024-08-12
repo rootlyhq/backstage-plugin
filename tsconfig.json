@@ -4,6 +4,9 @@
   "compilerOptions": {
     "declaration": true,
     "outDir": "dist-types",
-    "incremental": false
+    "incremental": false,
+    "paths": {
+      "react": [ "./node_modules/@types/react" ]
+    }
   }
 }

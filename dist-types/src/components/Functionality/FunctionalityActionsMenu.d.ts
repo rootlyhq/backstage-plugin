@@ -1,5 +1,5 @@
 import React from 'react';
-import { Functionality } from '../../types';
+import { RootlyFunctionality } from '@rootly/backstage-plugin-common';
 export declare const FunctionalityActionsMenu: ({ functionality }: {
-    functionality: Functionality;
+    functionality: RootlyFunctionality;
 }) => React.JSX.Element;

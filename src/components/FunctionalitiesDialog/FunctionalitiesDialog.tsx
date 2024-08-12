@@ -14,8 +14,12 @@ import Divider from '@material-ui/core/Divider';
 import { Alert } from '@material-ui/lab';
 import React, { useEffect, useState } from 'react';
 import { useAsync } from 'react-use';
-import { RootlyApiRef } from '../../api';
-import { Entity, Functionality } from '../../types';
+
+import {
+  RootlyApiRef,
+  RootlyEntity,
+  RootlyFunctionality,
+} from '@rootly/backstage-plugin-common';
 
 export const FunctionalitiesDialog = ({
   open,
@@ -25,7 +29,7 @@ export const FunctionalitiesDialog = ({
   handleUpdate,
 }: {
   open: boolean;
-  entity: Entity;
+  entity: RootlyEntity;
   handleClose: (event: {}, reason: 'backdropClick' | 'escapeKeyDown') => void;
   handleImport: Function;
   handleUpdate: Function;
@@ -57,7 +61,7 @@ export const FunctionalitiesDialog = ({
         name: entity.metadata.name,
       });
       const item = data.find(
-        s => s.attributes.backstage_id === entityTriplet,
+        (s) => s.attributes.backstage_id === entityTriplet,
       )?.id;
       if (item) {
         setSelectedItem(item);
@@ -76,8 +80,8 @@ export const FunctionalitiesDialog = ({
   const onLinkToExistingFunctionalityButtonClicked = () => {
     handleUpdate(
       entity,
-      { id: selectedItem } as Functionality,
-      { id: entity.linkedFunctionality?.id } as Functionality,
+      { id: selectedItem } as RootlyFunctionality,
+      { id: entity.linkedFunctionality?.id } as RootlyFunctionality,
     );
   };
 
@@ -119,7 +123,7 @@ export const FunctionalitiesDialog = ({
             selected={selectedItem}
             placeholder="Select"
             label="Functionalities"
-            items={(data || []).map((functionality: Functionality): SelectItem => {
+            items={(data || []).map((functionality: RootlyFunctionality): SelectItem => {
               return {
                 label: functionality.attributes.name,
                 value: functionality.id,

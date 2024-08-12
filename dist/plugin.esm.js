@@ -1,5 +1,5 @@
 import { createRouteRef, createPlugin, createApiFactory, discoveryApiRef, identityApiRef } from '@backstage/core-plugin-api';
-import { RootlyApiRef, RootlyApi } from './api.esm.js';
+import { RootlyApiRef, RootlyApi } from '@rootly/backstage-plugin-common';
 
 const RootlyRouteRef = createRouteRef({
   id: "Rootly"

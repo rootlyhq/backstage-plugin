@@ -14,10 +14,10 @@ import 'chartkick/chart.js';
 import moment from 'moment';
 import React, { useState, useEffect } from 'react';
 import { useAsync } from 'react-use';
-import { RootlyApiRef } from '../../api.esm.js';
 import { ColoredChip } from '../UI/ColoredChip.esm.js';
 import { StatusChip } from '../UI/StatusChip.esm.js';
-import { ROOTLY_ANNOTATION_SERVICE_ID, ROOTLY_ANNOTATION_SERVICE_SLUG, autoImportService } from '../../integration.esm.js';
+import { autoImportService } from '../../integration.esm.js';
+import { RootlyApiRef, ROOTLY_ANNOTATION_SERVICE_ID, ROOTLY_ANNOTATION_SERVICE_SLUG } from '@rootly/backstage-plugin-common';
 
 const truncate = (input, length) => input.length > length ? `${input.substring(0, length)}...` : input;
 const IncidentListItem = ({
@@ -59,20 +59,20 @@ const getViewIncidentsForServiceLink = (service, rootlyApi) => {
 };
 const RootlyOverviewServiceCard = () => {
   const { entity } = useEntity();
-  const RootlyApi = useApi(RootlyApiRef);
+  const RootlyApi2 = useApi(RootlyApiRef);
   const service_id_annotation = entity.metadata.annotations?.[ROOTLY_ANNOTATION_SERVICE_ID] || entity.metadata.annotations?.[ROOTLY_ANNOTATION_SERVICE_SLUG];
   const [reload, setReload] = useState(false);
   const createIncidentLink = {
     label: "Create Incident",
     disabled: false,
     icon: /* @__PURE__ */ React.createElement(WhatshotIcon, null),
-    href: RootlyApi.getCreateIncidentURL()
+    href: RootlyApi2.getCreateIncidentURL()
   };
   const viewIncidentsLink = {
     label: "View All Incidents",
     disabled: false,
     icon: /* @__PURE__ */ React.createElement(WhatshotIcon, null),
-    href: RootlyApi.getListIncidents()
+    href: RootlyApi2.getListIncidents()
   };
   const entityTriplet = stringifyEntityRef({
     namespace: entity.metadata.namespace,
@@ -81,17 +81,17 @@ const RootlyOverviewServiceCard = () => {
   });
   useEffect(() => {
     if (service_id_annotation) {
-      RootlyApi.getService(service_id_annotation).then((annotationServiceResponse) => {
+      RootlyApi2.getService(service_id_annotation).then((annotationServiceResponse) => {
         const annotationService = annotationServiceResponse.data;
         if (annotationService.attributes.backstage_id && annotationService.attributes.backstage_id !== entityTriplet) {
-          RootlyApi.getServices({
+          RootlyApi2.getServices({
             filter: {
               backstage_id: entityTriplet
             }
           }).then((servicesResponse) => {
             const service2 = servicesResponse && servicesResponse.data && servicesResponse.data.length > 0 ? servicesResponse.data[0] : null;
             if (service2) {
-              RootlyApi.updateServiceEntity(
+              RootlyApi2.updateServiceEntity(
                 entity,
                 annotationService,
                 service2
@@ -99,11 +99,11 @@ const RootlyOverviewServiceCard = () => {
             }
           });
         } else {
-          RootlyApi.updateServiceEntity(entity, annotationService);
+          RootlyApi2.updateServiceEntity(entity, annotationService);
         }
       }).catch(() => {
         if (autoImportService(entity)) {
-          RootlyApi.importServiceEntity(entity);
+          RootlyApi2.importServiceEntity(entity);
         }
       });
     }
@@ -113,7 +113,7 @@ const RootlyOverviewServiceCard = () => {
     loading: serviceLoading,
     error: serviceError
   } = useAsync(
-    async () => await RootlyApi.getServices({
+    async () => await RootlyApi2.getServices({
       filter: {
         backstage_id: entityTriplet
       }
@@ -126,7 +126,7 @@ const RootlyOverviewServiceCard = () => {
     loading: incidentsLoading,
     error: incidentsError
   } = useAsync(
-    async () => service ? await RootlyApi.getIncidents({
+    async () => service ? await RootlyApi2.getIncidents({
       filter: {
         services: service.attributes.slug,
         status: "started,mitigated"
@@ -139,7 +139,7 @@ const RootlyOverviewServiceCard = () => {
     loading: chartLoading,
     error: chartError
   } = useAsync(
-    async () => service ? await RootlyApi.getServiceIncidentsChart(service, {
+    async () => service ? await RootlyApi2.getServiceIncidentsChart(service, {
       period: "day"
     }) : { data: [] },
     [service]
@@ -165,7 +165,7 @@ const RootlyOverviewServiceCard = () => {
         {
           links: !serviceLoading && service ? [
             createIncidentLink,
-            getViewIncidentsForServiceLink(service, RootlyApi),
+            getViewIncidentsForServiceLink(service, RootlyApi2),
             viewIncidentsLink
           ] : [createIncidentLink, viewIncidentsLink]
         }
@@ -182,7 +182,7 @@ const RootlyOverviewServiceCard = () => {
     IncidentListItem,
     {
       incident,
-      rootlyApi: RootlyApi
+      rootlyApi: RootlyApi2
     }
   ))))));
 };

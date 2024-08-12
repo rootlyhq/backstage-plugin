@@ -14,8 +14,12 @@ import Divider from '@material-ui/core/Divider';
 import { Alert } from '@material-ui/lab';
 import React, { useEffect, useState } from 'react';
 import { useAsync } from 'react-use';
-import { RootlyApiRef } from '../../api';
-import { Entity, Service } from '../../types';
+
+import {
+  RootlyApiRef,
+  RootlyEntity,
+  RootlyService,
+} from '@rootly/backstage-plugin-common';
 
 export const ServicesDialog = ({
   open,
@@ -25,7 +29,7 @@ export const ServicesDialog = ({
   handleUpdate,
 }: {
   open: boolean;
-  entity: Entity;
+  entity: RootlyEntity;
   handleClose: (event: {}, reason: 'backdropClick' | 'escapeKeyDown') => void;
   handleImport: Function;
   handleUpdate: Function;
@@ -76,8 +80,8 @@ export const ServicesDialog = ({
   const onLinkToExistingServiceButtonClicked = () => {
     handleUpdate(
       entity,
-      { id: selectedItem } as Service,
-      { id: entity.linkedService?.id } as Service,
+      { id: selectedItem } as RootlyService,
+      { id: entity.linkedService?.id } as RootlyService,
     );
   };
 
@@ -119,7 +123,7 @@ export const ServicesDialog = ({
             selected={selectedItem}
             placeholder="Select"
             label="Services"
-            items={(data || []).map((service: Service): SelectItem => {
+            items={(data || []).map((service: RootlyService): SelectItem => {
               return {
                 label: service.attributes.name,
                 value: service.id,

@@ -7,8 +7,12 @@ import Link from '@material-ui/core/Link';
 import { Alert } from '@material-ui/lab';
 import React, { useCallback, useState } from 'react';
 import { useAsync } from 'react-use';
-import { RootlyApiRef, ServicesFetchOpts } from '../../api';
-import { Service } from '../../types';
+
+import {
+  RootlyApiRef,
+  RootlyServicesFetchOpts,
+  RootlyService,
+} from '@rootly/backstage-plugin-common';
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -24,7 +28,7 @@ const useStyles = makeStyles(theme => ({
 const DEFAULT_PAGE_NUMBER = 1;
 const DEFAULT_PAGE_SIZE = 10;
 
-export const ServicesTable = ({ params }: { params?: ServicesFetchOpts }) => {
+export const ServicesTable = ({ params }: { params?: RootlyServicesFetchOpts }) => {
   const classes = useStyles();
   const RootlyApi = useApi(RootlyApiRef);
 
@@ -51,7 +55,7 @@ export const ServicesTable = ({ params }: { params?: ServicesFetchOpts }) => {
     [page],
   );
 
-  const nameColumn = useCallback(rowData => {
+  const nameColumn = useCallback((rowData: RootlyService) => {
     return (
       <Tooltip
         title={
@@ -66,7 +70,7 @@ export const ServicesTable = ({ params }: { params?: ServicesFetchOpts }) => {
     );
   }, []);
 
-  const backstageColumn = useCallback(rowData => {
+  const backstageColumn = useCallback((rowData: RootlyService) => {
     if (rowData.attributes.backstage_id) {
       return (
         <EntityRefLink
@@ -78,7 +82,7 @@ export const ServicesTable = ({ params }: { params?: ServicesFetchOpts }) => {
     
   }, []);
 
-  const columns: TableColumn<Service>[] = [
+  const columns: TableColumn<RootlyService>[] = [
     {
       title: 'Name',
       field: 'name',

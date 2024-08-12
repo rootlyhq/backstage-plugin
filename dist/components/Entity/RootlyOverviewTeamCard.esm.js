@@ -14,10 +14,10 @@ import 'chartkick/chart.js';
 import moment from 'moment';
 import React, { useState, useEffect } from 'react';
 import { useAsync } from 'react-use';
-import { RootlyApiRef } from '../../api.esm.js';
 import { ColoredChip } from '../UI/ColoredChip.esm.js';
 import { StatusChip } from '../UI/StatusChip.esm.js';
-import { ROOTLY_ANNOTATION_TEAM_ID, ROOTLY_ANNOTATION_TEAM_SLUG, autoImportTeam } from '../../integration.esm.js';
+import { autoImportTeam } from '../../integration.esm.js';
+import { RootlyApiRef, ROOTLY_ANNOTATION_TEAM_ID, ROOTLY_ANNOTATION_TEAM_SLUG } from '@rootly/backstage-plugin-common';
 
 const truncate = (input, length) => input.length > length ? `${input.substring(0, length)}...` : input;
 const IncidentListItem = ({
@@ -59,20 +59,20 @@ const getViewIncidentsForTeamLink = (team, rootlyApi) => {
 };
 const RootlyOverviewTeamCard = () => {
   const { entity } = useEntity();
-  const RootlyApi = useApi(RootlyApiRef);
+  const RootlyApi2 = useApi(RootlyApiRef);
   const team_id_annotation = entity.metadata.annotations?.[ROOTLY_ANNOTATION_TEAM_ID] || entity.metadata.annotations?.[ROOTLY_ANNOTATION_TEAM_SLUG];
   const [reload, setReload] = useState(false);
   const createIncidentLink = {
     label: "Create Incident",
     disabled: false,
     icon: /* @__PURE__ */ React.createElement(WhatshotIcon, null),
-    href: RootlyApi.getCreateIncidentURL()
+    href: RootlyApi2.getCreateIncidentURL()
   };
   const viewIncidentsLink = {
     label: "View All Incidents",
     disabled: false,
     icon: /* @__PURE__ */ React.createElement(WhatshotIcon, null),
-    href: RootlyApi.getListIncidents()
+    href: RootlyApi2.getListIncidents()
   };
   const entityTriplet = stringifyEntityRef({
     namespace: entity.metadata.namespace,
@@ -81,17 +81,17 @@ const RootlyOverviewTeamCard = () => {
   });
   useEffect(() => {
     if (team_id_annotation) {
-      RootlyApi.getTeam(team_id_annotation).then((annotationTeamResponse) => {
+      RootlyApi2.getTeam(team_id_annotation).then((annotationTeamResponse) => {
         const annotationTeam = annotationTeamResponse.data;
         if (annotationTeam.attributes.backstage_id && annotationTeam.attributes.backstage_id !== entityTriplet) {
-          RootlyApi.getTeams({
+          RootlyApi2.getTeams({
             filter: {
               backstage_id: entityTriplet
             }
           }).then((teamsResponse) => {
             const team2 = teamsResponse && teamsResponse.data && teamsResponse.data.length > 0 ? teamsResponse.data[0] : null;
             if (team2) {
-              RootlyApi.updateTeamEntity(
+              RootlyApi2.updateTeamEntity(
                 entity,
                 annotationTeam,
                 team2
@@ -99,11 +99,11 @@ const RootlyOverviewTeamCard = () => {
             }
           });
         } else {
-          RootlyApi.updateTeamEntity(entity, annotationTeam);
+          RootlyApi2.updateTeamEntity(entity, annotationTeam);
         }
       }).catch(() => {
         if (autoImportTeam(entity)) {
-          RootlyApi.importTeamEntity(entity);
+          RootlyApi2.importTeamEntity(entity);
         }
       });
     }
@@ -113,7 +113,7 @@ const RootlyOverviewTeamCard = () => {
     loading: teamLoading,
     error: teamError
   } = useAsync(
-    async () => await RootlyApi.getTeams({
+    async () => await RootlyApi2.getTeams({
       filter: {
         backstage_id: entityTriplet
       }
@@ -126,7 +126,7 @@ const RootlyOverviewTeamCard = () => {
     loading: incidentsLoading,
     error: incidentsError
   } = useAsync(
-    async () => team ? await RootlyApi.getIncidents({
+    async () => team ? await RootlyApi2.getIncidents({
       filter: {
         teams: team.attributes.slug,
         status: "started,mitigated"
@@ -139,7 +139,7 @@ const RootlyOverviewTeamCard = () => {
     loading: chartLoading,
     error: chartError
   } = useAsync(
-    async () => team ? await RootlyApi.getTeamIncidentsChart(team, {
+    async () => team ? await RootlyApi2.getTeamIncidentsChart(team, {
       period: "day"
     }) : { data: [] },
     [team]
@@ -165,7 +165,7 @@ const RootlyOverviewTeamCard = () => {
         {
           links: !teamLoading && team ? [
             createIncidentLink,
-            getViewIncidentsForTeamLink(team, RootlyApi),
+            getViewIncidentsForTeamLink(team, RootlyApi2),
             viewIncidentsLink
           ] : [createIncidentLink, viewIncidentsLink]
         }
@@ -182,7 +182,7 @@ const RootlyOverviewTeamCard = () => {
     IncidentListItem,
     {
       incident,
-      rootlyApi: RootlyApi
+      rootlyApi: RootlyApi2
     }
   ))))));
 };

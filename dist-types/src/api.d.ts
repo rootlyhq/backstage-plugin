@@ -1,7 +1,8 @@
 import { DiscoveryApi, IdentityApi } from '@backstage/core-plugin-api';
-import { Entity, Incident, Service, Functionality, Team } from './types';
+import { RootlyEntity } from './types';
+import { RootlyIncident, RootlyService, RootlyFunctionality, RootlyTeam } from '@rootly/backstage-plugin-common';
 export declare const RootlyApiRef: import("@backstage/core-plugin-api").ApiRef<RootlyApi>;
-export declare type ServicesFetchOpts = {
+export declare type RootlyServicesFetchOpts = {
     page?: {
         number?: number;
         size?: number;
@@ -9,7 +10,7 @@ export declare type ServicesFetchOpts = {
     filter?: object;
     include?: string;
 };
-export declare type FunctionalitiesFetchOpts = {
+export declare type RootlyFunctionalitiesFetchOpts = {
     page?: {
         number?: number;
         size?: number;
@@ -17,7 +18,7 @@ export declare type FunctionalitiesFetchOpts = {
     filter?: object;
     include?: string;
 };
-export declare type TeamsFetchOpts = {
+export declare type RootlyTeamsFetchOpts = {
     page?: {
         number?: number;
         size?: number;
@@ -25,7 +26,7 @@ export declare type TeamsFetchOpts = {
     filter?: object;
     include?: string;
 };
-export declare type IncidentsFetchOpts = {
+export declare type RootlyIncidentsFetchOpts = {
     page?: {
         number?: number;
         size?: number;
@@ -34,82 +35,82 @@ export declare type IncidentsFetchOpts = {
     include?: string;
 };
 export interface Rootly {
-    getService(id_or_slug: String): Promise<ServiceResponse>;
-    getServices(opts?: ServicesFetchOpts): Promise<ServicesResponse>;
-    getFunctionality(id_or_slug: String): Promise<FunctionalityResponse>;
-    getFunctionalities(opts?: FunctionalitiesFetchOpts): Promise<FunctionalitiesResponse>;
-    getTeam(id_or_slug: String): Promise<TeamResponse>;
-    getTeams(opts?: TeamsFetchOpts): Promise<TeamsResponse>;
-    getIncidents(opts?: IncidentsFetchOpts): Promise<IncidentsResponse>;
-    importServiceEntity(entity: Entity): Promise<void>;
-    updateServiceEntity(entity: Entity, service: Service, old_service?: Service): Promise<void>;
-    deleteServiceEntity(service: Service): Promise<void>;
-    importFunctionalityEntity(entity: Entity): Promise<void>;
-    updateFunctionalityEntity(entity: Entity, functionality: Functionality, old_functionality?: Functionality): Promise<void>;
-    deleteFunctionalityEntity(functionality: Functionality): Promise<void>;
-    importTeamEntity(entity: Entity): Promise<void>;
-    updateTeamEntity(entity: Entity, functionality: Team, old_functionality?: Team): Promise<void>;
-    deleteTeamEntity(team: Team): Promise<void>;
+    getService(id_or_slug: String): Promise<RootlyServiceResponse>;
+    getServices(opts?: RootlyServicesFetchOpts): Promise<RootlyServicesResponse>;
+    getFunctionality(id_or_slug: String): Promise<RootlyFunctionalityResponse>;
+    getFunctionalities(opts?: RootlyFunctionalitiesFetchOpts): Promise<RootlyFunctionalitiesResponse>;
+    getTeam(id_or_slug: String): Promise<RootlyTeamResponse>;
+    getTeams(opts?: RootlyTeamsFetchOpts): Promise<RootlyTeamsResponse>;
+    getIncidents(opts?: RootlyIncidentsFetchOpts): Promise<RootlyIncidentsResponse>;
+    importServiceEntity(entity: RootlyEntity): Promise<void>;
+    updateServiceEntity(entity: RootlyEntity, service: RootlyService, old_service?: RootlyService): Promise<void>;
+    deleteServiceEntity(service: RootlyService): Promise<void>;
+    importFunctionalityEntity(entity: RootlyEntity): Promise<void>;
+    updateFunctionalityEntity(entity: RootlyEntity, functionality: RootlyFunctionality, old_functionality?: RootlyFunctionality): Promise<void>;
+    deleteFunctionalityEntity(functionality: RootlyFunctionality): Promise<void>;
+    importTeamEntity(entity: RootlyEntity): Promise<void>;
+    updateTeamEntity(entity: RootlyEntity, functionality: RootlyTeam, old_functionality?: RootlyTeam): Promise<void>;
+    deleteTeamEntity(team: RootlyTeam): Promise<void>;
     getCreateIncidentURL(): string;
     getListIncidents(): string;
-    getListIncidentsForServiceURL(service: Service): string;
-    getServiceDetailsURL(service: Service): string;
-    getServiceIncidentsChart(service: Service, opts?: {
+    getListIncidentsForServiceURL(service: RootlyService): string;
+    getServiceDetailsURL(service: RootlyService): string;
+    getServiceIncidentsChart(service: RootlyService, opts?: {
         period: string;
     }): Promise<{
         data: object;
     }>;
-    getListIncidentsForFunctionalityURL(functionality: Functionality): string;
-    getFunctionalityDetailsURL(functionality: Functionality): string;
-    getFunctionalityIncidentsChart(functionality: Functionality, opts?: {
+    getListIncidentsForFunctionalityURL(functionality: RootlyFunctionality): string;
+    getFunctionalityDetailsURL(functionality: RootlyFunctionality): string;
+    getFunctionalityIncidentsChart(functionality: RootlyFunctionality, opts?: {
         period: string;
     }): Promise<{
         data: object;
     }>;
-    getListIncidentsForTeamURL(team: Team): string;
-    getTeamDetailsURL(team: Team): string;
-    getTeamIncidentsChart(team: Team, opts?: {
+    getListIncidentsForTeamURL(team: RootlyTeam): string;
+    getTeamDetailsURL(team: RootlyTeam): string;
+    getTeamIncidentsChart(team: RootlyTeam, opts?: {
         period: string;
     }): Promise<{
         data: object;
     }>;
 }
-interface ServiceResponse {
-    data: Service;
+interface RootlyServiceResponse {
+    data: RootlyService;
 }
-interface ServicesResponse {
+interface RootlyServicesResponse {
     meta: {
         total_count: number;
         total_pages: number;
     };
-    data: Service[];
+    data: RootlyService[];
 }
-interface FunctionalityResponse {
-    data: Functionality;
+interface RootlyFunctionalityResponse {
+    data: RootlyFunctionality;
 }
-interface FunctionalitiesResponse {
+interface RootlyFunctionalitiesResponse {
     meta: {
         total_count: number;
         total_pages: number;
     };
-    data: Functionality[];
+    data: RootlyFunctionality[];
 }
-interface TeamResponse {
-    data: Team;
+interface RootlyTeamResponse {
+    data: RootlyTeam;
 }
-interface TeamsResponse {
+interface RootlyTeamsResponse {
     meta: {
         total_count: number;
         total_pages: number;
     };
-    data: Team[];
+    data: RootlyTeam[];
 }
-interface IncidentsResponse {
+interface RootlyIncidentsResponse {
     meta: {
         total_count: number;
         total_pages: number;
     };
-    data: Incident[];
+    data: RootlyIncident[];
     included: object[];
     links: {
         first: string;
@@ -143,45 +144,45 @@ export declare class RootlyApi {
     constructor(opts: Options);
     private fetch;
     private call;
-    getService(id_or_slug: String): Promise<ServiceResponse>;
-    getServices(opts?: ServicesFetchOpts): Promise<ServicesResponse>;
-    getFunctionality(id_or_slug: String): Promise<FunctionalityResponse>;
-    getFunctionalities(opts?: FunctionalitiesFetchOpts): Promise<FunctionalitiesResponse>;
-    getTeam(id_or_slug: String): Promise<TeamResponse>;
-    getTeams(opts?: TeamsFetchOpts): Promise<TeamsResponse>;
-    getIncidents(opts?: IncidentsFetchOpts): Promise<IncidentsResponse>;
-    getServiceIncidentsChart(service: Service, opts?: {
+    getService(id_or_slug: String): Promise<RootlyServiceResponse>;
+    getServices(opts?: RootlyServicesFetchOpts): Promise<RootlyServicesResponse>;
+    getFunctionality(id_or_slug: String): Promise<RootlyFunctionalityResponse>;
+    getFunctionalities(opts?: RootlyFunctionalitiesFetchOpts): Promise<RootlyFunctionalitiesResponse>;
+    getTeam(id_or_slug: String): Promise<RootlyTeamResponse>;
+    getTeams(opts?: RootlyTeamsFetchOpts): Promise<RootlyTeamsResponse>;
+    getIncidents(opts?: RootlyIncidentsFetchOpts): Promise<RootlyIncidentsResponse>;
+    getServiceIncidentsChart(service: RootlyService, opts?: {
         period: string;
     }): Promise<{
         data: object;
     }>;
-    getFunctionalityIncidentsChart(functionality: Functionality, opts?: {
+    getFunctionalityIncidentsChart(functionality: RootlyFunctionality, opts?: {
         period: string;
     }): Promise<{
         data: object;
     }>;
-    getTeamIncidentsChart(team: Team, opts?: {
+    getTeamIncidentsChart(team: RootlyTeam, opts?: {
         period: string;
     }): Promise<{
         data: object;
     }>;
-    importServiceEntity(entity: Entity): Promise<void>;
-    updateServiceEntity(entity: Entity, service: Service, old_service?: Service): Promise<void>;
-    deleteServiceEntity(service: Service): Promise<void>;
-    importFunctionalityEntity(entity: Entity): Promise<void>;
-    updateFunctionalityEntity(entity: Entity, functionality: Functionality, old_functionality?: Functionality): Promise<void>;
-    deleteFunctionalityEntity(functionality: Functionality): Promise<void>;
-    importTeamEntity(entity: Entity): Promise<void>;
-    updateTeamEntity(entity: Entity, team: Team, old_team?: Team): Promise<void>;
-    deleteTeamEntity(team: Team): Promise<void>;
+    importServiceEntity(entity: RootlyEntity): Promise<void>;
+    updateServiceEntity(entity: RootlyEntity, service: RootlyService, old_service?: RootlyService): Promise<void>;
+    deleteServiceEntity(service: RootlyService): Promise<void>;
+    importFunctionalityEntity(entity: RootlyEntity): Promise<void>;
+    updateFunctionalityEntity(entity: RootlyEntity, functionality: RootlyFunctionality, old_functionality?: RootlyFunctionality): Promise<void>;
+    deleteFunctionalityEntity(functionality: RootlyFunctionality): Promise<void>;
+    importTeamEntity(entity: RootlyEntity): Promise<void>;
+    updateTeamEntity(entity: RootlyEntity, team: RootlyTeam, old_team?: RootlyTeam): Promise<void>;
+    deleteTeamEntity(team: RootlyTeam): Promise<void>;
     getCreateIncidentURL(): string;
     getListIncidents(): string;
-    getListIncidentsForServiceURL(service: Service): string;
-    getListIncidentsForFunctionalityURL(functionality: Functionality): string;
-    getListIncidentsForTeamURL(team: Team): string;
-    getServiceDetailsURL(service: Service): string;
-    getFunctionalityDetailsURL(functionality: Functionality): string;
-    getTeamDetailsURL(team: Team): string;
+    getListIncidentsForServiceURL(service: RootlyService): string;
+    getListIncidentsForFunctionalityURL(functionality: RootlyFunctionality): string;
+    getListIncidentsForTeamURL(team: RootlyTeam): string;
+    getServiceDetailsURL(service: RootlyService): string;
+    getFunctionalityDetailsURL(functionality: RootlyFunctionality): string;
+    getTeamDetailsURL(team: RootlyTeam): string;
     private apiUrl;
     private addAuthHeaders;
 }

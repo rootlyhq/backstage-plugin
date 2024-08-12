@@ -1,5 +1,5 @@
 import React from 'react';
-import { Service } from '../../types';
+import { RootlyService } from '@rootly/backstage-plugin-common';
 export declare const ServiceActionsMenu: ({ service }: {
-    service: Service;
+    service: RootlyService;
 }) => React.JSX.Element;

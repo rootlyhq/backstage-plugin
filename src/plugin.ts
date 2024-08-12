@@ -5,7 +5,7 @@ import {
   discoveryApiRef,
   identityApiRef
 } from '@backstage/core-plugin-api';
-import { RootlyApi, RootlyApiRef } from './api';
+import { RootlyApi, RootlyApiRef } from '@rootly/backstage-plugin-common';
 
 export const RootlyRouteRef = createRouteRef({
   id: 'Rootly',

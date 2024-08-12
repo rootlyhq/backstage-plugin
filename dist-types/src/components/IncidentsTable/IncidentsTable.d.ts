@@ -1,5 +1,5 @@
 import React from 'react';
-import { IncidentsFetchOpts } from '../../api';
+import { RootlyIncidentsFetchOpts } from '@rootly/backstage-plugin-common';
 export declare const IncidentsTable: ({ params }: {
-    params?: IncidentsFetchOpts | undefined;
+    params?: RootlyIncidentsFetchOpts | undefined;
 }) => React.JSX.Element;

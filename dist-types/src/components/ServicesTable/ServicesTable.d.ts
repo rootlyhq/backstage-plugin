@@ -1,5 +1,5 @@
 import React from 'react';
-import { ServicesFetchOpts } from '../../api';
+import { RootlyServicesFetchOpts } from '@rootly/backstage-plugin-common';
 export declare const ServicesTable: ({ params }: {
-    params?: ServicesFetchOpts | undefined;
+    params?: RootlyServicesFetchOpts | undefined;
 }) => React.JSX.Element;

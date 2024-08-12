@@ -11,10 +11,14 @@ import { Box, Button, Grid, TabProps } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import { default as React, useState } from 'react';
 import { useAsync } from 'react-use';
-import { RootlyApiRef } from '../../api';
-import { Entity, Service } from '../../types';
 import { IncidentsTable } from '../IncidentsTable';
 import { ServicesDialog } from '../ServicesDialog';
+
+import {
+  RootlyApiRef,
+  RootlyEntity,
+  RootlyService,
+} from '@rootly/backstage-plugin-common';
 
 type SubRoute = {
   path: string;
@@ -43,15 +47,15 @@ export const RootlyIncidentsPageLayout = () => {
     setOpen(false);
   };
 
-  const handleCloseImport = async (entity: Entity) => {
+  const handleCloseImport = async (entity: RootlyEntity) => {
     await RootlyApi.importServiceEntity(entity);
     setReload(!reload);
   };
 
   const handleCloseUpdate = async (
-    entity: Entity,
-    service: Service,
-    old_service?: Service,
+    entity: RootlyEntity,
+    service: RootlyService,
+    old_service?: RootlyService,
   ) => {
     await RootlyApi.updateServiceEntity(entity, service, old_service);
     setReload(!reload);
@@ -111,7 +115,7 @@ export const RootlyIncidentsPageLayout = () => {
             </Box>
             <ServicesDialog
               open={open}
-              entity={entity as Entity}
+              entity={entity as RootlyEntity}
               handleClose={handleCloseDialog}
               handleImport={handleCloseImport}
               handleUpdate={handleCloseUpdate}

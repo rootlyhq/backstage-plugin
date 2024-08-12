@@ -1,5 +1,5 @@
 import React from 'react';
-import { Environment, Functionality, Team, IncidentType, Service } from '../../types';
+import { RootlyEnvironment, RootlyFunctionality, RootlyTeam, RootlyIncidentType, RootlyService } from '@rootly/backstage-plugin-common';
 export declare const ColoredChips: ({ objects, }: {
-    objects: Service[] | Functionality[] | Environment[] | IncidentType[] | Team[];
+    objects: RootlyService[] | RootlyFunctionality[] | RootlyEnvironment[] | RootlyIncidentType[] | RootlyTeam[];
 }) => React.JSX.Element;

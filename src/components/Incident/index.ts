@@ -1,21 +1,14 @@
-import {
-  Environment,
-  Functionality,
-  Team,
-  Incident,
-  IncidentType,
-  Service,
-} from '../../types';
+import { RootlyIncident, RootlyIncidentType, RootlyEnvironment, RootlyFunctionality, RootlyService, RootlyTeam } from '@rootly/backstage-plugin-common';
 
 export class IncidentWrapper {
-  incident: Incident;
+  incident: RootlyIncident;
   included: any;
-  constructor(incident: Incident, included: any) {
+  constructor(incident: RootlyIncident, included: any) {
     this.incident = incident;
     this.included = included;
   }
 
-  environments = (): Environment[] => {
+  environments = (): RootlyEnvironment[] => {
     if (this.incident.relationships?.environments?.data) {
       const ids = this.incident.relationships?.environments?.data.map(r => {
         return r.id;
@@ -28,7 +21,7 @@ export class IncidentWrapper {
     
   };
 
-  services = (): Service[] => {
+  services = (): RootlyService[] => {
     if (this.incident.relationships?.services?.data) {
       const ids = this.incident.relationships?.services?.data.map(r => {
         return r.id;
@@ -41,7 +34,7 @@ export class IncidentWrapper {
     
   };
 
-  functionalities = (): Functionality[] => {
+  functionalities = (): RootlyFunctionality[] => {
     if (this.incident.relationships?.functionalities?.data) {
       const ids = this.incident.relationships?.functionalities?.data.map(r => {
         return r.id;
@@ -54,7 +47,7 @@ export class IncidentWrapper {
     
   };
 
-  groups = (): Team[] => {
+  groups = (): RootlyTeam[] => {
     if (this.incident.relationships?.groups?.data) {
       const ids = this.incident.relationships?.groups?.data.map(r => {
         return r.id;
@@ -67,7 +60,7 @@ export class IncidentWrapper {
     
   };
 
-  types = (): IncidentType[] => {
+  types = (): RootlyIncidentType[] => {
     if (this.incident.relationships?.incident_types?.data) {
       const ids = this.incident.relationships?.incident_types?.data.map(r => {
         return r.id;

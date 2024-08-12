@@ -7,8 +7,12 @@ import Link from '@material-ui/core/Link';
 import { Alert } from '@material-ui/lab';
 import React, { useCallback, useState } from 'react';
 import { useAsync } from 'react-use';
-import { RootlyApiRef, FunctionalitiesFetchOpts } from '../../api';
-import { Functionality } from '../../types';
+
+import {
+  RootlyApiRef,
+  RootlyFunctionality,
+  RootlyFunctionalitiesFetchOpts,
+} from '@rootly/backstage-plugin-common';
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -24,7 +28,7 @@ const useStyles = makeStyles(theme => ({
 const DEFAULT_PAGE_NUMBER = 1;
 const DEFAULT_PAGE_SIZE = 10;
 
-export const FunctionalitiesTable = ({ params }: { params?: FunctionalitiesFetchOpts }) => {
+export const FunctionalitiesTable = ({ params }: { params?: RootlyFunctionalitiesFetchOpts }) => {
   const classes = useStyles();
   const RootlyApi = useApi(RootlyApiRef);
 
@@ -51,7 +55,7 @@ export const FunctionalitiesTable = ({ params }: { params?: FunctionalitiesFetch
     [page],
   );
 
-  const nameColumn = useCallback(rowData => {
+  const nameColumn = useCallback((rowData: RootlyFunctionality) => {
     return (
       <Tooltip
         title={
@@ -66,7 +70,7 @@ export const FunctionalitiesTable = ({ params }: { params?: FunctionalitiesFetch
     );
   }, []);
 
-  const backstageColumn = useCallback(rowData => {
+  const backstageColumn = useCallback((rowData: RootlyFunctionality) => {
     if (rowData.attributes.backstage_id) {
       return (
         <EntityRefLink
@@ -78,7 +82,7 @@ export const FunctionalitiesTable = ({ params }: { params?: FunctionalitiesFetch
     
   }, []);
 
-  const columns: TableColumn<Functionality>[] = [
+  const columns: TableColumn<RootlyFunctionality>[] = [
     {
       title: 'Name',
       field: 'name',

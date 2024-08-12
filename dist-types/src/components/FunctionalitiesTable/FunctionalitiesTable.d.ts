@@ -1,5 +1,5 @@
 import React from 'react';
-import { FunctionalitiesFetchOpts } from '../../api';
+import { RootlyFunctionalitiesFetchOpts } from '@rootly/backstage-plugin-common';
 export declare const FunctionalitiesTable: ({ params }: {
-    params?: FunctionalitiesFetchOpts | undefined;
+    params?: RootlyFunctionalitiesFetchOpts | undefined;
 }) => React.JSX.Element;
