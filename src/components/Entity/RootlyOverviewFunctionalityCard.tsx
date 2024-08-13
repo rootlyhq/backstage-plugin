@@ -27,23 +27,16 @@ import { LineChart } from 'react-chartkick';
 import { blue } from '@material-ui/core/colors';
 import 'chartkick/chart.js';
 import moment from 'moment';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useAsync } from 'react-use';
 import { ColoredChip } from '../UI/ColoredChip';
 import { StatusChip } from '../UI/StatusChip';
 
 import {
-  autoImportFunctionality,
-} from '../../integration';
-
-import {
   RootlyApi,
   RootlyApiRef,
-  RootlyEntity,
   RootlyIncident,
   RootlyFunctionality,
-  ROOTLY_ANNOTATION_FUNCTIONALITY_ID,
-  ROOTLY_ANNOTATION_FUNCTIONALITY_SLUG,
 } from '@rootly/backstage-plugin-common';
 
 const truncate = (input: string, length: number) =>
@@ -108,10 +101,6 @@ export const RootlyOverviewFunctionalityCard = () => {
   const { entity } = useEntity();
   const RootlyApi = useApi(RootlyApiRef);
 
-  const functionality_id_annotation =
-    entity.metadata.annotations?.[ROOTLY_ANNOTATION_FUNCTIONALITY_ID] ||
-    entity.metadata.annotations?.[ROOTLY_ANNOTATION_FUNCTIONALITY_SLUG];
-
   const [reload, setReload] = useState(false);
 
   const createIncidentLink: IconLinkVerticalProps = {
@@ -133,46 +122,6 @@ export const RootlyOverviewFunctionalityCard = () => {
     kind: entity.kind,
     name: entity.metadata.name,
   });
-
-  useEffect(() => {
-    if (functionality_id_annotation) {
-      RootlyApi.getFunctionality(functionality_id_annotation)
-        .then(annotationFunctionalityResponse => {
-          const annotationFunctionality = annotationFunctionalityResponse.data;
-          if (
-            annotationFunctionality.attributes.backstage_id &&
-            annotationFunctionality.attributes.backstage_id !== entityTriplet
-          ) {
-            RootlyApi.getFunctionalities({
-              filter: {
-                backstage_id: entityTriplet,
-              },
-            }).then(functionalitiesResponse => {
-              const functionality =
-                functionalitiesResponse &&
-                functionalitiesResponse.data &&
-                functionalitiesResponse.data.length > 0
-                  ? functionalitiesResponse.data[0]
-                  : null;
-              if (functionality) {
-                RootlyApi.updateFunctionalityEntity(
-                  entity as RootlyEntity,
-                  annotationFunctionality,
-                  functionality,
-                );
-              }
-            });
-          } else {
-            RootlyApi.updateFunctionalityEntity(entity as RootlyEntity, annotationFunctionality);
-          }
-        })
-        .catch(() => {
-          if (autoImportFunctionality(entity)) {
-            RootlyApi.importFunctionalityEntity(entity as RootlyEntity);
-          }
-        });
-    }
-  }, []);
 
   const {
     value: functionalityResponse,

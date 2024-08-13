@@ -27,24 +27,16 @@ import { LineChart } from 'react-chartkick';
 import { blue } from '@material-ui/core/colors';
 import 'chartkick/chart.js';
 import moment from 'moment';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useAsync } from 'react-use';
 import { ColoredChip } from '../UI/ColoredChip';
 import { StatusChip } from '../UI/StatusChip';
-import {
-  autoImportTeam,
-} from '../../integration';
 
 import {
   RootlyApi,
   RootlyApiRef,
-  RootlyEntity,
   RootlyIncident,
   RootlyTeam,
-  ROOTLY_ANNOTATION_TEAM_ID,
-  ROOTLY_ANNOTATION_TEAM_SLUG,
-  RootlyTeamResponse,
-  RootlyTeamsResponse,
 } from '@rootly/backstage-plugin-common';
 
 const truncate = (input: string, length: number) =>
@@ -109,10 +101,6 @@ export const RootlyOverviewTeamCard = () => {
   const { entity } = useEntity();
   const RootlyApi = useApi(RootlyApiRef);
 
-  const team_id_annotation =
-    entity.metadata.annotations?.[ROOTLY_ANNOTATION_TEAM_ID] ||
-    entity.metadata.annotations?.[ROOTLY_ANNOTATION_TEAM_SLUG];
-
   const [reload, setReload] = useState(false);
 
   const createIncidentLink: IconLinkVerticalProps = {
@@ -134,46 +122,6 @@ export const RootlyOverviewTeamCard = () => {
     kind: entity.kind,
     name: entity.metadata.name,
   });
-
-  useEffect(() => {
-    if (team_id_annotation) {
-      RootlyApi.getTeam(team_id_annotation)
-        .then((annotationTeamResponse : RootlyTeamResponse) => {
-          const annotationTeam = annotationTeamResponse.data;
-          if (
-            annotationTeam.attributes.backstage_id &&
-            annotationTeam.attributes.backstage_id !== entityTriplet
-          ) {
-            RootlyApi.getTeams({
-              filter: {
-                backstage_id: entityTriplet,
-              },
-            }).then((teamsResponse: RootlyTeamsResponse) => {
-              const team =
-                teamsResponse &&
-                teamsResponse.data &&
-                teamsResponse.data.length > 0
-                  ? teamsResponse.data[0]
-                  : null;
-              if (team) {
-                RootlyApi.updateTeamEntity(
-                  entity as RootlyEntity,
-                  annotationTeam,
-                  team,
-                );
-              }
-            });
-          } else {
-            RootlyApi.updateTeamEntity(entity as RootlyEntity, annotationTeam);
-          }
-        })
-        .catch(() => {
-          if (autoImportTeam(entity)) {
-            RootlyApi.importTeamEntity(entity as RootlyEntity);
-          }
-        });
-    }
-  }, []);
 
   const {
     value: teamResponse,

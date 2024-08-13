@@ -81,7 +81,6 @@ metadata:
     backstage.io/techdocs-ref: dir:.
     lighthouse.com/website-url: https://rootly.com
     rootly.com/service-slug: elasticsearch-staging
-    rootly.com/service-auto-import: enabled
 spec:
   type: grpc
   owner: guests

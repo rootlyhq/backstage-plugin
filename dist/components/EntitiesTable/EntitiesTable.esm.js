@@ -4,10 +4,9 @@ import { useApi } from '@backstage/core-plugin-api';
 import { catalogApiRef, EntityRefLink } from '@backstage/plugin-catalog-react';
 import Link from '@material-ui/core/Link';
 import { Alert } from '@material-ui/lab';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useAsync } from 'react-use';
-import { autoImportService } from '../../integration.esm.js';
-import { RootlyApiRef, ROOTLY_ANNOTATION_SERVICE_ID, ROOTLY_ANNOTATION_SERVICE_SLUG } from '@rootly/backstage-plugin-common';
+import { RootlyApiRef } from '@rootly/backstage-plugin-common';
 
 const EntitiesTable = () => {
   const catalogApi = useApi(catalogApiRef);
@@ -19,48 +18,6 @@ const EntitiesTable = () => {
   const { value, loading, error } = useAsync(
     async () => await catalogApi.getEntities()
   );
-  useEffect(() => {
-    catalogApi.getEntities().then((entities) => {
-      entities.items.forEach((entity) => {
-        const entityTriplet = stringifyEntityRef({
-          namespace: entity.metadata.namespace,
-          kind: entity.kind,
-          name: entity.metadata.name
-        });
-        const service_id_annotation = entity.metadata.annotations?.[ROOTLY_ANNOTATION_SERVICE_ID] || entity.metadata.annotations?.[ROOTLY_ANNOTATION_SERVICE_SLUG];
-        if (service_id_annotation) {
-          RootlyApi.getService(service_id_annotation).then((annotationServiceResponse) => {
-            const annotationService = annotationServiceResponse.data;
-            if (annotationService.attributes.backstage_id && annotationService.attributes.backstage_id !== entityTriplet) {
-              RootlyApi.getServices({
-                filter: {
-                  backstage_id: annotationService.attributes.backstage_id
-                }
-              }).then((servicesResponse) => {
-                const service = servicesResponse && servicesResponse.data && servicesResponse.data.length > 0 ? servicesResponse.data[0] : null;
-                if (service) {
-                  RootlyApi.updateServiceEntity(
-                    entity,
-                    annotationService,
-                    service
-                  );
-                }
-              });
-            } else {
-              RootlyApi.updateServiceEntity(
-                entity,
-                annotationService
-              );
-            }
-          }).catch(() => {
-            if (autoImportService(entity)) {
-              RootlyApi.importServiceEntity(entity);
-            }
-          });
-        }
-      });
-    });
-  }, []);
   const fetchService = (entity) => {
     const entityTriplet = stringifyEntityRef({
       namespace: entity.metadata.namespace,

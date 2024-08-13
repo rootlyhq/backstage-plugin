@@ -4,12 +4,8 @@ import { useApi } from '@backstage/core-plugin-api';
 import { catalogApiRef, EntityRefLink } from '@backstage/plugin-catalog-react';
 import Link from '@material-ui/core/Link';
 import { Alert } from '@material-ui/lab';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useAsync } from 'react-use';
-
-import {
-  autoImportService,
-} from '../../integration';
 
 import {
   RootlyApiRef,
@@ -17,8 +13,6 @@ import {
   RootlyService,
   RootlyFunctionality,
   RootlyTeam,
-  ROOTLY_ANNOTATION_SERVICE_ID,
-  ROOTLY_ANNOTATION_SERVICE_SLUG,
 } from '@rootly/backstage-plugin-common';
 
 export const EntitiesTable = () => {
@@ -32,117 +26,6 @@ export const EntitiesTable = () => {
   const { value, loading, error } = useAsync(
     async () => await catalogApi.getEntities(),
   );
-
-  // const handleServiceUpdate = async (
-  //   entity: RootlyEntity,
-  //   service: RootlyService,
-  //   old_service?: RootlyService,
-  // ) => {
-  //   await RootlyApi.updateServiceEntity(entity, service, old_service);
-  //   setTimeout(() => setReload(!reload), 500);
-  // };
-
-  // const handleServiceImport = async (entity: RootlyEntity) => {
-  //   await RootlyApi.importServiceEntity(entity);
-  //   setTimeout(() => setReload(!reload), 500);
-  // };
-
-  // const handleServiceDelete = async (service: RootlyService) => {
-  //   await RootlyApi.deleteServiceEntity(service);
-  //   setTimeout(() => setReload(!reload), 500);
-  // };
-
-  // const handleFunctionalityUpdate = async (
-  //   entity: RootlyEntity,
-  //   service: RootlyFunctionality,
-  //   old_service?: RootlyFunctionality,
-  // ) => {
-  //   await RootlyApi.updateFunctionalityEntity(entity, service, old_service);
-  //   setTimeout(() => setReload(!reload), 500);
-  // };
-
-  // const handleFunctionalityImport = async (entity: RootlyEntity) => {
-  //   await RootlyApi.importFunctionalityEntity(entity);
-  //   setTimeout(() => setReload(!reload), 500);
-  // };
-
-  // const handleFunctionalityDelete = async (service: RootlyFunctionality) => {
-  //   await RootlyApi.deleteFunctionalityEntity(service);
-  //   setTimeout(() => setReload(!reload), 500);
-  // };
-
-  // const handleTeamUpdate = async (
-  //   entity: RootlyEntity,
-  //   team: RootlyTeam,
-  //   old_team?: RootlyTeam,
-  // ) => {
-  //   await RootlyApi.updateTeamEntity(entity, team, old_team);
-  //   setTimeout(() => setReload(!reload), 500);
-  // };
-
-  // const handleTeamImport = async (entity: RootlyEntity) => {
-  //   await RootlyApi.importTeamEntity(entity);
-  //   setTimeout(() => setReload(!reload), 500);
-  // };
-
-  // const handleTeamDelete = async (team: RootlyTeam) => {
-  //   await RootlyApi.deleteTeamEntity(team);
-  //   setTimeout(() => setReload(!reload), 500);
-  // };
-
-  useEffect(() => {
-    catalogApi.getEntities().then(entities => {
-      entities.items.forEach(entity => {
-        const entityTriplet = stringifyEntityRef({
-          namespace: entity.metadata.namespace,
-          kind: entity.kind,
-          name: entity.metadata.name,
-        });
-
-        const service_id_annotation =
-          entity.metadata.annotations?.[ROOTLY_ANNOTATION_SERVICE_ID] ||
-          entity.metadata.annotations?.[ROOTLY_ANNOTATION_SERVICE_SLUG];
-
-        if (service_id_annotation) {
-          RootlyApi.getService(service_id_annotation)
-            .then(annotationServiceResponse => {
-              const annotationService = annotationServiceResponse.data;
-              if (annotationService.attributes.backstage_id && annotationService.attributes.backstage_id !== entityTriplet) {
-                RootlyApi.getServices({
-                  filter: {
-                    backstage_id: annotationService.attributes.backstage_id,
-                  },
-                }).then(servicesResponse => {
-                  const service =
-                    servicesResponse &&
-                    servicesResponse.data &&
-                    servicesResponse.data.length > 0
-                      ? servicesResponse.data[0]
-                      : null;
-                  if (service) {
-                    RootlyApi.updateServiceEntity(
-                      entity as RootlyEntity,
-                      annotationService,
-                      service,
-                    );
-                  }
-                });
-              } else {
-                RootlyApi.updateServiceEntity(
-                  entity as RootlyEntity,
-                  annotationService,
-                );
-              }
-            })
-            .catch(() => {
-              if (autoImportService(entity)) {
-                RootlyApi.importServiceEntity(entity as RootlyEntity);
-              }
-            });
-        }
-      });
-    });
-  }, []);
 
   const fetchService = (entity: RootlyEntity) => {
     const entityTriplet = stringifyEntityRef({

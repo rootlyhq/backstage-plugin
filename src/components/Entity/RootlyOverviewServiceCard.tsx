@@ -27,22 +27,16 @@ import { LineChart } from 'react-chartkick';
 import { blue } from '@material-ui/core/colors';
 import 'chartkick/chart.js';
 import moment from 'moment';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useAsync } from 'react-use';
 import { ColoredChip } from '../UI/ColoredChip';
 import { StatusChip } from '../UI/StatusChip';
-import {
-  autoImportService,
-} from '../../integration';
 
 import {
   RootlyApi,
   RootlyApiRef,
-  RootlyEntity,
   RootlyIncident,
   RootlyService,
-  ROOTLY_ANNOTATION_SERVICE_ID,
-  ROOTLY_ANNOTATION_SERVICE_SLUG,
 } from '@rootly/backstage-plugin-common';
 
 const truncate = (input: string, length: number) =>
@@ -107,10 +101,6 @@ export const RootlyOverviewServiceCard = () => {
   const { entity } = useEntity();
   const RootlyApi = useApi(RootlyApiRef);
 
-  const service_id_annotation =
-    entity.metadata.annotations?.[ROOTLY_ANNOTATION_SERVICE_ID] ||
-    entity.metadata.annotations?.[ROOTLY_ANNOTATION_SERVICE_SLUG];
-
   const [reload, setReload] = useState(false);
 
   const createIncidentLink: IconLinkVerticalProps = {
@@ -132,46 +122,6 @@ export const RootlyOverviewServiceCard = () => {
     kind: entity.kind,
     name: entity.metadata.name,
   });
-
-  useEffect(() => {
-    if (service_id_annotation) {
-      RootlyApi.getService(service_id_annotation)
-        .then(annotationServiceResponse => {
-          const annotationService = annotationServiceResponse.data;
-          if (
-            annotationService.attributes.backstage_id &&
-            annotationService.attributes.backstage_id !== entityTriplet
-          ) {
-            RootlyApi.getServices({
-              filter: {
-                backstage_id: entityTriplet,
-              },
-            }).then(servicesResponse => {
-              const service =
-                servicesResponse &&
-                servicesResponse.data &&
-                servicesResponse.data.length > 0
-                  ? servicesResponse.data[0]
-                  : null;
-              if (service) {
-                RootlyApi.updateServiceEntity(
-                  entity as RootlyEntity,
-                  annotationService,
-                  service,
-                );
-              }
-            });
-          } else {
-            RootlyApi.updateServiceEntity(entity as RootlyEntity, annotationService);
-          }
-        })
-        .catch(() => {
-          if (autoImportService(entity)) {
-            RootlyApi.importServiceEntity(entity as RootlyEntity);
-          }
-        });
-    }
-  }, []);
 
   const {
     value: serviceResponse,
