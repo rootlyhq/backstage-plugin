@@ -1,6 +1,6 @@
 import { TabProps } from '@material-ui/core';
 import { default as React } from 'react';
-declare type SubRoute = {
+type SubRoute = {
     path: string;
     title: string;
     children: JSX.Element;
@@ -8,7 +8,7 @@ declare type SubRoute = {
         component?: React.ElementType;
     }>;
 };
-declare type LayoutProps = {
+type LayoutProps = {
     children?: React.ReactNode;
 };
 export declare const DefaultRootlyPageLayout: {

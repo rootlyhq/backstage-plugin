@@ -15,10 +15,10 @@ import { IncidentsTable } from '../IncidentsTable';
 import { ServicesDialog } from '../ServicesDialog';
 
 import {
-  RootlyApiRef,
   RootlyEntity,
   RootlyService,
 } from '@rootly/backstage-plugin-common';
+import { RootlyApiRef } from '../../api';
 
 type SubRoute = {
   path: string;

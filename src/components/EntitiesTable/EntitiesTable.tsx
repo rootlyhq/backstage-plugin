@@ -8,12 +8,12 @@ import React from 'react';
 import { useAsync } from 'react-use';
 
 import {
-  RootlyApiRef,
   RootlyEntity,
   RootlyService,
   RootlyFunctionality,
   RootlyTeam,
 } from '@rootly/backstage-plugin-common';
+import { RootlyApiRef } from '../../api';
 
 export const EntitiesTable = () => {
   const catalogApi = useApi(catalogApiRef);

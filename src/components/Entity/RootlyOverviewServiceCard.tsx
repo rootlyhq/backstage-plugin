@@ -34,10 +34,10 @@ import { StatusChip } from '../UI/StatusChip';
 
 import {
   RootlyApi,
-  RootlyApiRef,
   RootlyIncident,
   RootlyService,
 } from '@rootly/backstage-plugin-common';
+import { RootlyApiRef } from '../../api';
 
 const truncate = (input: string, length: number) =>
   input.length > length ? `${input.substring(0, length)}...` : input;

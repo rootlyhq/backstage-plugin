@@ -5,7 +5,8 @@ import {
   discoveryApiRef,
   identityApiRef
 } from '@backstage/core-plugin-api';
-import { RootlyApi, RootlyApiRef } from '@rootly/backstage-plugin-common';
+import { RootlyApi } from '@rootly/backstage-plugin-common';
+import { RootlyApiRef } from './api';
 
 export const RootlyRouteRef = createRouteRef({
   id: 'Rootly',
@@ -19,8 +20,8 @@ export const RootlyPlugin = createPlugin({
       deps: { discoveryApi: discoveryApiRef, identityApi: identityApiRef },
       factory: ({ discoveryApi, identityApi }) => {
         return new RootlyApi({
-          discoveryApi: discoveryApi,
-          identityApi: identityApi,
+          apiProxyPath:`${discoveryApi.getBaseUrl('proxy')}/rootly/api`,
+          apiToken: identityApi.getCredentials(),
           domain: 'https://rootly.com',
         });
       },

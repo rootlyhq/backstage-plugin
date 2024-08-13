@@ -12,9 +12,9 @@ import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import React from 'react';
 
 import {
-  RootlyApiRef,
   RootlyFunctionality,
 } from '@rootly/backstage-plugin-common';
+import { RootlyApiRef } from '../../api';
 
 export const FunctionalityActionsMenu = ({ functionality }: { functionality: RootlyFunctionality }) => {
   const RootlyApi = useApi(RootlyApiRef);

@@ -9,10 +9,10 @@ import React, { useCallback, useState } from 'react';
 import { useAsync } from 'react-use';
 
 import {
-  RootlyApiRef,
   RootlyFunctionality,
   RootlyFunctionalitiesFetchOpts,
 } from '@rootly/backstage-plugin-common';
+import { RootlyApiRef } from '../../api';
 
 const useStyles = makeStyles(theme => ({
   container: {

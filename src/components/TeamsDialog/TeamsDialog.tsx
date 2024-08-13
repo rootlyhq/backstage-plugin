@@ -16,10 +16,10 @@ import React, { useEffect, useState } from 'react';
 import { useAsync } from 'react-use';
 
 import {
-  RootlyApiRef,
   RootlyEntity,
   RootlyTeam,
 } from '@rootly/backstage-plugin-common';
+import { RootlyApiRef } from '../../api';
 
 export const TeamsDialog = ({
   open,

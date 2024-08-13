@@ -11,10 +11,10 @@ import { ColoredChips } from '../UI/ColoredChips';
 import { StatusChip } from '../UI/StatusChip';
 
 import {
-  RootlyApiRef,
   RootlyIncident,
   RootlyIncidentsFetchOpts,
 } from '@rootly/backstage-plugin-common';
+import { RootlyApiRef } from '../../api';
 
 const useStyles = makeStyles(theme => ({
   container: {

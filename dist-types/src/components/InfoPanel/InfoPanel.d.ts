@@ -1,5 +1,5 @@
 import React from 'react';
-declare type Props = {
+type Props = {
     title?: string;
     message?: React.ReactNode;
     children?: React.ReactNode;
