@@ -8,7 +8,7 @@ import React, { useState } from 'react';
 import { useAsync } from 'react-use';
 import { IncidentsTable } from '../IncidentsTable/IncidentsTable.esm.js';
 import { ServicesDialog } from '../ServicesDialog/ServicesDialog.esm.js';
-import { RootlyApiRef } from '@rootly/backstage-plugin-common';
+import { RootlyApiRef } from '../../api.esm.js';
 
 const Route = () => null;
 attachComponentData(Route, "core.gatherMountPoints", true);

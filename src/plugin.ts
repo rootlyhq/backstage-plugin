@@ -20,9 +20,8 @@ export const RootlyPlugin = createPlugin({
       deps: { discoveryApi: discoveryApiRef, identityApi: identityApiRef },
       factory: ({ discoveryApi, identityApi }) => {
         return new RootlyApi({
-          apiProxyPath:`${discoveryApi.getBaseUrl('proxy')}/rootly/api`,
-          apiToken: identityApi.getCredentials(),
-          domain: 'https://rootly.com',
+          apiProxyPath: discoveryApi.getBaseUrl('proxy'),
+          apiToken: identityApi.getCredentials()
         });
       },
     }),

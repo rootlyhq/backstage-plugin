@@ -7,7 +7,7 @@ import '@backstage/plugin-catalog-react';
 import '@material-ui/core/Link';
 import '@material-ui/lab';
 import 'react-use';
-import '@rootly/backstage-plugin-common';
+import '../../api.esm.js';
 import { IncidentsTable } from '../IncidentsTable/IncidentsTable.esm.js';
 import { ServicesTable } from '../ServicesTable/ServicesTable.esm.js';
 import { FunctionalitiesTable } from '../FunctionalitiesTable/FunctionalitiesTable.esm.js';

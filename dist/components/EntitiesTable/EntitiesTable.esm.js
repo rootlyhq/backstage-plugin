@@ -6,7 +6,7 @@ import Link from '@material-ui/core/Link';
 import { Alert } from '@material-ui/lab';
 import React from 'react';
 import { useAsync } from 'react-use';
-import { RootlyApiRef } from '@rootly/backstage-plugin-common';
+import { RootlyApiRef } from '../../api.esm.js';
 
 const EntitiesTable = () => {
   const catalogApi = useApi(catalogApiRef);

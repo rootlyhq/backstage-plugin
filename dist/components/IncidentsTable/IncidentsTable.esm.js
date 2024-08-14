@@ -9,7 +9,7 @@ import { IncidentWrapper } from '../Incident/index.esm.js';
 import { ColoredChip } from '../UI/ColoredChip.esm.js';
 import { ColoredChips } from '../UI/ColoredChips.esm.js';
 import { StatusChip } from '../UI/StatusChip.esm.js';
-import { RootlyApiRef } from '@rootly/backstage-plugin-common';
+import { RootlyApiRef } from '../../api.esm.js';
 
 const useStyles = makeStyles((theme) => ({
   container: {

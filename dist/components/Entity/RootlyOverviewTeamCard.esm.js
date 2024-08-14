@@ -16,7 +16,7 @@ import React, { useState } from 'react';
 import { useAsync } from 'react-use';
 import { ColoredChip } from '../UI/ColoredChip.esm.js';
 import { StatusChip } from '../UI/StatusChip.esm.js';
-import { RootlyApiRef } from '@rootly/backstage-plugin-common';
+import { RootlyApiRef } from '../../api.esm.js';
 
 const truncate = (input, length) => input.length > length ? `${input.substring(0, length)}...` : input;
 const IncidentListItem = ({
