@@ -1,4 +1,3 @@
-import { useApi } from '@backstage/core-plugin-api';
 import {
   IconButton,
   ListItemIcon,
@@ -12,12 +11,11 @@ import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import React from 'react';
 
 import {
+  RootlyApi,
   RootlyTeam,
 } from '@rootly/backstage-plugin-common';
-import { RootlyApiRef } from '../../api';
 
 export const TeamActionsMenu = ({ team }: { team: RootlyTeam }) => {
-  const RootlyApi = useApi(RootlyApiRef);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {

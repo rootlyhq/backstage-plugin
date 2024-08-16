@@ -5,20 +5,14 @@ import {
   Page,
   Progress
 } from '@backstage/core-components';
-import { attachComponentData, useApi } from '@backstage/core-plugin-api';
+import { attachComponentData, configApiRef, discoveryApiRef, useApi } from '@backstage/core-plugin-api';
 import { useEntity } from '@backstage/plugin-catalog-react';
-import { Box, Button, Grid, TabProps } from '@material-ui/core';
+import { Box, Grid, TabProps } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
-import { default as React, useState } from 'react';
+import { default as React } from 'react';
 import { useAsync } from 'react-use';
 import { IncidentsTable } from '../IncidentsTable';
-import { ServicesDialog } from '../ServicesDialog';
-
-import {
-  RootlyEntity,
-  RootlyService,
-} from '@rootly/backstage-plugin-common';
-import { RootlyApiRef } from '../../api';
+import { useRootlyClient } from '../../api';
 
 type SubRoute = {
   path: string;
@@ -32,34 +26,11 @@ const Route: (props: SubRoute) => null = () => null;
 // This causes all mount points that are discovered within this route to use the path of the route itself
 attachComponentData(Route, 'core.gatherMountPoints', true);
 
-export const RootlyIncidentsPageLayout = () => {
+export const RootlyIncidentsPageLayout = ({ organizationId }: { organizationId?: string }) => {
   const { entity } = useEntity();
-  const RootlyApi = useApi(RootlyApiRef);
-
-  const [open, setOpen] = useState(false);
-  const [reload, setReload] = useState(false);
-
-  const handleOpenDialog = () => {
-    setOpen(true);
-  };
-
-  const handleCloseDialog = () => {
-    setOpen(false);
-  };
-
-  const handleCloseImport = async (entity: RootlyEntity) => {
-    await RootlyApi.importServiceEntity(entity);
-    setReload(!reload);
-  };
-
-  const handleCloseUpdate = async (
-    entity: RootlyEntity,
-    service: RootlyService,
-    old_service?: RootlyService,
-  ) => {
-    await RootlyApi.updateServiceEntity(entity, service, old_service);
-    setReload(!reload);
-  };
+  const configApi = useApi(configApiRef);
+  const discoveryApi = useApi(discoveryApiRef);
+  const rootlyClient = useRootlyClient({discovery: discoveryApi, config: configApi, organizationId: organizationId});
 
   const entityTriplet = stringifyEntityRef({
     namespace: entity.metadata.namespace,
@@ -73,12 +44,12 @@ export const RootlyIncidentsPageLayout = () => {
     error,
   } = useAsync(
     async () =>
-      await RootlyApi.getServices({
+      await rootlyClient.getServices({
         filter: {
           backstage_id: entityTriplet,
         },
       }),
-    [reload],
+    [],
   );
 
   if (loading) {
@@ -104,22 +75,6 @@ export const RootlyIncidentsPageLayout = () => {
                 Rootly
               </Alert>
             </Box>
-            <Box sx={{ mx: 'auto' }} mt={2}>
-              <Button
-                color="primary"
-                variant="contained"
-                onClick={handleOpenDialog}
-              >
-                Import or link to an existing Rootly service
-              </Button>
-            </Box>
-            <ServicesDialog
-              open={open}
-              entity={entity as RootlyEntity}
-              handleClose={handleCloseDialog}
-              handleImport={handleCloseImport}
-              handleUpdate={handleCloseUpdate}
-            />
           </Grid>
         </Content>
       </Page>
@@ -132,6 +87,7 @@ export const RootlyIncidentsPageLayout = () => {
           <Grid container spacing={3} direction="column">
             <Grid item>
               <IncidentsTable
+                organizationId={organizationId}
                 params={{
                   filter: {
                     services: service.attributes.slug,
@@ -147,6 +103,7 @@ export const RootlyIncidentsPageLayout = () => {
           <Grid container spacing={3} direction="column">
             <Grid item>
               <IncidentsTable
+                organizationId={organizationId}
                 params={{
                   filter: {
                     services: service.attributes.slug,

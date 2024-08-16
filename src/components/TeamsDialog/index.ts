@@ -1,1 +1,0 @@
-export { TeamsDialog } from './TeamsDialog';

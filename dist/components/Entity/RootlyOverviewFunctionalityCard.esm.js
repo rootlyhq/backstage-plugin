@@ -1,6 +1,6 @@
 import { stringifyEntityRef } from '@backstage/catalog-model';
 import { HeaderIconLinkRow, Progress } from '@backstage/core-components';
-import { useApi } from '@backstage/core-plugin-api';
+import { useApi, configApiRef, discoveryApiRef } from '@backstage/core-plugin-api';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { Card, CardHeader, IconButton, Divider, CardContent, Typography, List, ListItem, ListItemText, ListItemSecondaryAction } from '@material-ui/core';
 import Link from '@material-ui/core/Link';
@@ -16,7 +16,8 @@ import React, { useState } from 'react';
 import { useAsync } from 'react-use';
 import { ColoredChip } from '../UI/ColoredChip.esm.js';
 import { StatusChip } from '../UI/StatusChip.esm.js';
-import { RootlyApiRef } from '../../api.esm.js';
+import { ROOTLY_ANNOTATION_ORG_ID, RootlyApi } from '@rootly/backstage-plugin-common';
+import { useRootlyClient } from '../../api.esm.js';
 
 const truncate = (input, length) => input.length > length ? `${input.substring(0, length)}...` : input;
 const IncidentListItem = ({
@@ -48,29 +49,31 @@ const IncidentListItem = ({
     }
   ), /* @__PURE__ */ React.createElement(ListItemSecondaryAction, null, /* @__PURE__ */ React.createElement(StatusChip, { status: incident.attributes.status })));
 };
-const getViewIncidentsForFunctionalityLink = (functionality, rootlyApi) => {
+const getViewIncidentsForFunctionalityLink = (functionality) => {
   return {
     label: "View Incidents",
     disabled: false,
     icon: /* @__PURE__ */ React.createElement(FilterList, null),
-    href: rootlyApi.getListIncidentsForFunctionalityURL(functionality)
+    href: RootlyApi.getListIncidentsForFunctionalityURL(functionality)
   };
 };
 const RootlyOverviewFunctionalityCard = () => {
   const { entity } = useEntity();
-  const RootlyApi2 = useApi(RootlyApiRef);
+  const configApi = useApi(configApiRef);
+  const discoveryApi = useApi(discoveryApiRef);
+  const rootlyClient = useRootlyClient({ discovery: discoveryApi, config: configApi, organizationId: entity.metadata.annotations?.[ROOTLY_ANNOTATION_ORG_ID] });
   const [reload, setReload] = useState(false);
   const createIncidentLink = {
     label: "Create Incident",
     disabled: false,
     icon: /* @__PURE__ */ React.createElement(WhatshotIcon, null),
-    href: RootlyApi2.getCreateIncidentURL()
+    href: RootlyApi.getCreateIncidentURL()
   };
   const viewIncidentsLink = {
     label: "View All Incidents",
     disabled: false,
     icon: /* @__PURE__ */ React.createElement(WhatshotIcon, null),
-    href: RootlyApi2.getListIncidents()
+    href: RootlyApi.getListIncidents()
   };
   const entityTriplet = stringifyEntityRef({
     namespace: entity.metadata.namespace,
@@ -82,7 +85,7 @@ const RootlyOverviewFunctionalityCard = () => {
     loading: functionalityLoading,
     error: functionalityError
   } = useAsync(
-    async () => await RootlyApi2.getFunctionalities({
+    async () => await rootlyClient.getFunctionalities({
       filter: {
         backstage_id: entityTriplet
       }
@@ -95,7 +98,7 @@ const RootlyOverviewFunctionalityCard = () => {
     loading: incidentsLoading,
     error: incidentsError
   } = useAsync(
-    async () => functionality ? await RootlyApi2.getIncidents({
+    async () => functionality ? await rootlyClient.getIncidents({
       filter: {
         functionalities: functionality.attributes.slug,
         status: "started,mitigated"
@@ -108,7 +111,7 @@ const RootlyOverviewFunctionalityCard = () => {
     loading: chartLoading,
     error: chartError
   } = useAsync(
-    async () => functionality ? await RootlyApi2.getFunctionalityIncidentsChart(functionality, {
+    async () => functionality ? await rootlyClient.getFunctionalityIncidentsChart(functionality, {
       period: "day"
     }) : { data: [] },
     [functionality]
@@ -134,7 +137,7 @@ const RootlyOverviewFunctionalityCard = () => {
         {
           links: !functionalityLoading && functionality ? [
             createIncidentLink,
-            getViewIncidentsForFunctionalityLink(functionality, RootlyApi2),
+            getViewIncidentsForFunctionalityLink(functionality),
             viewIncidentsLink
           ] : [createIncidentLink, viewIncidentsLink]
         }
@@ -151,7 +154,7 @@ const RootlyOverviewFunctionalityCard = () => {
     IncidentListItem,
     {
       incident,
-      rootlyApi: RootlyApi2
+      rootlyClient
     }
   ))))));
 };

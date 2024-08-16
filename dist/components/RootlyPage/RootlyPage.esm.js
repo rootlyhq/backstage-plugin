@@ -2,9 +2,9 @@ import React from 'react';
 import { useOutlet } from 'react-router';
 import { DefaultRootlyPage } from './DefaultRootlyPage.esm.js';
 
-const RootlyPage = () => {
+const RootlyPage = ({ organizationId }) => {
   const outlet = useOutlet();
-  return outlet || /* @__PURE__ */ React.createElement(DefaultRootlyPage, null);
+  return outlet || /* @__PURE__ */ React.createElement(DefaultRootlyPage, { organizationId });
 };
 
 export { RootlyPage };

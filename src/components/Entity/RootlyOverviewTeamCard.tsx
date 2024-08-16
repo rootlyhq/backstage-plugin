@@ -4,7 +4,7 @@ import {
   IconLinkVerticalProps,
   Progress,
 } from '@backstage/core-components';
-import { useApi } from '@backstage/core-plugin-api';
+import { configApiRef, discoveryApiRef, useApi } from '@backstage/core-plugin-api';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import {
   Card,
@@ -33,11 +33,12 @@ import { ColoredChip } from '../UI/ColoredChip';
 import { StatusChip } from '../UI/StatusChip';
 
 import {
+  ROOTLY_ANNOTATION_ORG_ID,
   RootlyApi,
   RootlyIncident,
   RootlyTeam,
 } from '@rootly/backstage-plugin-common';
-import { RootlyApiRef } from '../../api';
+import { useRootlyClient } from '../../api';
 
 const truncate = (input: string, length: number) =>
   input.length > length ? `${input.substring(0, length)}...` : input;
@@ -46,7 +47,7 @@ const IncidentListItem = ({
   incident,
 }: {
   incident: RootlyIncident;
-  rootlyApi: RootlyApi;
+  rootlyClient: RootlyApi;
 }) => {
   return (
     <ListItem dense key={incident.id} style={{ paddingLeft: 0 }}>
@@ -87,19 +88,21 @@ const IncidentListItem = ({
 
 const getViewIncidentsForTeamLink = (
   team: RootlyTeam,
-  rootlyApi: RootlyApi,
 ) => {
   return {
     label: 'View Incidents',
     disabled: false,
     icon: <FilterList />,
-    href: rootlyApi.getListIncidentsForTeamURL(team),
+    href: RootlyApi.getListIncidentsForTeamURL(team),
   };
 };
 
 export const RootlyOverviewTeamCard = () => {
   const { entity } = useEntity();
-  const RootlyApi = useApi(RootlyApiRef);
+  const configApi = useApi(configApiRef);
+  const discoveryApi = useApi(discoveryApiRef);
+  const rootlyClient = useRootlyClient({discovery: discoveryApi, config: configApi, organizationId: entity.metadata.annotations?.[ROOTLY_ANNOTATION_ORG_ID]});
+
 
   const [reload, setReload] = useState(false);
 
@@ -129,7 +132,7 @@ export const RootlyOverviewTeamCard = () => {
     error: teamError,
   } = useAsync(
     async () =>
-      await RootlyApi.getTeams({
+      await rootlyClient.getTeams({
         filter: {
           backstage_id: entityTriplet,
         },
@@ -149,7 +152,7 @@ export const RootlyOverviewTeamCard = () => {
   } = useAsync(
     async () =>
       team
-        ? await RootlyApi.getIncidents({
+        ? await rootlyClient.getIncidents({
             filter: {
               teams: team.attributes.slug,
               status: 'started,mitigated',
@@ -166,7 +169,7 @@ export const RootlyOverviewTeamCard = () => {
   } = useAsync(
     async () =>
       team
-        ? await RootlyApi.getTeamIncidentsChart(team, {
+        ? await rootlyClient.getTeamIncidentsChart(team, {
             period: 'day',
           })
         : { data: [] },
@@ -205,7 +208,7 @@ export const RootlyOverviewTeamCard = () => {
               !teamLoading && team
                 ? [
                     createIncidentLink,
-                    getViewIncidentsForTeamLink(team, RootlyApi),
+                    getViewIncidentsForTeamLink(team),
                     viewIncidentsLink,
                   ]
                 : [createIncidentLink, viewIncidentsLink]
@@ -260,7 +263,7 @@ export const RootlyOverviewTeamCard = () => {
                   incidents.map((incident: RootlyIncident) => (
                     <IncidentListItem
                       incident={incident}
-                      rootlyApi={RootlyApi}
+                      rootlyClient={rootlyClient}
                     />
                   ))}
               </List>

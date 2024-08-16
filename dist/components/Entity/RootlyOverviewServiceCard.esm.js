@@ -1,6 +1,6 @@
 import { stringifyEntityRef } from '@backstage/catalog-model';
 import { HeaderIconLinkRow, Progress } from '@backstage/core-components';
-import { useApi } from '@backstage/core-plugin-api';
+import { useApi, configApiRef, discoveryApiRef } from '@backstage/core-plugin-api';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { Card, CardHeader, IconButton, Divider, CardContent, Typography, List, ListItem, ListItemText, ListItemSecondaryAction } from '@material-ui/core';
 import Link from '@material-ui/core/Link';
@@ -16,7 +16,8 @@ import React, { useState } from 'react';
 import { useAsync } from 'react-use';
 import { ColoredChip } from '../UI/ColoredChip.esm.js';
 import { StatusChip } from '../UI/StatusChip.esm.js';
-import { RootlyApiRef } from '../../api.esm.js';
+import { ROOTLY_ANNOTATION_ORG_ID, RootlyApi } from '@rootly/backstage-plugin-common';
+import { useRootlyClient } from '../../api.esm.js';
 
 const truncate = (input, length) => input.length > length ? `${input.substring(0, length)}...` : input;
 const IncidentListItem = ({
@@ -48,29 +49,31 @@ const IncidentListItem = ({
     }
   ), /* @__PURE__ */ React.createElement(ListItemSecondaryAction, null, /* @__PURE__ */ React.createElement(StatusChip, { status: incident.attributes.status })));
 };
-const getViewIncidentsForServiceLink = (service, rootlyApi) => {
+const getViewIncidentsForServiceLink = (service) => {
   return {
     label: "View Incidents",
     disabled: false,
     icon: /* @__PURE__ */ React.createElement(FilterList, null),
-    href: rootlyApi.getListIncidentsForServiceURL(service)
+    href: RootlyApi.getListIncidentsForServiceURL(service)
   };
 };
 const RootlyOverviewServiceCard = () => {
   const { entity } = useEntity();
-  const RootlyApi2 = useApi(RootlyApiRef);
+  const configApi = useApi(configApiRef);
+  const discoveryApi = useApi(discoveryApiRef);
+  const rootlyClient = useRootlyClient({ discovery: discoveryApi, config: configApi, organizationId: entity.metadata.annotations?.[ROOTLY_ANNOTATION_ORG_ID] });
   const [reload, setReload] = useState(false);
   const createIncidentLink = {
     label: "Create Incident",
     disabled: false,
     icon: /* @__PURE__ */ React.createElement(WhatshotIcon, null),
-    href: RootlyApi2.getCreateIncidentURL()
+    href: RootlyApi.getCreateIncidentURL()
   };
   const viewIncidentsLink = {
     label: "View All Incidents",
     disabled: false,
     icon: /* @__PURE__ */ React.createElement(WhatshotIcon, null),
-    href: RootlyApi2.getListIncidents()
+    href: RootlyApi.getListIncidents()
   };
   const entityTriplet = stringifyEntityRef({
     namespace: entity.metadata.namespace,
@@ -82,7 +85,7 @@ const RootlyOverviewServiceCard = () => {
     loading: serviceLoading,
     error: serviceError
   } = useAsync(
-    async () => await RootlyApi2.getServices({
+    async () => await rootlyClient.getServices({
       filter: {
         backstage_id: entityTriplet
       }
@@ -95,7 +98,7 @@ const RootlyOverviewServiceCard = () => {
     loading: incidentsLoading,
     error: incidentsError
   } = useAsync(
-    async () => service ? await RootlyApi2.getIncidents({
+    async () => service ? await rootlyClient.getIncidents({
       filter: {
         services: service.attributes.slug,
         status: "started,mitigated"
@@ -108,7 +111,7 @@ const RootlyOverviewServiceCard = () => {
     loading: chartLoading,
     error: chartError
   } = useAsync(
-    async () => service ? await RootlyApi2.getServiceIncidentsChart(service, {
+    async () => service ? await rootlyClient.getServiceIncidentsChart(service, {
       period: "day"
     }) : { data: [] },
     [service]
@@ -134,7 +137,7 @@ const RootlyOverviewServiceCard = () => {
         {
           links: !serviceLoading && service ? [
             createIncidentLink,
-            getViewIncidentsForServiceLink(service, RootlyApi2),
+            getViewIncidentsForServiceLink(service),
             viewIncidentsLink
           ] : [createIncidentLink, viewIncidentsLink]
         }
@@ -151,7 +154,7 @@ const RootlyOverviewServiceCard = () => {
     IncidentListItem,
     {
       incident,
-      rootlyApi: RootlyApi2
+      rootlyClient
     }
   ))))));
 };

@@ -9,7 +9,9 @@ type SubRoute = {
     }>;
 };
 export declare const RootlyIncidentsPageLayout: {
-    (): React.JSX.Element;
+    ({ organizationId }: {
+        organizationId?: string;
+    }): React.JSX.Element;
     Route: (props: SubRoute) => null;
 };
 export {};

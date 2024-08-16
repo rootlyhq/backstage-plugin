@@ -1,2 +1,4 @@
 import React from 'react';
-export declare const DefaultRootlyIncidentsPage: () => React.JSX.Element;
+export declare const DefaultRootlyIncidentsPage: ({ organizationId }: {
+    organizationId?: string;
+}) => React.JSX.Element;

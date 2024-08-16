@@ -4,7 +4,7 @@ import {
   IconLinkVerticalProps,
   Progress,
 } from '@backstage/core-components';
-import { useApi } from '@backstage/core-plugin-api';
+import { configApiRef, discoveryApiRef, useApi } from '@backstage/core-plugin-api';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import {
   Card,
@@ -33,11 +33,12 @@ import { ColoredChip } from '../UI/ColoredChip';
 import { StatusChip } from '../UI/StatusChip';
 
 import {
+  ROOTLY_ANNOTATION_ORG_ID,
   RootlyApi,
   RootlyIncident,
   RootlyService,
 } from '@rootly/backstage-plugin-common';
-import { RootlyApiRef } from '../../api';
+import { useRootlyClient } from '../../api';
 
 const truncate = (input: string, length: number) =>
   input.length > length ? `${input.substring(0, length)}...` : input;
@@ -46,7 +47,7 @@ const IncidentListItem = ({
   incident,
 }: {
   incident: RootlyIncident;
-  rootlyApi: RootlyApi;
+  rootlyClient: RootlyApi;
 }) => {
   return (
     <ListItem dense key={incident.id} style={{ paddingLeft: 0 }}>
@@ -87,19 +88,36 @@ const IncidentListItem = ({
 
 const getViewIncidentsForServiceLink = (
   service: RootlyService,
-  rootlyApi: RootlyApi,
 ) => {
   return {
     label: 'View Incidents',
     disabled: false,
     icon: <FilterList />,
-    href: rootlyApi.getListIncidentsForServiceURL(service),
+    href: RootlyApi.getListIncidentsForServiceURL(service),
   };
 };
 
+// function findApiKey(configs: Config[], organization: string | undefined) {
+//   // Loop through the configuration array
+//   for (let orgConfig of configs) {
+//     // If organization name is provided and matches, return the API key
+//     if (organization && orgConfig.organization === organization) {
+//       return orgConfig.apiKey;
+//     }
+//   }
+//   // If no organization name is provided, return the first API key found
+//   if (!organization && configs.length > 0) {
+//     return configs.apiKey;
+//   }
+//   // If no matching organization is found, return null or an error message
+//   return null;
+// }
+
 export const RootlyOverviewServiceCard = () => {
   const { entity } = useEntity();
-  const RootlyApi = useApi(RootlyApiRef);
+  const configApi = useApi(configApiRef);
+  const discoveryApi = useApi(discoveryApiRef);
+  const rootlyClient = useRootlyClient({discovery: discoveryApi, config: configApi, organizationId: entity.metadata.annotations?.[ROOTLY_ANNOTATION_ORG_ID]});
 
   const [reload, setReload] = useState(false);
 
@@ -129,7 +147,7 @@ export const RootlyOverviewServiceCard = () => {
     error: serviceError,
   } = useAsync(
     async () =>
-      await RootlyApi.getServices({
+      await rootlyClient.getServices({
         filter: {
           backstage_id: entityTriplet,
         },
@@ -149,7 +167,7 @@ export const RootlyOverviewServiceCard = () => {
   } = useAsync(
     async () =>
       service
-        ? await RootlyApi.getIncidents({
+        ? await rootlyClient.getIncidents({
             filter: {
               services: service.attributes.slug,
               status: 'started,mitigated',
@@ -166,7 +184,7 @@ export const RootlyOverviewServiceCard = () => {
   } = useAsync(
     async () =>
       service
-        ? await RootlyApi.getServiceIncidentsChart(service, {
+        ? await rootlyClient.getServiceIncidentsChart(service, {
             period: 'day',
           })
         : { data: [] },
@@ -205,7 +223,7 @@ export const RootlyOverviewServiceCard = () => {
               !serviceLoading && service
                 ? [
                     createIncidentLink,
-                    getViewIncidentsForServiceLink(service, RootlyApi),
+                    getViewIncidentsForServiceLink(service),
                     viewIncidentsLink,
                   ]
                 : [createIncidentLink, viewIncidentsLink]
@@ -260,7 +278,7 @@ export const RootlyOverviewServiceCard = () => {
                   incidents.map((incident: RootlyIncident) => (
                     <IncidentListItem
                       incident={incident}
-                      rootlyApi={RootlyApi}
+                      rootlyClient={rootlyClient}
                     />
                   ))}
               </List>

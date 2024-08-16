@@ -1,5 +1,5 @@
 import { Table, TableColumn } from '@backstage/core-components';
-import { useApi } from '@backstage/core-plugin-api';
+import { configApiRef, discoveryApiRef, useApi } from '@backstage/core-plugin-api';
 import { Chip, makeStyles, Tooltip } from '@material-ui/core';
 import Link from '@material-ui/core/Link';
 import { Alert } from '@material-ui/lab';
@@ -14,7 +14,7 @@ import {
   RootlyIncident,
   RootlyIncidentsFetchOpts,
 } from '@rootly/backstage-plugin-common';
-import { RootlyApiRef } from '../../api';
+import { useRootlyClient } from '../../api';
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -30,9 +30,11 @@ const useStyles = makeStyles(theme => ({
 const DEFAULT_PAGE_NUMBER = 1;
 const DEFAULT_PAGE_SIZE = 10;
 
-export const IncidentsTable = ({ params }: { params?: RootlyIncidentsFetchOpts }) => {
+export const IncidentsTable = ({ organizationId, params }: { organizationId?: string, params?: RootlyIncidentsFetchOpts }) => {
   const classes = useStyles();
-  const RootlyApi = useApi(RootlyApiRef);
+  const configApi = useApi(configApiRef);
+  const discoveryApi = useApi(discoveryApiRef);
+  const rootlyClient = useRootlyClient({discovery: discoveryApi, config: configApi, organizationId: organizationId});
 
   const smallColumnStyle = {
     width: '5%',
@@ -53,8 +55,8 @@ export const IncidentsTable = ({ params }: { params?: RootlyIncidentsFetchOpts }
     loading,
     error,
   } = useAsync(
-    async () => await RootlyApi.getIncidents({ ...params, page: page }),
-    [page],
+    async () => await rootlyClient.getIncidents({ ...params, page: page }),
+    [organizationId, page],
   );
 
   const columns: TableColumn<IncidentWrapper>[] = [

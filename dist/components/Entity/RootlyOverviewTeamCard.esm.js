@@ -1,6 +1,6 @@
 import { stringifyEntityRef } from '@backstage/catalog-model';
 import { HeaderIconLinkRow, Progress } from '@backstage/core-components';
-import { useApi } from '@backstage/core-plugin-api';
+import { useApi, configApiRef, discoveryApiRef } from '@backstage/core-plugin-api';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { Card, CardHeader, IconButton, Divider, CardContent, Typography, List, ListItem, ListItemText, ListItemSecondaryAction } from '@material-ui/core';
 import Link from '@material-ui/core/Link';
@@ -16,7 +16,8 @@ import React, { useState } from 'react';
 import { useAsync } from 'react-use';
 import { ColoredChip } from '../UI/ColoredChip.esm.js';
 import { StatusChip } from '../UI/StatusChip.esm.js';
-import { RootlyApiRef } from '../../api.esm.js';
+import { ROOTLY_ANNOTATION_ORG_ID, RootlyApi } from '@rootly/backstage-plugin-common';
+import { useRootlyClient } from '../../api.esm.js';
 
 const truncate = (input, length) => input.length > length ? `${input.substring(0, length)}...` : input;
 const IncidentListItem = ({
@@ -48,29 +49,31 @@ const IncidentListItem = ({
     }
   ), /* @__PURE__ */ React.createElement(ListItemSecondaryAction, null, /* @__PURE__ */ React.createElement(StatusChip, { status: incident.attributes.status })));
 };
-const getViewIncidentsForTeamLink = (team, rootlyApi) => {
+const getViewIncidentsForTeamLink = (team) => {
   return {
     label: "View Incidents",
     disabled: false,
     icon: /* @__PURE__ */ React.createElement(FilterList, null),
-    href: rootlyApi.getListIncidentsForTeamURL(team)
+    href: RootlyApi.getListIncidentsForTeamURL(team)
   };
 };
 const RootlyOverviewTeamCard = () => {
   const { entity } = useEntity();
-  const RootlyApi2 = useApi(RootlyApiRef);
+  const configApi = useApi(configApiRef);
+  const discoveryApi = useApi(discoveryApiRef);
+  const rootlyClient = useRootlyClient({ discovery: discoveryApi, config: configApi, organizationId: entity.metadata.annotations?.[ROOTLY_ANNOTATION_ORG_ID] });
   const [reload, setReload] = useState(false);
   const createIncidentLink = {
     label: "Create Incident",
     disabled: false,
     icon: /* @__PURE__ */ React.createElement(WhatshotIcon, null),
-    href: RootlyApi2.getCreateIncidentURL()
+    href: RootlyApi.getCreateIncidentURL()
   };
   const viewIncidentsLink = {
     label: "View All Incidents",
     disabled: false,
     icon: /* @__PURE__ */ React.createElement(WhatshotIcon, null),
-    href: RootlyApi2.getListIncidents()
+    href: RootlyApi.getListIncidents()
   };
   const entityTriplet = stringifyEntityRef({
     namespace: entity.metadata.namespace,
@@ -82,7 +85,7 @@ const RootlyOverviewTeamCard = () => {
     loading: teamLoading,
     error: teamError
   } = useAsync(
-    async () => await RootlyApi2.getTeams({
+    async () => await rootlyClient.getTeams({
       filter: {
         backstage_id: entityTriplet
       }
@@ -95,7 +98,7 @@ const RootlyOverviewTeamCard = () => {
     loading: incidentsLoading,
     error: incidentsError
   } = useAsync(
-    async () => team ? await RootlyApi2.getIncidents({
+    async () => team ? await rootlyClient.getIncidents({
       filter: {
         teams: team.attributes.slug,
         status: "started,mitigated"
@@ -108,7 +111,7 @@ const RootlyOverviewTeamCard = () => {
     loading: chartLoading,
     error: chartError
   } = useAsync(
-    async () => team ? await RootlyApi2.getTeamIncidentsChart(team, {
+    async () => team ? await rootlyClient.getTeamIncidentsChart(team, {
       period: "day"
     }) : { data: [] },
     [team]
@@ -134,7 +137,7 @@ const RootlyOverviewTeamCard = () => {
         {
           links: !teamLoading && team ? [
             createIncidentLink,
-            getViewIncidentsForTeamLink(team, RootlyApi2),
+            getViewIncidentsForTeamLink(team),
             viewIncidentsLink
           ] : [createIncidentLink, viewIncidentsLink]
         }
@@ -151,7 +154,7 @@ const RootlyOverviewTeamCard = () => {
     IncidentListItem,
     {
       incident,
-      rootlyApi: RootlyApi2
+      rootlyClient
     }
   ))))));
 };

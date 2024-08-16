@@ -1,6 +1,6 @@
 import { parseEntityRef } from '@backstage/catalog-model';
 import { Table, TableColumn } from '@backstage/core-components';
-import { useApi } from '@backstage/core-plugin-api';
+import { configApiRef, discoveryApiRef, useApi } from '@backstage/core-plugin-api';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
 import { makeStyles, Tooltip } from '@material-ui/core';
 import Link from '@material-ui/core/Link';
@@ -11,8 +11,9 @@ import { useAsync } from 'react-use';
 import {
   RootlyTeamsFetchOpts,
   RootlyTeam,
+  RootlyApi,
 } from '@rootly/backstage-plugin-common';
-import { RootlyApiRef } from '../../api';
+import { useRootlyClient } from '../../api';
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -28,9 +29,11 @@ const useStyles = makeStyles(theme => ({
 const DEFAULT_PAGE_NUMBER = 1;
 const DEFAULT_PAGE_SIZE = 10;
 
-export const TeamsTable = ({ params }: { params?: RootlyTeamsFetchOpts }) => {
+export const TeamsTable = ({ organizationId, params }: { organizationId?: string, params?: RootlyTeamsFetchOpts }) => {
   const classes = useStyles();
-  const RootlyApi = useApi(RootlyApiRef);
+  const configApi = useApi(configApiRef);
+  const discoveryApi = useApi(discoveryApiRef);
+  const rootlyClient = useRootlyClient({discovery: discoveryApi, config: configApi, organizationId: organizationId});
 
   const smallColumnStyle = {
     width: '5%',
@@ -51,8 +54,8 @@ export const TeamsTable = ({ params }: { params?: RootlyTeamsFetchOpts }) => {
     loading,
     error,
   } = useAsync(
-    async () => await RootlyApi.getTeams({ ...params, page: page }),
-    [page],
+    async () => await rootlyClient.getTeams({ ...params, page: page }),
+    [organizationId, page],
   );
 
   const nameColumn = useCallback((rowData: RootlyTeam) => {

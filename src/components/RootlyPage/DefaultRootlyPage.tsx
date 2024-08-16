@@ -6,11 +6,12 @@ import { FunctionalitiesTable } from '../FunctionalitiesTable';
 import { TeamsTable } from '../TeamsTable';
 import { DefaultRootlyPageLayout } from './DefaultRootlyPageLayout';
 
-export const DefaultRootlyPage = () => {
+export const DefaultRootlyPage = ({ organizationId }: { organizationId?: string }) => {
   return (
     <DefaultRootlyPageLayout>
       <DefaultRootlyPageLayout.Route path="incidents" title="Incidents">
         <IncidentsTable
+          organizationId={organizationId}
           params={{
             include:
               'environments,services,functionalities,groups,incident_types',
@@ -21,13 +22,13 @@ export const DefaultRootlyPage = () => {
         <EntitiesList />
       </DefaultRootlyPageLayout.Route>
       <DefaultRootlyPageLayout.Route path="services" title="Services">
-        <ServicesTable />
+        <ServicesTable organizationId={organizationId} />
       </DefaultRootlyPageLayout.Route>
       <DefaultRootlyPageLayout.Route path="functionalities" title="Functionalities">
-        <FunctionalitiesTable />
+        <FunctionalitiesTable organizationId={organizationId} />
       </DefaultRootlyPageLayout.Route>
       <DefaultRootlyPageLayout.Route path="teams" title="Teams">
-        <TeamsTable />
+        <TeamsTable organizationId={organizationId} />
       </DefaultRootlyPageLayout.Route>
     </DefaultRootlyPageLayout>
   );

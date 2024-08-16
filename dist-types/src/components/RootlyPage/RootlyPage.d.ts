@@ -1,2 +1,4 @@
 import React from 'react';
-export declare const RootlyPage: () => React.JSX.Element;
+export declare const RootlyPage: ({ organizationId }: {
+    organizationId?: string;
+}) => React.JSX.Element;

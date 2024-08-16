@@ -1,11 +1,16 @@
 # Rootly plugin for Backstage
 
+[![npm version](https://badge.fury.io/js/@rootly%2Fbackstage-plugin.svg)](https://badge.fury.io/js/@rootly%2Fbackstage-plugin)
+[![License](https://img.shields.io/badge/license-MIT-blue)](https://opensource.org/licenses/MIT)
+
 The Rootly plugin is a frontend plugin that displays Rootly services, incidents in Backstage. The plugin includes three components that can be integrated into Backstage:
 
 - The `RootlyPage` routable extension component which produces a standalone page with the following capabilities:
-  - View and search a list of entities and import/link them to rootly services
+
+  - View and search a list of entities
   - View and search a list of services
   - View and search a list of functionalities
+  - View and search a list of teams
   - View and search a list of incidents
 
 - The `RootlyOverviewCard` component which produces a summary of your entity with incidents over last 30 days and ongoing incidents.
@@ -19,6 +24,7 @@ You can link and import entities in rootly services through Backstage Web UI or 
 ### Creating an Rootly API key
 
 Because of the features provided by the plugin, an API key with full access to your Rootly domain is required.
+
 - Read access on services is needed to list services, write access to link entities to services.
 - Read access on functionalities is needed to list functionalities, write access to link entities to functionalities.
 - Read access on incidents needed to list incidents.
@@ -36,7 +42,13 @@ Because of the features provided by the plugin, an API key with full access to y
 Add the plugin to your frontend app:
 
 ```bash
-cd packages/app && yarn add @rootly/backstage-plugin
+yarn add --cwd packages/app @rootly/backstage-plugin
+```
+
+Add the plugin to your backend app:
+
+```bash
+yarn add --cwd packages/backend @rootly/backstage-plugin-entity-processor
 ```
 
 Configure the plugin in `app-config.yaml`. The proxy endpoint described below will allow the frontend
@@ -44,11 +56,27 @@ to authenticate with Rootly without exposing your API key to users.
 
 ```yaml
 # app-config.yaml
+
+# Rootly single-organization configuration example
+rootly:
+  rootly-main: # You can change this
+    apiKey: Bearer ${ROOTLY_API_KEY_MAIN}
+
+# Rootly multi-organizations example
+rootly:
+  rootly-main: # You can change this
+    isDefault: true
+    apiKey: Bearer ${ROOTLY_API_KEY_MAIN}
+  rootly-sandbox: # You can change this
+    apiKey: Bearer ${ROOTLY_API_KEY_SANDBOX}
+
+...
+
 proxy:
   '/rootly/api':
     target: https://api.rootly.com
-    headers:
-      Authorization: Bearer ${ROOTLY_API_KEY}
+    changeOrigin: true
+    credentials: forward
 ```
 
 ### Annotations
@@ -56,6 +84,7 @@ proxy:
 Available annotations are the following:
 
 ```yaml
+rootly.com/organization-id: rootly # Optional if you use Rootly multi organizations.
 rootly.com/service-id: 7a328a08-6701-445e-a1ad-ca2fb913ed1e # Use service-id or service-slug. Not both.
 rootly.com/service-slug: elasticsearch-staging # Use service-id or service-slug. Not both.
 rootly.com/service-auto-import: enabled # This will auto import the entity as a rootly service if we don't find any.
@@ -75,12 +104,13 @@ kind: Component
 metadata:
   name: elasticsearch-staging
   description: |
-   elasticsearch-staging
+    elasticsearch-staging
   annotations:
     github.com/project-slug: backstage/backstage
     backstage.io/techdocs-ref: dir:.
     lighthouse.com/website-url: https://rootly.com
     rootly.com/service-slug: elasticsearch-staging
+    pagerduty.com/service-id: <sample-service-service-id>
 spec:
   type: grpc
   owner: guests
@@ -91,14 +121,11 @@ spec:
 
 #### `RootlyPage` component
 
-![Rootly entities page](./docs/rootly-entities-page.png)
-![Rootly services page](./docs/rootly-services-page.png)
-![Rootly functionalies page](./docs/rootly-functionalities-page.png)
-![Rootly incidents page](./docs/rootly-incidents-page.png)
+![Rootly page](./docs/rootly-global-page.png)
 
 Expose the Rootly global page:
 
-```ts
+```jsx
 // packages/app/src/App.tsx
 import { RootlyPage } from '@rootly/backstage-plugin';
 
@@ -106,7 +133,12 @@ import { RootlyPage } from '@rootly/backstage-plugin';
 const AppRoutes = () => (
   <FlatRoutes>
     // ...
-    <Route path="/Rootly" element={<RootlyPage />} />
+    <Route path="/rootly" element={<RootlyPage />} />
+    //{' '}
+    <Route
+      path="/rootly-sandbox"
+      element={<RootlyPage organizationId="rootly-sandbox" />}
+    />
     // ...
   </FlatRoutes>
 );
@@ -114,7 +146,7 @@ const AppRoutes = () => (
 
 Add a link to the sidebar:
 
-```ts
+```jsx
 // packages/app/src/components/Root/Root.tsx
 import ExtensionIcon from '@material-ui/icons/ExtensionIcon';
 
@@ -123,6 +155,7 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
     <Sidebar>
       // ...
       <SidebarItem icon={ExtensionIcon} to="rootly" text="Rootly" />
+      // <SidebarItem icon={ExtensionIcon} to="rootly-sandbox" text="Rootly Sandbox" />
       // ...
     </Sidebar>
   </SidebarPage>
@@ -135,9 +168,12 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
 
 ![Rootly overview page](./docs/rootly-entity-overview.png)
 
-```ts
+```jsx
 // packages/app/src/components/catalog/EntityPage.tsx
-import { RootlyOverviewCard, isRootlyAvailable } from '@rootly/backstage-plugin';
+import {
+  RootlyOverviewCard,
+  isRootlyAvailable,
+} from '@rootly/backstage-plugin';
 
 // For a service
 const overviewContent = (
@@ -153,12 +189,13 @@ const overviewContent = (
     // ...
   </Grid>
 );
+```
 
 #### `RootlyIncidentsPage` component
 
-![Rootly incidents page](./docs/rootly-entity-incidents.png)
+![Rootly incidents page](./docs/rootly-incidents-page.png)
 
-```ts
+```jsx
 // packages/app/src/components/catalog/EntityPage.tsx
 import { RootlyIncidentsPage } from '@rootly/backstage-plugin';
 
@@ -180,6 +217,10 @@ const websiteEntityPage = (
         <Grid item sm={6}>
           <RootlyIncidentsPage />
         </Grid>
+        // Rootly Multi Organization
+        // <Grid item sm={6}>
+        //   <RootlyIncidentsPage organizationId="rootly-sandbox" />
+        // </Grid>
       </EntitySwitch.Case>
     </EntityLayout.Route>
   </EntityLayout>
@@ -200,9 +241,29 @@ const serviceEntityPage = (
 
     <EntityLayout.Route path="/rootly" title="Rootly">
       <RootlyIncidentsPage />
+      // Rootly Multi Organization
+      // <Grid item sm={6}>
+      //   <RootlyIncidentsPage organizationId="rootly-sandbox" />
     </EntityLayout.Route>
   </EntityLayout>
 );
+```
+
+## Configuring the Entity Processor
+
+You can enable the entity processor in your Backstage instance by injecting the dependency in the backend system in `packages/backend/index.ts`.
+
+```jsx
+// packages/backend/index.ts
+import { createBackend } from '@backstage/backend-defaults';
+
+const backend = createBackend();
+
+...
+
+backend.add(import('@rootly/backstage-plugin-entity-processor'));
+
+backend.start();
 ```
 
 ## License

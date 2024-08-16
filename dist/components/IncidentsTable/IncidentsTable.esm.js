@@ -1,5 +1,5 @@
 import { Table } from '@backstage/core-components';
-import { useApi } from '@backstage/core-plugin-api';
+import { useApi, configApiRef, discoveryApiRef } from '@backstage/core-plugin-api';
 import { makeStyles, Tooltip, Chip } from '@material-ui/core';
 import Link from '@material-ui/core/Link';
 import { Alert } from '@material-ui/lab';
@@ -9,7 +9,7 @@ import { IncidentWrapper } from '../Incident/index.esm.js';
 import { ColoredChip } from '../UI/ColoredChip.esm.js';
 import { ColoredChips } from '../UI/ColoredChips.esm.js';
 import { StatusChip } from '../UI/StatusChip.esm.js';
-import { RootlyApiRef } from '../../api.esm.js';
+import { useRootlyClient } from '../../api.esm.js';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -23,9 +23,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 const DEFAULT_PAGE_NUMBER = 1;
 const DEFAULT_PAGE_SIZE = 10;
-const IncidentsTable = ({ params }) => {
+const IncidentsTable = ({ organizationId, params }) => {
   const classes = useStyles();
-  const RootlyApi = useApi(RootlyApiRef);
+  const configApi = useApi(configApiRef);
+  const discoveryApi = useApi(discoveryApiRef);
+  const rootlyClient = useRootlyClient({ discovery: discoveryApi, config: configApi, organizationId });
   const smallColumnStyle = {
     width: "5%",
     maxWidth: "5%"
@@ -43,8 +45,8 @@ const IncidentsTable = ({ params }) => {
     loading,
     error
   } = useAsync(
-    async () => await RootlyApi.getIncidents({ ...params, page }),
-    [page]
+    async () => await rootlyClient.getIncidents({ ...params, page }),
+    [organizationId, page]
   );
   const columns = [
     {

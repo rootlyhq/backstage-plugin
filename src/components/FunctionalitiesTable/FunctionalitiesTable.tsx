@@ -1,6 +1,5 @@
 import { parseEntityRef } from '@backstage/catalog-model';
 import { Table, TableColumn } from '@backstage/core-components';
-import { useApi } from '@backstage/core-plugin-api';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
 import { makeStyles, Tooltip } from '@material-ui/core';
 import Link from '@material-ui/core/Link';
@@ -11,8 +10,10 @@ import { useAsync } from 'react-use';
 import {
   RootlyFunctionality,
   RootlyFunctionalitiesFetchOpts,
+  RootlyApi,
 } from '@rootly/backstage-plugin-common';
-import { RootlyApiRef } from '../../api';
+import { configApiRef, discoveryApiRef, useApi } from '@backstage/core-plugin-api';
+import { useRootlyClient } from '../../api';
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -28,9 +29,11 @@ const useStyles = makeStyles(theme => ({
 const DEFAULT_PAGE_NUMBER = 1;
 const DEFAULT_PAGE_SIZE = 10;
 
-export const FunctionalitiesTable = ({ params }: { params?: RootlyFunctionalitiesFetchOpts }) => {
+export const FunctionalitiesTable = ({ organizationId, params }: { organizationId?: string, params?: RootlyFunctionalitiesFetchOpts }) => {
   const classes = useStyles();
-  const RootlyApi = useApi(RootlyApiRef);
+  const configApi = useApi(configApiRef);
+  const discoveryApi = useApi(discoveryApiRef);
+  const rootlyClient = useRootlyClient({discovery: discoveryApi, config: configApi, organizationId: organizationId});
 
   const smallColumnStyle = {
     width: '5%',
@@ -51,8 +54,8 @@ export const FunctionalitiesTable = ({ params }: { params?: RootlyFunctionalitie
     loading,
     error,
   } = useAsync(
-    async () => await RootlyApi.getFunctionalities({ ...params, page: page }),
-    [page],
+    async () => await rootlyClient.getFunctionalities({ ...params, page: page }),
+    [organizationId, page],
   );
 
   const nameColumn = useCallback((rowData: RootlyFunctionality) => {

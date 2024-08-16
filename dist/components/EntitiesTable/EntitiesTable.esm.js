@@ -1,16 +1,18 @@
 import { stringifyEntityRef } from '@backstage/catalog-model';
 import { Table, Progress } from '@backstage/core-components';
-import { useApi } from '@backstage/core-plugin-api';
+import { useApi, configApiRef, discoveryApiRef } from '@backstage/core-plugin-api';
 import { catalogApiRef, EntityRefLink } from '@backstage/plugin-catalog-react';
 import Link from '@material-ui/core/Link';
 import { Alert } from '@material-ui/lab';
 import React from 'react';
 import { useAsync } from 'react-use';
-import { RootlyApiRef } from '../../api.esm.js';
+import { ROOTLY_ANNOTATION_ORG_ID, RootlyApi } from '@rootly/backstage-plugin-common';
+import { useRootlyClient } from '../../api.esm.js';
 
 const EntitiesTable = () => {
   const catalogApi = useApi(catalogApiRef);
-  const RootlyApi = useApi(RootlyApiRef);
+  const configApi = useApi(configApiRef);
+  const discoveryApi = useApi(discoveryApiRef);
   const smallColumnStyle = {
     width: "5%",
     maxWidth: "5%"
@@ -19,6 +21,7 @@ const EntitiesTable = () => {
     async () => await catalogApi.getEntities()
   );
   const fetchService = (entity) => {
+    const rootlyClient = useRootlyClient({ discovery: discoveryApi, config: configApi, organizationId: entity.metadata.annotations?.[ROOTLY_ANNOTATION_ORG_ID] });
     const entityTriplet = stringifyEntityRef({
       namespace: entity.metadata.namespace,
       kind: entity.kind,
@@ -29,7 +32,7 @@ const EntitiesTable = () => {
       loading: loading2,
       error: error2
     } = useAsync(
-      async () => await RootlyApi.getServices({
+      async () => await rootlyClient.getServices({
         filter: {
           backstage_id: entityTriplet
         }
@@ -56,6 +59,7 @@ const EntitiesTable = () => {
     return /* @__PURE__ */ React.createElement("div", null, "Not Linked");
   };
   const fetchFunctionality = (entity) => {
+    const rootlyClient = useRootlyClient({ discovery: discoveryApi, config: configApi, organizationId: entity.metadata.annotations?.[ROOTLY_ANNOTATION_ORG_ID] });
     const entityTriplet = stringifyEntityRef({
       namespace: entity.metadata.namespace,
       kind: entity.kind,
@@ -66,7 +70,7 @@ const EntitiesTable = () => {
       loading: loading2,
       error: error2
     } = useAsync(
-      async () => await RootlyApi.getFunctionalities({
+      async () => await rootlyClient.getFunctionalities({
         filter: {
           backstage_id: entityTriplet
         }
@@ -93,6 +97,7 @@ const EntitiesTable = () => {
     return /* @__PURE__ */ React.createElement("div", null, "Not Linked");
   };
   const fetchTeam = (entity) => {
+    const rootlyClient = useRootlyClient({ discovery: discoveryApi, config: configApi, organizationId: entity.metadata.annotations?.[ROOTLY_ANNOTATION_ORG_ID] });
     const entityTriplet = stringifyEntityRef({
       namespace: entity.metadata.namespace,
       kind: entity.kind,
@@ -103,7 +108,7 @@ const EntitiesTable = () => {
       loading: loading2,
       error: error2
     } = useAsync(
-      async () => await RootlyApi.getTeams({
+      async () => await rootlyClient.getTeams({
         filter: {
           backstage_id: entityTriplet
         }
