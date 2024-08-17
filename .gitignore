@@ -1,3 +1,6 @@
+# macOS
+.DS_Store
+
 # Logs
 logs
 *.log
@@ -6,28 +9,46 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 
-# Diagnostic reports (https://nodejs.org/api/report.html)
-report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+# Coverage directory generated when running tests with coverage
+coverage
 
-# Dependency directories
+# Dependencies
 node_modules/
 
-# TypeScript cache
-*.tsbuildinfo
+# Yarn 3 files
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
 
-# Optional npm cache directory
-.npm
-
-# Optional eslint cache
-.eslintcache
+# Node version directives
+.nvmrc
 
 # dotenv environment variables file
 .env
 .env.test
 
-# Nuxt.js build / generate output
-.nuxt
-dist-workspace
+# Build output
+dist
+dist-types
+
+# Temporary change files created by Vim
+*.swp
+
+# MkDocs build output
+site
 
 # Local configuration files
 *.local.yaml
+
+# Sensitive credentials
+*-credentials.yaml
+
+# vscode database functionality support files
+*.session.sql
+
+# E2E test reports
+e2e-test-report/
