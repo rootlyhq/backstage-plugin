@@ -12,6 +12,16 @@
   "backstage": {
     "role": "frontend-plugin"
   },
+  "homepage": "https://github.com/rootlyhq/backstage-plugin",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rootlyhq/backstage-plugin"
+  },
+  "keywords": [
+    "backstage",
+    "plugin",
+    "rootly"
+  ],
   "scripts": {
     "start": "backstage-cli package start",
     "build": "yarn tsc && backstage-cli package build",
