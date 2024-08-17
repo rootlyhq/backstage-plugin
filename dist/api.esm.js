@@ -1,5 +1,5 @@
 import { createApiRef } from '@backstage/core-plugin-api';
-import { RootlyApi } from 'rootly-backstage-plugin-common';
+import { RootlyApi } from '@rootly/backstage-plugin-common';
 
 const RootlyApiRef = createApiRef({
   id: "plugin.rootly.service"
