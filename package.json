@@ -10,7 +10,9 @@
     "types": "dist/index.d.ts"
   },
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "rootly",
+    "pluginPackages": "rootly"
   },
   "homepage": "https://github.com/rootlyhq/backstage-plugin",
   "repository": {
