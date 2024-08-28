@@ -60,15 +60,15 @@ to authenticate with Rootly without exposing your API key to users.
 # Rootly single-organization configuration example
 rootly:
   rootly-main: # You can change this
-    apiKey: Bearer ${ROOTLY_API_KEY_MAIN}
+    apiKey: ${ROOTLY_API_KEY_MAIN}
 
 # Rootly multi-organizations example
 rootly:
   rootly-main: # You can change this
     isDefault: true
-    apiKey: Bearer ${ROOTLY_API_KEY_MAIN}
+    apiKey: ${ROOTLY_API_KEY_MAIN}
   rootly-sandbox: # You can change this
-    apiKey: Bearer ${ROOTLY_API_KEY_SANDBOX}
+    apiKey: ${ROOTLY_API_KEY_SANDBOX}
 
 ...
 
