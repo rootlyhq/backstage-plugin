@@ -7,7 +7,7 @@ import { Alert } from '@material-ui/lab';
 import React, { useState, useCallback } from 'react';
 import { useAsync } from 'react-use';
 import { RootlyApi } from '@rootly/backstage-plugin-common';
-import { useApi, configApiRef, discoveryApiRef } from '@backstage/core-plugin-api';
+import { useApi, configApiRef, discoveryApiRef, identityApiRef } from '@backstage/core-plugin-api';
 import { useRootlyClient } from '../../api.esm.js';
 
 const useStyles = makeStyles((theme) => ({
@@ -26,7 +26,8 @@ const FunctionalitiesTable = ({ organizationId, params }) => {
   const classes = useStyles();
   const configApi = useApi(configApiRef);
   const discoveryApi = useApi(discoveryApiRef);
-  const rootlyClient = useRootlyClient({ discovery: discoveryApi, config: configApi, organizationId });
+  const identifyApi = useApi(identityApiRef);
+  const rootlyClient = useRootlyClient({ discovery: discoveryApi, identify: identifyApi, config: configApi, organizationId });
   const smallColumnStyle = {
     width: "5%",
     maxWidth: "5%"

@@ -1,6 +1,6 @@
 import { parseEntityRef } from '@backstage/catalog-model';
 import { Table, TableColumn } from '@backstage/core-components';
-import { configApiRef, discoveryApiRef, useApi } from '@backstage/core-plugin-api';
+import { configApiRef, discoveryApiRef, identityApiRef, useApi } from '@backstage/core-plugin-api';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
 import { makeStyles, Tooltip } from '@material-ui/core';
 import Link from '@material-ui/core/Link';
@@ -33,7 +33,8 @@ export const TeamsTable = ({ organizationId, params }: { organizationId?: string
   const classes = useStyles();
   const configApi = useApi(configApiRef);
   const discoveryApi = useApi(discoveryApiRef);
-  const rootlyClient = useRootlyClient({discovery: discoveryApi, config: configApi, organizationId: organizationId});
+  const identifyApi = useApi(identityApiRef);
+  const rootlyClient = useRootlyClient({discovery: discoveryApi, identify: identifyApi, config: configApi, organizationId: organizationId});
 
   const smallColumnStyle = {
     width: '5%',

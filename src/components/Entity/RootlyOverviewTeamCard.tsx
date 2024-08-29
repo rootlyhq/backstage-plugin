@@ -4,7 +4,7 @@ import {
   IconLinkVerticalProps,
   Progress,
 } from '@backstage/core-components';
-import { configApiRef, discoveryApiRef, useApi } from '@backstage/core-plugin-api';
+import { configApiRef, discoveryApiRef, identityApiRef, useApi } from '@backstage/core-plugin-api';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import {
   Card,
@@ -101,7 +101,8 @@ export const RootlyOverviewTeamCard = () => {
   const { entity } = useEntity();
   const configApi = useApi(configApiRef);
   const discoveryApi = useApi(discoveryApiRef);
-  const rootlyClient = useRootlyClient({discovery: discoveryApi, config: configApi, organizationId: entity.metadata.annotations?.[ROOTLY_ANNOTATION_ORG_ID]});
+  const identifyApi = useApi(identityApiRef);
+  const rootlyClient = useRootlyClient({discovery: discoveryApi, identify: identifyApi, config: configApi, organizationId: entity.metadata.annotations?.[ROOTLY_ANNOTATION_ORG_ID]});
 
 
   const [reload, setReload] = useState(false);

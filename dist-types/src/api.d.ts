@@ -1,8 +1,8 @@
-import { ConfigApi, DiscoveryApi } from '@backstage/core-plugin-api';
+import { ConfigApi, IdentityApi, DiscoveryApi } from '@backstage/core-plugin-api';
 import { RootlyApi } from '@rootly/backstage-plugin-common';
-export declare const RootlyApiRef: import("@backstage/core-plugin-api").ApiRef<RootlyApi>;
-export declare const useRootlyClient: ({ discovery, config, organizationId }: {
-    discovery: DiscoveryApi;
+export declare const useRootlyClient: ({ config, discovery, identify, organizationId }: {
     config: ConfigApi;
+    discovery: DiscoveryApi;
+    identify: IdentityApi;
     organizationId?: string;
 }) => RootlyApi;

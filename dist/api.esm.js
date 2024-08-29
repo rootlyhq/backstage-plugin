@@ -1,14 +1,10 @@
-import { createApiRef } from '@backstage/core-plugin-api';
 import { RootlyApi } from '@rootly/backstage-plugin-common';
 
-const RootlyApiRef = createApiRef({
-  id: "plugin.rootly.service"
-});
-const useRootlyClient = ({ discovery, config, organizationId }) => {
+const useRootlyClient = ({ config, discovery, identify, organizationId }) => {
   const configKeys = config.getConfig("rootly").keys();
-  let token = config.getOptionalString(`rootly.${configKeys.at(0)}.apiKey`);
+  let apiProxyPath = config.getOptionalString(`rootly.${configKeys.at(0)}.proxyPath`);
   if (organizationId) {
-    token = config.getOptionalString(`rootly.${organizationId}.apiKey`);
+    apiProxyPath = config.getOptionalString(`rootly.${organizationId}.proxyPath`);
   } else if (configKeys.length > 1) {
     let defaultOrgId = config.getConfig("rootly").keys().at(0);
     for (const orgId of config.getConfig("rootly").keys()) {
@@ -17,16 +13,15 @@ const useRootlyClient = ({ discovery, config, organizationId }) => {
         break;
       }
     }
-    token = config.getOptionalString(`rootly.${defaultOrgId}.apiKey`);
+    apiProxyPath = config.getOptionalString(`rootly.${defaultOrgId}.proxyPath`);
   }
   const client = new RootlyApi({
-    apiProxyPath: discovery.getBaseUrl("proxy"),
-    apiToken: new Promise((resolve) => {
-      resolve({ token });
-    })
+    apiProxyUrl: discovery.getBaseUrl("proxy"),
+    apiProxyPath,
+    apiToken: identify.getCredentials()
   });
   return client;
 };
 
-export { RootlyApiRef, useRootlyClient };
+export { useRootlyClient };
 //# sourceMappingURL=api.esm.js.map

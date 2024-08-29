@@ -1,6 +1,6 @@
 import { stringifyEntityRef } from '@backstage/catalog-model';
 import { Table, Progress } from '@backstage/core-components';
-import { useApi, configApiRef, discoveryApiRef } from '@backstage/core-plugin-api';
+import { useApi, configApiRef, discoveryApiRef, identityApiRef } from '@backstage/core-plugin-api';
 import { catalogApiRef, EntityRefLink } from '@backstage/plugin-catalog-react';
 import Link from '@material-ui/core/Link';
 import { Alert } from '@material-ui/lab';
@@ -13,6 +13,7 @@ const EntitiesTable = () => {
   const catalogApi = useApi(catalogApiRef);
   const configApi = useApi(configApiRef);
   const discoveryApi = useApi(discoveryApiRef);
+  const identifyApi = useApi(identityApiRef);
   const smallColumnStyle = {
     width: "5%",
     maxWidth: "5%"
@@ -21,7 +22,7 @@ const EntitiesTable = () => {
     async () => await catalogApi.getEntities()
   );
   const fetchService = (entity) => {
-    const rootlyClient = useRootlyClient({ discovery: discoveryApi, config: configApi, organizationId: entity.metadata.annotations?.[ROOTLY_ANNOTATION_ORG_ID] });
+    const rootlyClient = useRootlyClient({ discovery: discoveryApi, identify: identifyApi, config: configApi, organizationId: entity.metadata.annotations?.[ROOTLY_ANNOTATION_ORG_ID] });
     const entityTriplet = stringifyEntityRef({
       namespace: entity.metadata.namespace,
       kind: entity.kind,
@@ -59,7 +60,7 @@ const EntitiesTable = () => {
     return /* @__PURE__ */ React.createElement("div", null, "Not Linked");
   };
   const fetchFunctionality = (entity) => {
-    const rootlyClient = useRootlyClient({ discovery: discoveryApi, config: configApi, organizationId: entity.metadata.annotations?.[ROOTLY_ANNOTATION_ORG_ID] });
+    const rootlyClient = useRootlyClient({ discovery: discoveryApi, identify: identifyApi, config: configApi, organizationId: entity.metadata.annotations?.[ROOTLY_ANNOTATION_ORG_ID] });
     const entityTriplet = stringifyEntityRef({
       namespace: entity.metadata.namespace,
       kind: entity.kind,
@@ -97,7 +98,7 @@ const EntitiesTable = () => {
     return /* @__PURE__ */ React.createElement("div", null, "Not Linked");
   };
   const fetchTeam = (entity) => {
-    const rootlyClient = useRootlyClient({ discovery: discoveryApi, config: configApi, organizationId: entity.metadata.annotations?.[ROOTLY_ANNOTATION_ORG_ID] });
+    const rootlyClient = useRootlyClient({ discovery: discoveryApi, identify: identifyApi, config: configApi, organizationId: entity.metadata.annotations?.[ROOTLY_ANNOTATION_ORG_ID] });
     const entityTriplet = stringifyEntityRef({
       namespace: entity.metadata.namespace,
       kind: entity.kind,

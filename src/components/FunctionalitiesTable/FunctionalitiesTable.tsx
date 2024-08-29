@@ -12,7 +12,7 @@ import {
   RootlyFunctionalitiesFetchOpts,
   RootlyApi,
 } from '@rootly/backstage-plugin-common';
-import { configApiRef, discoveryApiRef, useApi } from '@backstage/core-plugin-api';
+import { configApiRef, discoveryApiRef, identityApiRef, useApi } from '@backstage/core-plugin-api';
 import { useRootlyClient } from '../../api';
 
 const useStyles = makeStyles(theme => ({
@@ -33,7 +33,8 @@ export const FunctionalitiesTable = ({ organizationId, params }: { organizationI
   const classes = useStyles();
   const configApi = useApi(configApiRef);
   const discoveryApi = useApi(discoveryApiRef);
-  const rootlyClient = useRootlyClient({discovery: discoveryApi, config: configApi, organizationId: organizationId});
+  const identifyApi = useApi(identityApiRef);
+  const rootlyClient = useRootlyClient({discovery: discoveryApi, identify: identifyApi, config: configApi, organizationId: organizationId});
 
   const smallColumnStyle = {
     width: '5%',

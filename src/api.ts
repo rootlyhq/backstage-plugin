@@ -1,21 +1,17 @@
 import {
-    createApiRef,
     ConfigApi,
+    IdentityApi,
     DiscoveryApi,
   } from '@backstage/core-plugin-api';
 import { RootlyApi } from '@rootly/backstage-plugin-common';
 
-export const RootlyApiRef = createApiRef<RootlyApi>({
-    id: 'plugin.rootly.service',
-  });
-
-export const useRootlyClient = ({ discovery, config, organizationId }: { discovery: DiscoveryApi, config: ConfigApi, organizationId?: string }) => {
+export const useRootlyClient = ({ config, discovery, identify, organizationId }: { config: ConfigApi, discovery: DiscoveryApi, identify: IdentityApi, organizationId?: string }) => {
   const configKeys = config.getConfig('rootly').keys();
 
-  let token = config.getOptionalString(`rootly.${configKeys.at(0)}.apiKey`);
+  let apiProxyPath = config.getOptionalString(`rootly.${configKeys.at(0)}.proxyPath`);
 
   if (organizationId) {
-    token = config.getOptionalString(`rootly.${organizationId}.apiKey`)
+    apiProxyPath = config.getOptionalString(`rootly.${organizationId}.proxyPath`)
   } else if (configKeys.length > 1) {
     let defaultOrgId = config.getConfig('rootly').keys().at(0)
     for (const orgId of config.getConfig('rootly').keys()) {
@@ -24,12 +20,13 @@ export const useRootlyClient = ({ discovery, config, organizationId }: { discove
         break;
       }
     }
-    token = config.getOptionalString(`rootly.${defaultOrgId}.apiKey`)
+    apiProxyPath = config.getOptionalString(`rootly.${defaultOrgId}.proxyPath`)
   }
 
   const client = new RootlyApi({
-    apiProxyPath: discovery.getBaseUrl('proxy'),
-    apiToken: new Promise((resolve) => { resolve({token: token}) }),
+    apiProxyUrl: discovery.getBaseUrl('proxy'),
+    apiProxyPath: apiProxyPath,
+    apiToken: identify.getCredentials(),
   });
   return client;
 }

@@ -1,6 +1,6 @@
 import { stringifyEntityRef } from '@backstage/catalog-model';
 import { Progress, Page, Content, ContentHeader } from '@backstage/core-components';
-import { attachComponentData, useApi, configApiRef, discoveryApiRef } from '@backstage/core-plugin-api';
+import { attachComponentData, useApi, configApiRef, discoveryApiRef, identityApiRef } from '@backstage/core-plugin-api';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { Grid, Box } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
@@ -15,7 +15,8 @@ const RootlyIncidentsPageLayout = ({ organizationId }) => {
   const { entity } = useEntity();
   const configApi = useApi(configApiRef);
   const discoveryApi = useApi(discoveryApiRef);
-  const rootlyClient = useRootlyClient({ discovery: discoveryApi, config: configApi, organizationId });
+  const identifyApi = useApi(identityApiRef);
+  const rootlyClient = useRootlyClient({ discovery: discoveryApi, identify: identifyApi, config: configApi, organizationId });
   const entityTriplet = stringifyEntityRef({
     namespace: entity.metadata.namespace,
     kind: entity.kind,

@@ -59,24 +59,29 @@ to authenticate with Rootly without exposing your API key to users.
 
 # Rootly single-organization configuration example
 rootly:
-  rootly-main: # You can change this
-    apiKey: ${ROOTLY_API_KEY_MAIN}
+  rootly-main:
+    proxyPath: /rootly/api
 
 # Rootly multi-organizations example
 rootly:
-  rootly-main: # You can change this
+  rootly-main:
     isDefault: true
-    apiKey: ${ROOTLY_API_KEY_MAIN}
-  rootly-sandbox: # You can change this
-    apiKey: ${ROOTLY_API_KEY_SANDBOX}
+    proxyPath: /rootly/api
+  rootly-sandbox:
+    proxyPath: /rootly-sandbox/api
 
 ...
 
 proxy:
-  '/rootly/api':
-    target: https://api.rootly.com
-    changeOrigin: true
-    credentials: forward
+  endpoints:
+    '/rootly/api':
+      target: 'https://api.rootly.com'
+      headers:
+        Authorization: Bearer ${ROOTLY_MAIN_TOKEN}
+    '/rootly-sandbox/api':
+      target: 'https://api.rootly.com'
+      headers:
+        Authorization: Bearer ${ROOTLY_SANDBOX_TOKEN}
 ```
 
 ### Annotations
