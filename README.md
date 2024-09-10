@@ -91,12 +91,16 @@ Available annotations are the following:
 ```yaml
 rootly.com/organization-id: rootly # Optional if you use Rootly multi organizations.
 rootly.com/service-id: 7a328a08-6701-445e-a1ad-ca2fb913ed1e # Use service-id or service-slug. Not both.
+rootly.com/service-name: ElastiSearch Staging
 rootly.com/service-slug: elasticsearch-staging # Use service-id or service-slug. Not both.
 rootly.com/service-auto-import: enabled # This will auto import the entity as a rootly service if we don't find any.
 rootly.com/functionality-id: 7a328a08-694f4e1b-abbc-4cf7-bba0-a403df30ed88 # Use functionality-id or functionality-slug. Not both.
+rootly.com/functionality-name: Login
 rootly.com/functionality-slug: login # Use functionality-id or functionality-slug. Not both.
 rootly.com/functionality-auto-import: enabled # This will auto import the entity as a rootly functionality if we don't find any.
 rootly.com/team-id: 39e77dcc-e056-4849-9dda-a362b2413e5c # Use team-id or team-slug. Not both.
+rootly.com/team-slug: infrastucture # Use team-id or team-slug. Not both.
+rootly.com/team-name: Infrastucture # Use team-id or team-slug. Not both.
 rootly.com/team-slug: infrastucture # Use team-id or team-slug. Not both.
 rootly.com/team-auto-import: enabled # This will auto import the entity as a rootly team if we don't find any.
 ```
@@ -254,7 +258,7 @@ const serviceEntityPage = (
 );
 ```
 
-## Configuring the Entity Processor
+## Configuring the Entity Processor ( required )
 
 You can enable the entity processor in your Backstage instance by injecting the dependency in the backend system in `packages/backend/index.ts`.
 

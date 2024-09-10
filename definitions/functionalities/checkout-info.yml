@@ -8,6 +8,7 @@ metadata:
     github.com/project-slug: backstage/backstage
     backstage.io/techdocs-ref: dir:.
     lighthouse.com/website-url: https://rootly.com
+    rootly.com/functionality-name: Checkout
     rootly.com/functionality-slug: checkout
     rootly.com/functionality-auto-import: enabled
 spec:

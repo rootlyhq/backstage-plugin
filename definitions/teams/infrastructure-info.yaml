@@ -8,6 +8,7 @@ metadata:
     github.com/project-slug: backstage/backstage
     backstage.io/techdocs-ref: dir:.
     lighthouse.com/website-url: https://rootly.com
+    rootly.com/team-name: Infrastucture
     rootly.com/team-slug: infrastructure
     rootly.com/team-auto-import: enabled
     pagerduty.com/service-id: PPXDDC7

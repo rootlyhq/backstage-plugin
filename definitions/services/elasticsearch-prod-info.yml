@@ -8,6 +8,7 @@ metadata:
     github.com/project-slug: backstage/backstage
     backstage.io/techdocs-ref: dir:.
     lighthouse.com/website-url: https://rootly.com
+    rootly.com/service-name: ElasticSearch Prod
     rootly.com/service-slug: elasticsearch-prod
     rootly.com/service-auto-import: enabled
 spec:
