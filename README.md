@@ -100,8 +100,7 @@ rootly.com/functionality-slug: login # Use functionality-id or functionality-slu
 rootly.com/functionality-auto-import: enabled # This will auto import the entity as a rootly functionality if we don't find any.
 rootly.com/team-id: 39e77dcc-e056-4849-9dda-a362b2413e5c # Use team-id or team-slug. Not both.
 rootly.com/team-slug: infrastucture # Use team-id or team-slug. Not both.
-rootly.com/team-name: Infrastucture # Use team-id or team-slug. Not both.
-rootly.com/team-slug: infrastucture # Use team-id or team-slug. Not both.
+rootly.com/team-name: Infrastucture
 rootly.com/team-auto-import: enabled # This will auto import the entity as a rootly team if we don't find any.
 ```
 
