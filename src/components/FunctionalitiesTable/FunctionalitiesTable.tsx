@@ -12,8 +12,15 @@ import {
   RootlyFunctionalitiesFetchOpts,
   RootlyApi,
 } from '@rootly/backstage-plugin-common';
-import { configApiRef, discoveryApiRef, identityApiRef, useApi } from '@backstage/core-plugin-api';
+import {
+  configApiRef,
+  discoveryApiRef,
+  identityApiRef,
+  useApi,
+} from '@backstage/core-plugin-api';
 import { useRootlyClient } from '../../api';
+
+import { SearchBarBase } from '@backstage/plugin-search-react'; // Updated import
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -24,17 +31,33 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     justifyContent: 'center',
   },
+  searchContainer: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    marginBottom: theme.spacing(2),
+  },
 }));
 
 const DEFAULT_PAGE_NUMBER = 1;
 const DEFAULT_PAGE_SIZE = 10;
 
-export const FunctionalitiesTable = ({ organizationId, params }: { organizationId?: string, params?: RootlyFunctionalitiesFetchOpts }) => {
+export const FunctionalitiesTable = ({
+  organizationId,
+  params,
+}: {
+  organizationId?: string;
+  params?: RootlyFunctionalitiesFetchOpts;
+}) => {
   const classes = useStyles();
   const configApi = useApi(configApiRef);
   const discoveryApi = useApi(discoveryApiRef);
   const identifyApi = useApi(identityApiRef);
-  const rootlyClient = useRootlyClient({discovery: discoveryApi, identify: identifyApi, config: configApi, organizationId: organizationId});
+  const rootlyClient = useRootlyClient({
+    discovery: discoveryApi,
+    identify: identifyApi,
+    config: configApi,
+    organizationId: organizationId,
+  });
 
   const smallColumnStyle = {
     width: '5%',
@@ -50,13 +73,20 @@ export const FunctionalitiesTable = ({ organizationId, params }: { organizationI
     size: DEFAULT_PAGE_SIZE,
   });
 
+  const [searchTerm, setSearchTerm] = useState(''); // State for search term
+
   const {
     value: response,
     loading,
     error,
   } = useAsync(
-    async () => await rootlyClient.getFunctionalities({ ...params, page: page }),
-    [organizationId, page],
+    async () =>
+      await rootlyClient.getFunctionalities({
+        ...params,
+        page: page,
+        filter: { search: searchTerm },
+      }),
+    [organizationId, page, searchTerm],
   );
 
   const nameColumn = useCallback((rowData: RootlyFunctionality) => {
@@ -67,7 +97,10 @@ export const FunctionalitiesTable = ({ organizationId, params }: { organizationI
           rowData.attributes.name
         }
       >
-        <Link target="blank" href={RootlyApi.getFunctionalityDetailsURL(rowData)}>
+        <Link
+          target="blank"
+          href={RootlyApi.getFunctionalityDetailsURL(rowData)}
+        >
           {rowData.attributes.name}
         </Link>
       </Tooltip>
@@ -81,9 +114,8 @@ export const FunctionalitiesTable = ({ organizationId, params }: { organizationI
           entityRef={parseEntityRef(rowData.attributes.backstage_id)}
         />
       );
-    } 
-      return <div>N/A</div>;
-    
+    }
+    return <div>N/A</div>;
   }, []);
 
   const columns: TableColumn<RootlyFunctionality>[] = [
@@ -134,26 +166,36 @@ export const FunctionalitiesTable = ({ organizationId, params }: { organizationI
   const data = response ? response.data : [];
 
   return (
-    <Table
-      isLoading={loading}
-      options={{
-        sorting: true,
-        search: false,
-        paging: true,
-        actionsColumnIndex: -1,
-        pageSize: DEFAULT_PAGE_SIZE,
-        padding: 'dense',
-      }}
-      localization={{ header: { actions: undefined } }}
-      columns={columns}
-      data={data}
-      page={page.number - 1}
-      totalCount={response?.meta.total_count}
-      emptyContent={<div className={classes.empty}>No functionalities</div>}
-      onPageChange={pageIndex => setPage({ ...page, number: pageIndex + 1 })}
-      onRowsPerPageChange={rowsPerPage =>
-        setPage({ ...page, size: rowsPerPage })
-      }
-    />
+    <>
+      <div className={classes.searchContainer}>
+        {/* Backstage SearchBar */}
+        <SearchBarBase
+          onChange={setSearchTerm} // Directly pass the search term to setSearchTerm
+          placeholder="Search Functionalities"
+          value={searchTerm}
+        />
+      </div>
+      <Table
+        isLoading={loading}
+        options={{
+          sorting: true,
+          search: false,
+          paging: true,
+          actionsColumnIndex: -1,
+          pageSize: DEFAULT_PAGE_SIZE,
+          padding: 'dense',
+        }}
+        localization={{ header: { actions: undefined } }}
+        columns={columns}
+        data={data}
+        page={page.number - 1}
+        totalCount={response?.meta.total_count}
+        emptyContent={<div className={classes.empty}>No functionalities</div>}
+        onPageChange={pageIndex => setPage({ ...page, number: pageIndex + 1 })}
+        onRowsPerPageChange={rowsPerPage =>
+          setPage({ ...page, size: rowsPerPage })
+        }
+      />
+    </>
   );
 };
