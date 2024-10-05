@@ -9,6 +9,7 @@ import { useAsync } from 'react-use';
 import { RootlyApi } from '@rootly/backstage-plugin-common';
 import { useApi, configApiRef, discoveryApiRef, identityApiRef } from '@backstage/core-plugin-api';
 import { useRootlyClient } from '../../api.esm.js';
+import { SearchBarBase } from '@backstage/plugin-search-react';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -18,16 +19,29 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2),
     display: "flex",
     justifyContent: "center"
+  },
+  searchContainer: {
+    display: "flex",
+    justifyContent: "flex-end",
+    marginBottom: theme.spacing(2)
   }
 }));
 const DEFAULT_PAGE_NUMBER = 1;
 const DEFAULT_PAGE_SIZE = 10;
-const FunctionalitiesTable = ({ organizationId, params }) => {
+const FunctionalitiesTable = ({
+  organizationId,
+  params
+}) => {
   const classes = useStyles();
   const configApi = useApi(configApiRef);
   const discoveryApi = useApi(discoveryApiRef);
   const identifyApi = useApi(identityApiRef);
-  const rootlyClient = useRootlyClient({ discovery: discoveryApi, identify: identifyApi, config: configApi, organizationId });
+  const rootlyClient = useRootlyClient({
+    discovery: discoveryApi,
+    identify: identifyApi,
+    config: configApi,
+    organizationId
+  });
   const smallColumnStyle = {
     width: "5%",
     maxWidth: "5%"
@@ -40,13 +54,18 @@ const FunctionalitiesTable = ({ organizationId, params }) => {
     number: DEFAULT_PAGE_NUMBER,
     size: DEFAULT_PAGE_SIZE
   });
+  const [searchTerm, setSearchTerm] = useState("");
   const {
     value: response,
     loading,
     error
   } = useAsync(
-    async () => await rootlyClient.getFunctionalities({ ...params, page }),
-    [organizationId, page]
+    async () => await rootlyClient.getFunctionalities({
+      ...params,
+      page,
+      filter: { search: searchTerm }
+    }),
+    [organizationId, page, searchTerm]
   );
   const nameColumn = useCallback((rowData) => {
     return /* @__PURE__ */ React.createElement(
@@ -54,7 +73,14 @@ const FunctionalitiesTable = ({ organizationId, params }) => {
       {
         title: rowData.attributes.description?.substring(0, 255) || rowData.attributes.name
       },
-      /* @__PURE__ */ React.createElement(Link, { target: "blank", href: RootlyApi.getFunctionalityDetailsURL(rowData) }, rowData.attributes.name)
+      /* @__PURE__ */ React.createElement(
+        Link,
+        {
+          target: "blank",
+          href: RootlyApi.getFunctionalityDetailsURL(rowData)
+        },
+        rowData.attributes.name
+      )
     );
   }, []);
   const backstageColumn = useCallback((rowData) => {
@@ -112,7 +138,14 @@ const FunctionalitiesTable = ({ organizationId, params }) => {
     return /* @__PURE__ */ React.createElement(Alert, { severity: "error" }, error.message);
   }
   const data = response ? response.data : [];
-  return /* @__PURE__ */ React.createElement(
+  return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: classes.searchContainer }, /* @__PURE__ */ React.createElement(
+    SearchBarBase,
+    {
+      onChange: setSearchTerm,
+      placeholder: "Search Functionalities",
+      value: searchTerm
+    }
+  )), /* @__PURE__ */ React.createElement(
     Table,
     {
       isLoading: loading,
@@ -133,7 +166,7 @@ const FunctionalitiesTable = ({ organizationId, params }) => {
       onPageChange: (pageIndex) => setPage({ ...page, number: pageIndex + 1 }),
       onRowsPerPageChange: (rowsPerPage) => setPage({ ...page, size: rowsPerPage })
     }
-  );
+  ));
 };
 
 export { FunctionalitiesTable };
