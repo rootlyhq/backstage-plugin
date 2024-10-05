@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Chip } from '@material-ui/core';
 import { useApi } from '@backstage/core-plugin-api';
+import LinkIcon from '@material-ui/icons/Link';
 import { catalogApiRef } from '@backstage/plugin-catalog-react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -32,16 +33,17 @@ export const ColoredChips = ({
     const fetchComponentUrls = async () => {
       const newComponentUrls: Record<string, string> = {};
       for (const obj of objects) {
-        const entityRef = obj.attributes.backstage_id;
+        const entityRef = (obj.attributes as any).backstage_id;
         try {
           // Search for the component entity in the catalog
-          const component = await catalogApi.getEntityByRef(entityRef);
-          if (component) {
-            newComponentUrls[entityRef] = `/catalog/${component.metadata.namespace}/component/${component.metadata.name}`;
-            console.log(newComponentUrls);
-          }
+          if (entityRef) {
+            const component = await catalogApi.getEntityByRef(entityRef);
+            if (component) {
+              newComponentUrls[entityRef] = `/catalog/${component.metadata.namespace}/component/${component.metadata.name}`;
+            }
+        }
         } catch (error) {
-          console.error(`Failed to fetch component ${entityRef}`, error);
+         // No op
         }
       }
       setComponentUrls(newComponentUrls);
@@ -56,7 +58,7 @@ export const ColoredChips = ({
     return (
       <>
         {objects.map(r => {
-          const entityRef = r.attributes.backstage_id;
+          const entityRef = (r.attributes as any).backstage_id;
           const url = componentUrls[entityRef];
           return (
             <ColoredChip
@@ -64,7 +66,8 @@ export const ColoredChips = ({
               label={r.attributes.name}
               tooltip={r.attributes.description}
               color={r.attributes.color}
-              onClick={url !== null ? () => navigate(url) : () => {}}
+              onClick={url ? () => navigate(url) : () => {}}
+              icon={url ? <LinkIcon /> : undefined}
             />
           );
         })}
