@@ -6,10 +6,12 @@ export const ColoredChip = ({
   label,
   tooltip,
   color,
+  onClick,
 }: {
   label?: string;
   tooltip?: string;
   color?: string;
+  onClick?: () => void;
 }) => {
   if (label) {
     return (
@@ -18,6 +20,7 @@ export const ColoredChip = ({
           label={label}
           style={{ backgroundColor: color || '#FFF', color: contrastColor({bgColor: (color || "#FFF")})}}
           size="small"
+          onClick={onClick}
         />
       </Tooltip>
     );
