@@ -262,7 +262,7 @@ const serviceEntityPage = (
 You can enable the entity processor in your Backstage instance by injecting the dependency in the backend system in `packages/backend/index.ts`.
 
 ```jsx
-// packages/backend/index.ts
+// packages/backend/src/index.ts
 import { createBackend } from '@backstage/backend-defaults';
 
 const backend = createBackend();
