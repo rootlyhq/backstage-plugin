@@ -87,7 +87,7 @@ export const IncidentsTable = ({
       await rootlyClient.getIncidents({
         ...params,
         page: page,
-        filter: { search: searchTerm },
+        filter: { search: searchTerm, ...params?.filter },
       }), // Pass search term to API
     [organizationId, page, searchTerm],
   );

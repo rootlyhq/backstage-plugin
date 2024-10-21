@@ -84,7 +84,7 @@ export const FunctionalitiesTable = ({
       await rootlyClient.getFunctionalities({
         ...params,
         page: page,
-        filter: { search: searchTerm },
+        filter: { search: searchTerm, ...params?.filter },
       }),
     [organizationId, page, searchTerm],
   );

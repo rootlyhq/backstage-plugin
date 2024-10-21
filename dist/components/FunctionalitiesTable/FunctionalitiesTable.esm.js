@@ -63,7 +63,7 @@ const FunctionalitiesTable = ({
     async () => await rootlyClient.getFunctionalities({
       ...params,
       page,
-      filter: { search: searchTerm }
+      filter: { search: searchTerm, ...params?.filter }
     }),
     [organizationId, page, searchTerm]
   );

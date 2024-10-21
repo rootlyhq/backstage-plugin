@@ -84,7 +84,7 @@ export const TeamsTable = ({
       await rootlyClient.getTeams({
         ...params,
         page: page,
-        filter: { search: searchTerm },
+        filter: { search: searchTerm, ...params?.filter },
       }),
     [organizationId, page, searchTerm],
   );

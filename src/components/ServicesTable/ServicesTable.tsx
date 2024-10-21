@@ -84,7 +84,7 @@ export const ServicesTable = ({
       await rootlyClient.getServices({
         ...params,
         page: page,
-        filter: { search: searchTerm },
+        filter: { search: searchTerm, ...params?.filter },
       }),
     [organizationId, page, searchTerm],
   );

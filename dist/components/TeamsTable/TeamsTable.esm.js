@@ -63,7 +63,7 @@ const TeamsTable = ({
     async () => await rootlyClient.getTeams({
       ...params,
       page,
-      filter: { search: searchTerm }
+      filter: { search: searchTerm, ...params?.filter }
     }),
     [organizationId, page, searchTerm]
   );
