@@ -255,6 +255,44 @@ const serviceEntityPage = (
     </EntityLayout.Route>
   </EntityLayout>
 );
+
+//...
+const systemPage = (
+  <EntityLayout>
+    <EntityLayout.Route path="/" title="Overview">
+      <>
+        {overviewContent}
+        <Grid container spacing={3} alignItems="stretch">
+          {entityWarningContent}
+          <Grid item md={6}>
+            <EntityAboutCard variant="gridItem" />
+          </Grid>
+          <Grid item md={6} xs={12}>
+            <EntityCatalogGraphCard variant="gridItem" height={400} />
+          </Grid>
+          <Grid item md={6}>
+            <EntityHasComponentsCard variant="gridItem" />
+          </Grid>
+          <Grid item md={6}>
+            <EntityHasApisCard variant="gridItem" />
+          </Grid>
+          <Grid item md={6}>
+            <EntityHasResourcesCard variant="gridItem" />
+          </Grid>
+        </Grid>
+      </>
+    </EntityLayout.Route>
+    
+    // ...
+
+    <EntityLayout.Route path="/rootly" title="Rootly">
+      <RootlyIncidentsPage />
+      // Rootly Multi Organization
+      // <Grid item sm={6}>
+      //   <RootlyIncidentsPage organizationId="rootly-sandbox" />
+    </EntityLayout.Route>
+  </EntityLayout>
+);
 ```
 
 ## Configuring the Entity Processor ( required )

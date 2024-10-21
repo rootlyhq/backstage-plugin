@@ -1,4 +1,4 @@
-import { stringifyEntityRef } from '@backstage/catalog-model';
+import { Entity, stringifyEntityRef } from '@backstage/catalog-model';
 import {
   Content,
   ContentHeader,
@@ -6,7 +6,6 @@ import {
   Progress
 } from '@backstage/core-components';
 import { attachComponentData, configApiRef, discoveryApiRef, identityApiRef, useApi } from '@backstage/core-plugin-api';
-import { useEntity } from '@backstage/plugin-catalog-react';
 import { Box, Grid, TabProps } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import { default as React } from 'react';
@@ -26,8 +25,7 @@ const Route: (props: SubRoute) => null = () => null;
 // This causes all mount points that are discovered within this route to use the path of the route itself
 attachComponentData(Route, 'core.gatherMountPoints', true);
 
-export const RootlyServiceIncidentsPageLayout = ({ organizationId }: { organizationId?: string }) => {
-  const { entity } = useEntity();
+export const RootlyServiceIncidentsPageLayout = ({ entity, organizationId }: { entity: Entity, organizationId?: string }) => {
   const configApi = useApi(configApiRef);
   const discoveryApi = useApi(discoveryApiRef);
   const identifyApi = useApi(identityApiRef);
@@ -68,7 +66,7 @@ export const RootlyServiceIncidentsPageLayout = ({ organizationId }: { organizat
     return (
       <Page themeId="tool">
         <Content>
-          <ContentHeader title={entity.metadata.name} />
+        <ContentHeader textAlign="center" title={entity.metadata.name} />
           <Grid container spacing={3} direction="column">
             <Box sx={{ mx: 'auto' }} mt={2}>
               <Alert severity="error">
@@ -84,6 +82,7 @@ export const RootlyServiceIncidentsPageLayout = ({ organizationId }: { organizat
     return (
       <Page themeId="tool">
         <Content>
+        <ContentHeader textAlign="center" title={entity.metadata.name} />
         <ContentHeader title="Ongoing incidents" />
           <Grid container spacing={3} direction="column">
             <Grid item>
