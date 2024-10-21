@@ -11,7 +11,9 @@ metadata:
     rootly.com/service-name: ElasticSearch Staging
     rootly.com/service-slug: elasticsearch-staging
     rootly.com/service-auto-import: enabled
+    pagerduty.com/service-id: ABCDEF
 spec:
   type: service
   owner: guests
   lifecycle: experimental
+  system: rootly-es

@@ -1,0 +1,10 @@
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: rootly-es
+  description: Services, Functionalities and ecosystem for the Rootly Core service
+spec:
+  dependsOn:
+    - component:default/elasticsearch-prod
+    - component:default/elasticsearch-staging
+  owner: guests
