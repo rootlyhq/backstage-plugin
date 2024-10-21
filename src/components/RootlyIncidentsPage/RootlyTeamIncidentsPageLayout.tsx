@@ -26,7 +26,7 @@ const Route: (props: SubRoute) => null = () => null;
 // This causes all mount points that are discovered within this route to use the path of the route itself
 attachComponentData(Route, 'core.gatherMountPoints', true);
 
-export const RootlyIncidentsPageLayout = ({ organizationId }: { organizationId?: string }) => {
+export const RootlyTeamIncidentsPageLayout = ({ organizationId }: { organizationId?: string }) => {
   const { entity } = useEntity();
   const configApi = useApi(configApiRef);
   const discoveryApi = useApi(discoveryApiRef);
@@ -45,7 +45,7 @@ export const RootlyIncidentsPageLayout = ({ organizationId }: { organizationId?:
     error,
   } = useAsync(
     async () =>
-      await rootlyClient.getServices({
+      await rootlyClient.getTeams({
         filter: {
           backstage_id: entityTriplet,
         },
@@ -59,12 +59,12 @@ export const RootlyIncidentsPageLayout = ({ organizationId }: { organizationId?:
     return <Alert severity="error">{error.message}</Alert>;
   }
 
-  const service =
+  const team =
     response && response.data && response.data.length > 0
       ? response.data[0]
       : null;
 
-  if (!service) {
+  if (!team) {
     return (
       <Page themeId="tool">
         <Content>
@@ -72,7 +72,7 @@ export const RootlyIncidentsPageLayout = ({ organizationId }: { organizationId?:
           <Grid container spacing={3} direction="column">
             <Box sx={{ mx: 'auto' }} mt={2}>
               <Alert severity="error">
-                Looks like this component is not linked to any services in
+                Looks like this component is not linked to any teams in
                 Rootly
               </Alert>
             </Box>
@@ -91,11 +91,11 @@ export const RootlyIncidentsPageLayout = ({ organizationId }: { organizationId?:
                 organizationId={organizationId}
                 params={{
                   filter: {
-                    services: service.attributes.slug,
+                    teams: team.attributes.slug,
                     status: "started,mitigated"
                   },
                   include:
-                    'environments,services,functionalities,groups,incident_types',
+                    'environments,teams,functionalities,groups,incident_types',
                 }}
               />
             </Grid>
@@ -107,10 +107,10 @@ export const RootlyIncidentsPageLayout = ({ organizationId }: { organizationId?:
                 organizationId={organizationId}
                 params={{
                   filter: {
-                    services: service.attributes.slug,
+                    teams: team.attributes.slug,
                   },
                   include:
-                    'environments,services,functionalities,groups,incident_types',
+                    'environments,teams,functionalities,groups,incident_types',
                 }}
               />
             </Grid>
@@ -121,4 +121,4 @@ export const RootlyIncidentsPageLayout = ({ organizationId }: { organizationId?:
   
 };
 
-RootlyIncidentsPageLayout.Route = Route;
+RootlyTeamIncidentsPageLayout.Route = Route;

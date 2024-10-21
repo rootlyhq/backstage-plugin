@@ -1,2 +1,4 @@
 export { RootlyIncidentsPage } from './RootlyIncidentsPage';
-export { RootlyIncidentsPageLayout } from './RootlyIncidentsPageLayout';
+export { RootlyServiceIncidentsPageLayout } from './RootlyServiceIncidentsPageLayout';
+export { RootlyFunctionalityIncidentsPageLayout } from './RootlyFunctionalityIncidentsPageLayout';
+export { RootlyTeamIncidentsPageLayout } from './RootlyTeamIncidentsPageLayout';
