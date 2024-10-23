@@ -196,7 +196,7 @@ const EntitiesTable = () => {
       kind: entity.kind,
       name: entity.metadata.name
     });
-    return { ...entity, id: entityTriplet, linkedService: void 0, linkedFunctionality: void 0, linkedTeam: void 0 };
+    return { ...entity, id: entityTriplet, rootlyKind: void 0, linkedService: void 0, linkedFunctionality: void 0, linkedTeam: void 0 };
   }) : [];
   return /* @__PURE__ */ React.createElement(
     Table,
