@@ -93,7 +93,7 @@ export const RootlyFunctionalityIncidentsPageLayout = ({ entity, organizationId 
                     status: "started,mitigated"
                   },
                   include:
-                    'environments,functionalitys,functionalities,groups,incident_types',
+                    'environments,services,functionalities,groups,incident_types',
                 }}
               />
             </Grid>
@@ -108,7 +108,7 @@ export const RootlyFunctionalityIncidentsPageLayout = ({ entity, organizationId 
                     functionalitys: functionality.attributes.slug,
                   },
                   include:
-                    'environments,functionalitys,functionalities,groups,incident_types',
+                    'environments,services,functionalities,groups,incident_types',
                 }}
               />
             </Grid>
