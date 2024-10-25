@@ -286,10 +286,8 @@ const systemPage = (
     // ...
 
     <EntityLayout.Route path="/rootly" title="Rootly">
+      // Make sure to add rootly.com/organization-id annotation to all the components part of this system
       <RootlyIncidentsPage />
-      // Rootly Multi Organization
-      // <Grid item sm={6}>
-      //   <RootlyIncidentsPage organizationId="rootly-sandbox" />
     </EntityLayout.Route>
   </EntityLayout>
 );

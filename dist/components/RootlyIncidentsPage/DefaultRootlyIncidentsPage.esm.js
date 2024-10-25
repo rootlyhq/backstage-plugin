@@ -3,7 +3,7 @@ import { RootlyServiceIncidentsPageLayout } from './RootlyServiceIncidentsPageLa
 import { RootlyFunctionalityIncidentsPageLayout } from './RootlyFunctionalityIncidentsPageLayout.esm.js';
 import { RootlyTeamIncidentsPageLayout } from './RootlyTeamIncidentsPageLayout.esm.js';
 import { useEntity, catalogApiRef } from '@backstage/plugin-catalog-react';
-import { ROOTLY_ANNOTATION_SERVICE_ID, ROOTLY_ANNOTATION_SERVICE_SLUG, ROOTLY_ANNOTATION_FUNCTIONALITY_ID, ROOTLY_ANNOTATION_FUNCTIONALITY_SLUG, ROOTLY_ANNOTATION_TEAM_ID, ROOTLY_ANNOTATION_TEAM_SLUG } from '@rootly/backstage-plugin-common';
+import { ROOTLY_ANNOTATION_ORG_ID, ROOTLY_ANNOTATION_SERVICE_ID, ROOTLY_ANNOTATION_SERVICE_SLUG, ROOTLY_ANNOTATION_FUNCTIONALITY_ID, ROOTLY_ANNOTATION_FUNCTIONALITY_SLUG, ROOTLY_ANNOTATION_TEAM_ID, ROOTLY_ANNOTATION_TEAM_SLUG } from '@rootly/backstage-plugin-common';
 import { useApi } from '@backstage/core-plugin-api';
 import { RootlySystemIncidentsPageLayout } from './RootlySystemIncidentsPageLayout.esm.js';
 
@@ -21,12 +21,12 @@ const DefaultRootlyIncidentsPage = ({
         const hasPartRelation = entity.relations?.filter(
           (relation) => relation.type === "hasPart"
         );
-        if (hasPartRelation) {
+        if (hasPartRelation && hasPartRelation.length > 0) {
           for (const relation of hasPartRelation) {
             const _entity = await catalogApi.getEntityByRef(
               relation.targetRef
             );
-            if (_entity) {
+            if (_entity && _entity.metadata.annotations?.[ROOTLY_ANNOTATION_ORG_ID]) {
               _entity.rootlyKind = kindOf(_entity);
               fetchedEntities.push(_entity);
             }
@@ -43,7 +43,7 @@ const DefaultRootlyIncidentsPage = ({
   if (entities.length === 1) {
     return buildEntity(entities[0], organizationId);
   } else if (entities.length > 1) {
-    return buildEntities(entities, organizationId);
+    return buildEntities(entities);
   }
   return /* @__PURE__ */ React.createElement("div", null, "No Rootly annotations found");
 };
@@ -60,12 +60,11 @@ function kindOf(entity) {
   }
   return void 0;
 }
-function buildEntities(entities, organizationId) {
+function buildEntities(entities) {
   return /* @__PURE__ */ React.createElement(
     RootlySystemIncidentsPageLayout,
     {
-      entities,
-      organizationId
+      entities
     }
   );
 }
@@ -76,7 +75,7 @@ function buildEntity(entity, organizationId) {
         RootlyServiceIncidentsPageLayout,
         {
           entity,
-          organizationId
+          organizationId: organizationId || entity.metadata.annotations?.[ROOTLY_ANNOTATION_ORG_ID]
         }
       );
     } else if (entity.rootlyKind === "Functionality") {
@@ -84,7 +83,7 @@ function buildEntity(entity, organizationId) {
         RootlyFunctionalityIncidentsPageLayout,
         {
           entity,
-          organizationId
+          organizationId: organizationId || entity.metadata.annotations?.[ROOTLY_ANNOTATION_ORG_ID]
         }
       );
     } else if (entity.rootlyKind === "Team") {
@@ -92,7 +91,7 @@ function buildEntity(entity, organizationId) {
         RootlyTeamIncidentsPageLayout,
         {
           entity,
-          organizationId
+          organizationId: organizationId || entity.metadata.annotations?.[ROOTLY_ANNOTATION_ORG_ID]
         }
       );
     }

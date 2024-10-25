@@ -7,6 +7,7 @@ import { catalogApiRef, useEntity } from '@backstage/plugin-catalog-react';
 import {
   ROOTLY_ANNOTATION_FUNCTIONALITY_ID,
   ROOTLY_ANNOTATION_FUNCTIONALITY_SLUG,
+  ROOTLY_ANNOTATION_ORG_ID,
   ROOTLY_ANNOTATION_SERVICE_ID,
   ROOTLY_ANNOTATION_SERVICE_SLUG,
   ROOTLY_ANNOTATION_TEAM_ID,
@@ -34,12 +35,12 @@ export const DefaultRootlyIncidentsPage = ({
         const hasPartRelation = entity.relations?.filter(
           relation => relation.type === 'hasPart',
         );
-        if (hasPartRelation) {
+        if (hasPartRelation && hasPartRelation.length > 0) {
           for (const relation of hasPartRelation) {
             const _entity = (await catalogApi.getEntityByRef(
               relation.targetRef,
             )) as RootlyEntity;
-            if (_entity) {
+            if (_entity && _entity.metadata.annotations?.[ROOTLY_ANNOTATION_ORG_ID]) {
               _entity.rootlyKind = kindOf(_entity);
               fetchedEntities.push(_entity as RootlyEntity);
             }
@@ -59,7 +60,7 @@ export const DefaultRootlyIncidentsPage = ({
   if (entities.length === 1) {
     return buildEntity(entities[0], organizationId)
   } else if (entities.length > 1) {
-    return buildEntities(entities, organizationId);
+    return buildEntities(entities);
   }
   return <div>No Rootly annotations found</div>;
 };
@@ -88,13 +89,11 @@ function kindOf(entity: RootlyEntity): string | undefined {
 }
 
 function buildEntities(
-  entities: RootlyEntity[],
-  organizationId?: string,
+  entities: RootlyEntity[]
 ) {
   return (
     <RootlySystemIncidentsPageLayout
       entities={entities}
-      organizationId={organizationId}
     />
   );
 }
@@ -105,21 +104,21 @@ function buildEntity(entity: RootlyEntity, organizationId?: string) {
       return (
         <RootlyServiceIncidentsPageLayout
           entity={entity}
-          organizationId={organizationId}
+          organizationId={organizationId || entity.metadata.annotations?.[ROOTLY_ANNOTATION_ORG_ID]}
         />
       );
     } else if (entity.rootlyKind === 'Functionality') {
       return (
         <RootlyFunctionalityIncidentsPageLayout
           entity={entity}
-          organizationId={organizationId}
+          organizationId={organizationId || entity.metadata.annotations?.[ROOTLY_ANNOTATION_ORG_ID]}
         />
       );
     } else if (entity.rootlyKind === 'Team') {
       return (
         <RootlyTeamIncidentsPageLayout
           entity={entity}
-          organizationId={organizationId}
+          organizationId={organizationId || entity.metadata.annotations?.[ROOTLY_ANNOTATION_ORG_ID]}
         />
       );
     }
