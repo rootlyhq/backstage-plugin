@@ -108,7 +108,7 @@ export const ServicesTable = ({
     if (rowData.attributes.backstage_id) {
       return (
         <EntityRefLink
-          entityRef={parseEntityRef(rowData.attributes.backstage_id)}
+          entityRef={parseEntityRef(rowData.attributes.backstage_id, {defaultKind="component" })}
         />
       );
     }
