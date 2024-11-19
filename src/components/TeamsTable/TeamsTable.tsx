@@ -106,11 +106,12 @@ export const TeamsTable = ({
 
   const backstageColumn = useCallback((rowData: RootlyTeam) => {
     if (rowData.attributes.backstage_id) {
-      return (
-        <EntityRefLink
-          entityRef={parseEntityRef(rowData.attributes.backstage_id)}
-        />
-      );
+      try {
+        const entityRef = parseEntityRef(rowData.attributes.backstage_id);
+        return <EntityRefLink entityRef={parseEntityRef(entityRef)} />;
+      } catch (e) {
+        return <div>N/A</div>;
+      }
     }
     return <div>N/A</div>;
   }, []);
