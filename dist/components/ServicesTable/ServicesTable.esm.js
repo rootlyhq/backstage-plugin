@@ -78,12 +78,12 @@ const ServicesTable = ({
   }, []);
   const backstageColumn = useCallback((rowData) => {
     if (rowData.attributes.backstage_id) {
-      return /* @__PURE__ */ React.createElement(
-        EntityRefLink,
-        {
-          entityRef: parseEntityRef(rowData.attributes.backstage_id)
-        }
-      );
+      try {
+        const entityRef = parseEntityRef(rowData.attributes.backstage_id);
+        return /* @__PURE__ */ React.createElement(EntityRefLink, { entityRef: parseEntityRef(entityRef) });
+      } catch (e) {
+        return /* @__PURE__ */ React.createElement("div", null, "N/A");
+      }
     }
     return /* @__PURE__ */ React.createElement("div", null, "N/A");
   }, []);
