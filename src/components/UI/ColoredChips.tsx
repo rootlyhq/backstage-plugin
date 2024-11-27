@@ -24,34 +24,35 @@ export const ColoredChips = ({
     | RootlyTeam[];
 }) => {
   const navigate = useNavigate();
-  const catalogApi = useApi(catalogApiRef); // Use the catalog API
+  const catalogApi = useApi(catalogApiRef);
 
   const [componentUrls, setComponentUrls] = useState<Record<string, string>>({});
 
-  // Fetch the component URLs dynamically
+  // Fetch component URLs incrementally
   useEffect(() => {
-    const fetchComponentUrls = async () => {
-      const newComponentUrls: Record<string, string> = {};
-      for (const obj of objects) {
-        const entityRef = (obj.attributes as any).backstage_id;
-        try {
-          // Search for the component entity in the catalog
-          if (entityRef) {
-            const component = await catalogApi.getEntityByRef(entityRef);
-            if (component) {
-              newComponentUrls[entityRef] = `/catalog/${component.metadata.namespace}/component/${component.metadata.name}`;
-            }
+    if (!objects?.length) return;
+
+    const fetchComponentUrl = async (entityRef: string) => {
+      try {
+        const component = await catalogApi.getEntityByRef(entityRef);
+        if (component) {
+          setComponentUrls(prev => ({
+            ...prev,
+            [entityRef]: `/catalog/${component.metadata.namespace}/component/${component.metadata.name}`,
+          }));
         }
-        } catch (error) {
-         // No op
-        }
+      } catch {
+        // No op
       }
-      setComponentUrls(newComponentUrls);
     };
 
-    if (objects?.length) {
-      fetchComponentUrls();
-    }
+    // Fetch each entityRef independently
+    objects.forEach(obj => {
+      const entityRef = (obj.attributes as any).backstage_id;
+      if (entityRef) {
+        fetchComponentUrl(entityRef);
+      }
+    });
   }, [objects, catalogApi]);
 
   if (objects?.length > 0) {

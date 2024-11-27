@@ -13,25 +13,25 @@ const ColoredChips = ({
   const catalogApi = useApi(catalogApiRef);
   const [componentUrls, setComponentUrls] = useState({});
   useEffect(() => {
-    const fetchComponentUrls = async () => {
-      const newComponentUrls = {};
-      for (const obj of objects) {
-        const entityRef = obj.attributes.backstage_id;
-        try {
-          if (entityRef) {
-            const component = await catalogApi.getEntityByRef(entityRef);
-            if (component) {
-              newComponentUrls[entityRef] = `/catalog/${component.metadata.namespace}/component/${component.metadata.name}`;
-            }
-          }
-        } catch (error) {
+    if (!objects?.length) return;
+    const fetchComponentUrl = async (entityRef) => {
+      try {
+        const component = await catalogApi.getEntityByRef(entityRef);
+        if (component) {
+          setComponentUrls((prev) => ({
+            ...prev,
+            [entityRef]: `/catalog/${component.metadata.namespace}/component/${component.metadata.name}`
+          }));
         }
+      } catch {
       }
-      setComponentUrls(newComponentUrls);
     };
-    if (objects?.length) {
-      fetchComponentUrls();
-    }
+    objects.forEach((obj) => {
+      const entityRef = obj.attributes.backstage_id;
+      if (entityRef) {
+        fetchComponentUrl(entityRef);
+      }
+    });
   }, [objects, catalogApi]);
   if (objects?.length > 0) {
     return /* @__PURE__ */ React.createElement(React.Fragment, null, objects.map((r) => {
