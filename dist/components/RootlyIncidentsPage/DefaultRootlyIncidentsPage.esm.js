@@ -4,6 +4,7 @@ import { RootlyFunctionalityIncidentsPageLayout } from './RootlyFunctionalityInc
 import { RootlyTeamIncidentsPageLayout } from './RootlyTeamIncidentsPageLayout.esm.js';
 import { useEntity, catalogApiRef } from '@backstage/plugin-catalog-react';
 import { ROOTLY_ANNOTATION_ORG_ID, ROOTLY_ANNOTATION_SERVICE_ID, ROOTLY_ANNOTATION_SERVICE_SLUG, ROOTLY_ANNOTATION_FUNCTIONALITY_ID, ROOTLY_ANNOTATION_FUNCTIONALITY_SLUG, ROOTLY_ANNOTATION_TEAM_ID, ROOTLY_ANNOTATION_TEAM_SLUG } from '@rootly/backstage-plugin-common';
+import { Progress } from '@backstage/core-components';
 import { useApi } from '@backstage/core-plugin-api';
 import { RootlySystemIncidentsPageLayout } from './RootlySystemIncidentsPageLayout.esm.js';
 
@@ -11,35 +12,44 @@ const DefaultRootlyIncidentsPage = ({
   organizationId
 }) => {
   const [entities, setEntities] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const { entity } = useEntity();
   const rootlyEntity = entity;
   const catalogApi = useApi(catalogApiRef);
   useEffect(() => {
     const fetchEntities = async () => {
-      let fetchedEntities = [];
       if (entity.kind === "System") {
-        const hasPartRelation = entity.relations?.filter(
+        const hasPartRelations = entity.relations?.filter(
           (relation) => relation.type === "hasPart"
         );
-        if (hasPartRelation && hasPartRelation.length > 0) {
-          for (const relation of hasPartRelation) {
+        if (hasPartRelations && hasPartRelations.length > 0) {
+          const entityPromises = hasPartRelations.map(async (relation) => {
             const _entity = await catalogApi.getEntityByRef(
               relation.targetRef
             );
             if (_entity && _entity.metadata.annotations?.[ROOTLY_ANNOTATION_ORG_ID]) {
               _entity.rootlyKind = kindOf(_entity);
-              fetchedEntities.push(_entity);
+              return _entity;
             }
-          }
+            return null;
+          });
+          const fetchedEntities = (await Promise.all(entityPromises)).filter(
+            // eslint-disable-next-line @typescript-eslint/no-shadow
+            (entity2) => entity2 !== null
+          );
+          setEntities(fetchedEntities);
         }
       } else {
         rootlyEntity.rootlyKind = kindOf(rootlyEntity);
-        fetchedEntities = [entity];
+        setEntities([rootlyEntity]);
       }
-      setEntities(fetchedEntities);
+      setIsLoading(false);
     };
     fetchEntities();
   }, [entity, rootlyEntity, catalogApi]);
+  if (isLoading) {
+    return /* @__PURE__ */ React.createElement(Progress, null);
+  }
   if (entities.length === 1) {
     return buildEntity(entities[0], organizationId);
   } else if (entities.length > 1) {
@@ -61,12 +71,7 @@ function kindOf(entity) {
   return void 0;
 }
 function buildEntities(entities) {
-  return /* @__PURE__ */ React.createElement(
-    RootlySystemIncidentsPageLayout,
-    {
-      entities
-    }
-  );
+  return /* @__PURE__ */ React.createElement(RootlySystemIncidentsPageLayout, { entities });
 }
 function buildEntity(entity, organizationId) {
   const resource = () => {
