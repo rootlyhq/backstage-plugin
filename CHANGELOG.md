@@ -1,6 +1,6 @@
 # @rootly/backstage-plugin
 
-## 1.0.0 [unreleased]
+## 1.0.0
 
 - Added support for Functionalities & Teams.
 - Adding a CatalogProcessor to sync entities in the background with Rootly ( Backstage being the source of truth ).

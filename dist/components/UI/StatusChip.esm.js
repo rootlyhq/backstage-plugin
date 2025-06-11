@@ -1,5 +1,5 @@
 import React from 'react';
-import { withStyles, Chip, Tooltip } from '@material-ui/core';
+import { Tooltip, withStyles, Chip } from '@material-ui/core';
 
 const ResolvedChip = withStyles({
   root: {
