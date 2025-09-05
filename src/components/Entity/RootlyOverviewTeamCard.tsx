@@ -4,7 +4,6 @@ import {
   IconLinkVerticalProps,
   Progress,
 } from '@backstage/core-components';
-import { configApiRef, discoveryApiRef, identityApiRef, useApi } from '@backstage/core-plugin-api';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import {
   Card,
@@ -99,11 +98,7 @@ const getViewIncidentsForTeamLink = (
 
 export const RootlyOverviewTeamCard = () => {
   const { entity } = useEntity();
-  const configApi = useApi(configApiRef);
-  const discoveryApi = useApi(discoveryApiRef);
-  const identifyApi = useApi(identityApiRef);
-  const rootlyClient = useRootlyClient({discovery: discoveryApi, identify: identifyApi, config: configApi, organizationId: entity.metadata.annotations?.[ROOTLY_ANNOTATION_ORG_ID]});
-
+  const rootlyClient = useRootlyClient({organizationId: entity.metadata.annotations?.[ROOTLY_ANNOTATION_ORG_ID]});
 
   const [reload, setReload] = useState(false);
 

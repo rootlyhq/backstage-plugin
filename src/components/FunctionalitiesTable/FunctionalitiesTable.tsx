@@ -12,12 +12,6 @@ import {
   RootlyFunctionalitiesFetchOpts,
   RootlyApi,
 } from '@rootly/backstage-plugin-common';
-import {
-  configApiRef,
-  discoveryApiRef,
-  identityApiRef,
-  useApi,
-} from '@backstage/core-plugin-api';
 import { useRootlyClient } from '../../api';
 
 import { SearchBarBase } from '@backstage/plugin-search-react'; // Updated import
@@ -49,15 +43,7 @@ export const FunctionalitiesTable = ({
   params?: RootlyFunctionalitiesFetchOpts;
 }) => {
   const classes = useStyles();
-  const configApi = useApi(configApiRef);
-  const discoveryApi = useApi(discoveryApiRef);
-  const identifyApi = useApi(identityApiRef);
-  const rootlyClient = useRootlyClient({
-    discovery: discoveryApi,
-    identify: identifyApi,
-    config: configApi,
-    organizationId: organizationId,
-  });
+  const rootlyClient = useRootlyClient({organizationId: organizationId});
 
   const smallColumnStyle = {
     width: '5%',

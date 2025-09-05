@@ -1,6 +1,6 @@
 import { stringifyEntityRef } from '@backstage/catalog-model';
 import { Progress, Table, TableColumn } from '@backstage/core-components';
-import { configApiRef, discoveryApiRef, identityApiRef, useApi } from '@backstage/core-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
 import { catalogApiRef, EntityRefLink } from '@backstage/plugin-catalog-react';
 import Link from '@material-ui/core/Link';
 import { Alert } from '@material-ui/lab';
@@ -19,9 +19,6 @@ import { useRootlyClient } from '../../api';
 
 export const EntitiesTable = () => {
   const catalogApi = useApi(catalogApiRef);
-  const configApi = useApi(configApiRef);
-  const discoveryApi = useApi(discoveryApiRef);
-  const identifyApi = useApi(identityApiRef);
 
   const smallColumnStyle = {
     width: '5%',
@@ -35,7 +32,7 @@ export const EntitiesTable = () => {
   const fetchService = (entity: RootlyEntity) => {
 
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    const rootlyClient = useRootlyClient({discovery: discoveryApi, identify: identifyApi, config: configApi, organizationId: entity.metadata.annotations?.[ROOTLY_ANNOTATION_ORG_ID]});
+    const rootlyClient = useRootlyClient({organizationId: entity.metadata.annotations?.[ROOTLY_ANNOTATION_ORG_ID]});
 
     const entityTriplet = stringifyEntityRef({
       namespace: entity.metadata.namespace,
@@ -78,7 +75,7 @@ export const EntitiesTable = () => {
   const fetchFunctionality = (entity: RootlyEntity) => {
 
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    const rootlyClient = useRootlyClient({discovery: discoveryApi, identify: identifyApi, config: configApi, organizationId: entity.metadata.annotations?.[ROOTLY_ANNOTATION_ORG_ID]});
+    const rootlyClient = useRootlyClient({organizationId: entity.metadata.annotations?.[ROOTLY_ANNOTATION_ORG_ID]});
 
     const entityTriplet = stringifyEntityRef({
       namespace: entity.metadata.namespace,
@@ -120,7 +117,7 @@ export const EntitiesTable = () => {
 
   const fetchTeam = (entity: RootlyEntity) => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    const rootlyClient = useRootlyClient({discovery: discoveryApi, identify: identifyApi, config: configApi, organizationId: entity.metadata.annotations?.[ROOTLY_ANNOTATION_ORG_ID]});
+    const rootlyClient = useRootlyClient({ organizationId: entity.metadata.annotations?.[ROOTLY_ANNOTATION_ORG_ID]});
 
     const entityTriplet = stringifyEntityRef({
       namespace: entity.metadata.namespace,
