@@ -1,0 +1,34 @@
+app:
+  title: Backstage Example App
+  baseUrl: http://localhost:3000
+  extensions:
+    # Redirect from the Home to the Rootly page
+    - "page:rootly":
+        config:
+          path: "/"
+    # Disable these Search plugin extensions
+    - "nav-item:search": false
+    # Disable these Catalog plugin extensions
+    - "entity-card:catalog/has-subcomponents": false
+    - "entity-card:catalog/depends-on-components": false
+    - "entity-card:catalog/depends-on-resources": false
+
+backend:
+  baseUrl: http://localhost:7007
+  listen:
+    port: 7007
+
+proxy:
+  endpoints:
+    "/rootly/api":
+      target: "https://api.rootly.com"
+      headers:
+        Authorization: "Bearer ${ROOTLY_MAIN_TOKEN}"
+    "/rootly-sandbox/api":
+      target: "https://api.rootly.com"
+      headers:
+        Authorization: Bearer ${ROOTLY_SANDBOX_TOKEN}
+
+rootly:
+  rootly-main:
+    proxyPath: /rootly/api
