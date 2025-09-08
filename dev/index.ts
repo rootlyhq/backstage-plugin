@@ -7,7 +7,7 @@ import { catalogApiRef } from "@backstage/plugin-catalog-react";
 import catalogPlugin from "@backstage/plugin-catalog/alpha";
 import searchPlugin from "@backstage/plugin-search/alpha";
 
-import { rootlyApiRef } from "../src/api";
+import { RootlyApiRef, rootlyApiRef } from "../src/api";
 import rootlyPlugin from "../src/alpha";
 
 import { rootlyApi } from "./rootlyApiMock";
@@ -34,7 +34,7 @@ const rootlyPluginOverrides = rootlyPlugin.withOverrides({
           api: rootlyApiRef,
           deps: {},
           factory() {
-            return rootlyApi as unknown as { getClient: () => RootlyApi };
+            return rootlyApi as unknown as RootlyApiRef;
           },
         }),
     }),
