@@ -313,3 +313,84 @@ backend.start();
 ## License
 
 This library is under the [MIT](LICENSE) license.
+
+## New Frontend System
+
+Follow these steps to detect and configure the Rootly plugin if you'd like to use it in an application that supports the new Backstage frontend system.
+
+### Package Detection
+
+Once you install the `@rootly/backstage-plugin` package using your preferred package manager, you have to choose how the package should be detected by the app. The package can be automatically discovered when the feature discovery config is set, or it can be manually enabled via code (for more granular package customization cases).
+
+<table>
+  <tr>
+    <td>Via config</td>
+    <td>Via code</td>
+  </tr>
+  <tr>
+    <td>
+      <pre lang="yaml">
+        <code>
+# app-config.yaml
+  app:
+    # Enable package discovery for all plugins
+    packages: 'all'
+  ---
+  app:
+    # Enable package discovery only for Rootly
+    packages:
+      include:
+        - '@rootly/backstage-plugin'
+        </code>
+      </pre>
+    </td>
+    <td>
+      <pre lang="javascript">
+       <code>
+// packages/app/src/App.tsx
+import { createApp } from '@backstage/frontend-defaults';
+import rootlyPlugin from '@rootly/backstage-plugin/alpha';
+//...
+const app = createApp({
+  // ...
+  features: [
+    //...
+    rootlyPlugin,
+  ],
+});
+
+//...
+       </code>
+      </pre>
+    </td>
+  </tr>
+</table>
+
+### Extensions Configuration
+
+Currently, the plugin installs 5 extensions: 1 api, 1 page, 1 nav item (sidebar item), 1 entity page card and 1 entity page content (also known as entity page tab), see below examples of how to configure the available extensions. 
+
+```yml
+# app-config.yaml
+app:
+  extensions:
+    # Example customizing the Rootly path
+    - 'page:rootly':
+        config:
+          path: '/incidents'
+    # Example removing the Rootly sidebar item
+    - 'nav-item:rootly': false
+    # Example changing the Rootly sidebar title
+    - 'nav-item:rootly':
+        config:
+          title: 'Incidents'
+    # Example disabling the Rootly entity card
+    - 'entity-card:rootly': false
+    # Example disabling the Rootly entity content
+    - 'entity-content:rootly': false
+    # Example customizing the Rootly entity content
+    - 'entity-content:rootly':
+        config:
+          path: '/incidents'
+          title: 'incidents'
+```
