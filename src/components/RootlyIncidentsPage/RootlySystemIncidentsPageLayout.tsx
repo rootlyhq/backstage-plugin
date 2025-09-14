@@ -14,12 +14,6 @@ import {
   Progress,
 } from '@backstage/core-components';
 import { Alert } from '@material-ui/lab';
-import {
-  configApiRef,
-  discoveryApiRef,
-  identityApiRef,
-  useApi,
-} from '@backstage/core-plugin-api';
 import { IncidentsTable } from '../IncidentsTable';
 import { useRootlyClient } from '../../api';
 import {
@@ -84,10 +78,6 @@ export const RootlySystemIncidentsPageLayout = ({
 }: {
   entities: RootlyEntity[];
 }) => {
-  const configApi = useApi(configApiRef);
-  const discoveryApi = useApi(discoveryApiRef);
-  const identityApi = useApi(identityApiRef);
-
   const serviceEntitiesTriplets = useMemo(
     () => extractEntities(entities, 'Service'),
     [entities],
@@ -125,12 +115,7 @@ export const RootlySystemIncidentsPageLayout = ({
       async ([orgId, ids]) => {
         try {
           // eslint-disable-next-line react-hooks/rules-of-hooks
-          const rootlyClient = useRootlyClient({
-            discovery: discoveryApi,
-            identify: identityApi,
-            config: configApi,
-            organizationId: orgId,
-          });
+          const rootlyClient = useRootlyClient({organizationId: orgId});
           switch (type) {
             case 'Services': {
               const results = await rootlyClient.getServices({

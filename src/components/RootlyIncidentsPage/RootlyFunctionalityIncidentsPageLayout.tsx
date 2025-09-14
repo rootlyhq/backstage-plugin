@@ -5,7 +5,7 @@ import {
   Page,
   Progress
 } from '@backstage/core-components';
-import { attachComponentData, configApiRef, discoveryApiRef, identityApiRef, useApi } from '@backstage/core-plugin-api';
+import { attachComponentData } from '@backstage/core-plugin-api';
 import { Box, Grid, TabProps } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import { default as React } from 'react';
@@ -26,10 +26,7 @@ const Route: (props: SubRoute) => null = () => null;
 attachComponentData(Route, 'core.gatherMountPoints', true);
 
 export const RootlyFunctionalityIncidentsPageLayout = ({ entity, organizationId }: { entity: Entity, organizationId?: string }) => {
-  const configApi = useApi(configApiRef);
-  const discoveryApi = useApi(discoveryApiRef);
-  const identifyApi = useApi(identityApiRef);
-  const rootlyClient = useRootlyClient({discovery: discoveryApi, identify: identifyApi, config: configApi, organizationId: organizationId});
+  const rootlyClient = useRootlyClient({organizationId: organizationId});
 
   const entityTriplet = stringifyEntityRef({
     namespace: entity.metadata.namespace,

@@ -5,9 +5,22 @@
   "types": "src/index.ts",
   "license": "MIT",
   "publishConfig": {
-    "access": "public",
-    "main": "dist/index.esm.js",
-    "types": "dist/index.d.ts"
+    "access": "public"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./alpha": "./src/alpha/index.ts",
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "alpha": [
+        "src/alpha/index.ts"
+      ],
+      "package.json": [
+        "package.json"
+      ]
+    }
   },
   "backstage": {
     "role": "frontend-plugin",
@@ -24,8 +37,9 @@
     "plugin",
     "rootly"
   ],
+  "sideEffects": false,
   "scripts": {
-    "start": "backstage-cli package start",
+    "start": "backstage-cli package start --config ./dev/app-config.yaml",
     "build": "yarn tsc && backstage-cli package build",
     "lint": "backstage-cli package lint",
     "test": "backstage-cli package test",
@@ -34,13 +48,15 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
-    "@backstage/catalog-model": "^1.7.4",
-    "@backstage/cli": "^0.32.1",
-    "@backstage/core-components": "^0.17.2",
-    "@backstage/core-plugin-api": "^1.10.7",
-    "@backstage/plugin-catalog-react": "^1.18.0",
-    "@backstage/plugin-search-react": "^1.9.0",
-    "@backstage/theme": "^0.6.6",
+    "@backstage/catalog-model": "backstage:^",
+    "@backstage/cli": "backstage:^",
+    "@backstage/core-compat-api": "backstage:^",
+    "@backstage/core-components": "backstage:^",
+    "@backstage/core-plugin-api": "backstage:^",
+    "@backstage/frontend-plugin-api": "backstage:^",
+    "@backstage/plugin-catalog-react": "backstage:^",
+    "@backstage/plugin-search-react": "backstage:^",
+    "@backstage/theme": "backstage:^",
     "@material-ui/core": "^4.12.2",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "4.0.0-alpha.61",
@@ -66,9 +82,13 @@
     "react-router-dom": "^6.0.0"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.32.1",
-    "@backstage/dev-utils": "^1.1.10",
-    "@backstage/test-utils": "^1.7.8",
+    "@backstage/cli": "backstage:^",
+    "@backstage/core-app-api": "backstage:^",
+    "@backstage/dev-utils": "backstage:^",
+    "@backstage/frontend-defaults": "backstage:^",
+    "@backstage/plugin-catalog": "backstage:^",
+    "@backstage/plugin-search": "backstage:^",
+    "@backstage/test-utils": "backstage:^",
     "@testing-library/jest-dom": "^6.4.2",
     "@testing-library/react": "^14.2.2",
     "@testing-library/user-event": "^14.5.2",
@@ -76,14 +96,21 @@
     "@types/dom-to-image": "^2.6.3",
     "@types/jest": "^29.0.0",
     "@types/node": "^20.10.6",
+    "@types/react": "^18.0.0",
     "cross-fetch": "^4.0.0",
     "jest-canvas-mock": "^2.3.0",
     "jest-fetch-mock": "^3.0.3",
+    "react": "^18.0.2",
+    "react-dom": "^18.0.2",
+    "react-router": "^6.0.0",
+    "react-router-dom": "^6.3.0",
+    "swr": "^2.2.5",
     "typescript": "^5.3.3"
   },
   "files": [
     "dist",
     "config.d.ts"
   ],
-  "configSchema": "config.d.ts"
+  "configSchema": "config.d.ts",
+  "packageManager": "yarn@4.9.4"
 }
