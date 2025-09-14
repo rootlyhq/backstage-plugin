@@ -310,10 +310,6 @@ backend.add(import('@rootly/backstage-plugin-entity-processor'));
 backend.start();
 ```
 
-## License
-
-This library is under the [MIT](LICENSE) license.
-
 ## New Frontend System
 
 Follow these steps to detect and configure the Rootly plugin if you'd like to use it in an application that supports the new Backstage frontend system.
@@ -394,3 +390,7 @@ app:
           path: '/incidents'
           title: 'incidents'
 ```
+
+## License
+
+This library is under the [MIT](LICENSE) license.
