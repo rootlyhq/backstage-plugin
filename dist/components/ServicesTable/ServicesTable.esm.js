@@ -1,6 +1,5 @@
 import { parseEntityRef } from '@backstage/catalog-model';
 import { Table } from '@backstage/core-components';
-import { useApi, configApiRef, discoveryApiRef, identityApiRef } from '@backstage/core-plugin-api';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
 import { makeStyles, Tooltip } from '@material-ui/core';
 import Link from '@material-ui/core/Link';
@@ -33,15 +32,7 @@ const ServicesTable = ({
   params
 }) => {
   const classes = useStyles();
-  const configApi = useApi(configApiRef);
-  const discoveryApi = useApi(discoveryApiRef);
-  const identifyApi = useApi(identityApiRef);
-  const rootlyClient = useRootlyClient({
-    discovery: discoveryApi,
-    identify: identifyApi,
-    config: configApi,
-    organizationId
-  });
+  const rootlyClient = useRootlyClient({ organizationId });
   const smallColumnStyle = {
     width: "5%",
     maxWidth: "5%"
