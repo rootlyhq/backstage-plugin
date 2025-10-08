@@ -2648,7 +2648,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@material-ui/icons@npm:^4.9.1":
+"@material-ui/icons@npm:^4.11.3, @material-ui/icons@npm:^4.9.1":
   version: 4.11.3
   resolution: "@material-ui/icons@npm:4.11.3"
   dependencies:
@@ -3847,10 +3847,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rootly/backstage-plugin-common@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@rootly/backstage-plugin-common@npm:1.0.0"
-  checksum: 10c0/a146e916d4c0aaf2248a32d86c817e6ec885886f779cc6e61dcd8059883f99e0a0d1ca6f904f9c99286baeb2b9e32f142cb8824c3e1f6096a5149b9d6bdb7a6b
+"@rootly/backstage-plugin-common@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "@rootly/backstage-plugin-common@npm:1.1.0"
+  checksum: 10c0/c9c53890ac1f50b48c0b4cda4b4f622f01fee9287df8412262c35903a46499361a581e3ab050d9896e844a0cb8313a16f4963817cf35e709e92aa8bf35227531
   languageName: node
   linkType: hard
 
@@ -3873,39 +3873,39 @@ __metadata:
     "@backstage/plugin-search-react": "backstage:^"
     "@backstage/test-utils": "backstage:^"
     "@backstage/theme": "backstage:^"
-    "@material-ui/core": "npm:^4.12.2"
-    "@material-ui/icons": "npm:^4.9.1"
+    "@material-ui/core": "npm:^4.12.4"
+    "@material-ui/icons": "npm:^4.11.3"
     "@material-ui/lab": "npm:4.0.0-alpha.61"
-    "@rootly/backstage-plugin-common": "npm:^1.0.0"
+    "@rootly/backstage-plugin-common": "npm:^1.1.0"
     "@spotify/prettier-config": "npm:^15.0.0"
-    "@testing-library/jest-dom": "npm:^6.4.2"
-    "@testing-library/react": "npm:^14.2.2"
-    "@testing-library/user-event": "npm:^14.5.2"
+    "@testing-library/jest-dom": "npm:^6.9.1"
+    "@testing-library/react": "npm:^14.3.1"
+    "@testing-library/user-event": "npm:^14.6.1"
     "@types/contrast-color": "npm:^1.0.3"
-    "@types/dom-to-image": "npm:^2.6.3"
-    "@types/jest": "npm:^29.0.0"
-    "@types/node": "npm:^20.10.6"
-    "@types/react": "npm:^18.0.0"
-    "@types/react-dom": "npm:^18.2.18"
-    chart.js: "npm:^4.4.1"
+    "@types/dom-to-image": "npm:^2.6.7"
+    "@types/jest": "npm:^29.5.14"
+    "@types/node": "npm:^20.19.19"
+    "@types/react": "npm:^18.3.26"
+    "@types/react-dom": "npm:^18.3.7"
+    chart.js: "npm:^4.5.0"
     concurrently: "npm:^8.2.2"
     contrast-color: "npm:^1.0.1"
-    cross-fetch: "npm:^4.0.0"
-    history: "npm:^5.0.0"
+    cross-fetch: "npm:^4.1.0"
+    history: "npm:^5.3.0"
     install: "npm:^0.13.0"
-    jest-canvas-mock: "npm:^2.3.0"
+    jest-canvas-mock: "npm:^2.5.2"
     jest-fetch-mock: "npm:^3.0.3"
-    moment: "npm:^2.29.1"
-    prettier: "npm:^3.1.1"
-    qs: "npm:^6.10.3"
-    react: "npm:^18.0.2"
-    react-chartkick: "npm:^0.5.2"
-    react-dom: "npm:^18.0.2"
-    react-router: "npm:^6.0.0"
-    react-router-dom: "npm:^6.3.0"
-    react-use: "npm:^17.2.4"
-    swr: "npm:^2.2.5"
-    typescript: "npm:^5.3.3"
+    moment: "npm:^2.30.1"
+    prettier: "npm:^3.6.2"
+    qs: "npm:^6.14.0"
+    react: "npm:^18.3.1"
+    react-chartkick: "npm:^0.5.4"
+    react-dom: "npm:^18.3.1"
+    react-router: "npm:^6.30.1"
+    react-router-dom: "npm:^6.30.1"
+    react-use: "npm:^17.6.0"
+    swr: "npm:^2.3.6"
+    typescript: "npm:^5.9.3"
   peerDependencies:
     react: ^16.13.1 || ^17.0.0 || ^18.0.0
     react-dom: ^16.13.1 || ^17.0.0
@@ -4329,9 +4329,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/jest-dom@npm:^6.4.2":
-  version: 6.8.0
-  resolution: "@testing-library/jest-dom@npm:6.8.0"
+"@testing-library/jest-dom@npm:^6.9.1":
+  version: 6.9.1
+  resolution: "@testing-library/jest-dom@npm:6.9.1"
   dependencies:
     "@adobe/css-tools": "npm:^4.4.0"
     aria-query: "npm:^5.0.0"
@@ -4339,11 +4339,11 @@ __metadata:
     dom-accessibility-api: "npm:^0.6.3"
     picocolors: "npm:^1.1.1"
     redent: "npm:^3.0.0"
-  checksum: 10c0/4c5b8b433e0339e0399b940ae901a99ae00f1d5ffb7cbb295460b2c44aaad0bc7befcca7b06ceed7aa68a524970077468046c9fe52836ee26f45b807c80a7ff1
+  checksum: 10c0/4291ebd2f0f38d14cefac142c56c337941775a5807e2a3d6f1a14c2fbd6be76a18e498ed189e95bedc97d9e8cf1738049bc76c85b5bc5e23fae7c9e10f7b3a12
   languageName: node
   linkType: hard
 
-"@testing-library/react@npm:^14.2.2":
+"@testing-library/react@npm:^14.3.1":
   version: 14.3.1
   resolution: "@testing-library/react@npm:14.3.1"
   dependencies:
@@ -4377,7 +4377,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/user-event@npm:^14.5.2":
+"@testing-library/user-event@npm:^14.6.1":
   version: 14.6.1
   resolution: "@testing-library/user-event@npm:14.6.1"
   peerDependencies:
@@ -4564,7 +4564,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/dom-to-image@npm:^2.6.3":
+"@types/dom-to-image@npm:^2.6.7":
   version: 2.6.7
   resolution: "@types/dom-to-image@npm:2.6.7"
   checksum: 10c0/2f5045f116fba81fade6df5f4c6435280a6bf693a10df4ef6b0b586339833e1fe70649ffa8dc2cd221e65c1a87bc81d4765a4b6ee30da457f2bc5be92de9aa90
@@ -4712,7 +4712,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jest@npm:^29.0.0, @types/jest@npm:^29.5.11":
+"@types/jest@npm:^29.5.11, @types/jest@npm:^29.5.14":
   version: 29.5.14
   resolution: "@types/jest@npm:29.5.14"
   dependencies:
@@ -4821,12 +4821,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^20.10.6":
-  version: 20.19.13
-  resolution: "@types/node@npm:20.19.13"
+"@types/node@npm:^20.19.19":
+  version: 20.19.19
+  resolution: "@types/node@npm:20.19.19"
   dependencies:
     undici-types: "npm:~6.21.0"
-  checksum: 10c0/25fba13d50c4f18ac56a50d4491502e7d095f09e44c17c0c6887aa5e4e6122e961e92fc3b682ed8c053ab87a05ce10f501345d23d96fdfba8002ecce6c8ced51
+  checksum: 10c0/488589d6d1d562ad4e8ed9bb36703a8f3bb7feed206bba867358eda0965e781a408f14ed7ff1ca334ae6f6823dcfe2eb2536ffe48e2ab02d47b4c3c5395d274a
   languageName: node
   linkType: hard
 
@@ -4858,7 +4858,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-dom@npm:^18.0.0, @types/react-dom@npm:^18.2.18":
+"@types/react-dom@npm:^18.0.0, @types/react-dom@npm:^18.3.7":
   version: 18.3.7
   resolution: "@types/react-dom@npm:18.3.7"
   peerDependencies:
@@ -4906,13 +4906,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:^18.0.0":
-  version: 18.3.24
-  resolution: "@types/react@npm:18.3.24"
+"@types/react@npm:^18.3.26":
+  version: 18.3.26
+  resolution: "@types/react@npm:18.3.26"
   dependencies:
     "@types/prop-types": "npm:*"
     csstype: "npm:^3.0.2"
-  checksum: 10c0/9e188fa8e50f172cf647fc48fea2e04d88602afff47190b697de281a8ac88df9ee059864757a2a438ff599eaf9276d9a9e0e60585e88f7d57f01a2e4877d37ec
+  checksum: 10c0/7b62d91c33758f14637311921c92db6045b6328e2300666a35ef8130d06385e39acada005eaf317eee93228edc10ea5f0cd34a0385654d2014d24699a65bfeef
   languageName: node
   linkType: hard
 
@@ -6409,7 +6409,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chart.js@npm:4, chart.js@npm:^4.4.1":
+"chart.js@npm:4, chart.js@npm:^4.5.0":
   version: 4.5.0
   resolution: "chart.js@npm:4.5.0"
   dependencies:
@@ -7022,7 +7022,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cross-fetch@npm:^4.0.0":
+"cross-fetch@npm:^4.0.0, cross-fetch@npm:^4.1.0":
   version: 4.1.0
   resolution: "cross-fetch@npm:4.1.0"
   dependencies:
@@ -9834,7 +9834,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"history@npm:^5.0.0":
+"history@npm:^5.0.0, history@npm:^5.3.0":
   version: 5.3.0
   resolution: "history@npm:5.3.0"
   dependencies:
@@ -10995,7 +10995,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-canvas-mock@npm:^2.3.0":
+"jest-canvas-mock@npm:^2.5.2":
   version: 2.5.2
   resolution: "jest-canvas-mock@npm:2.5.2"
   dependencies:
@@ -13173,7 +13173,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"moment@npm:^2.29.1":
+"moment@npm:^2.30.1":
   version: 2.30.1
   resolution: "moment@npm:2.30.1"
   checksum: 10c0/865e4279418c6de666fca7786607705fd0189d8a7b7624e2e56be99290ac846f90878a6f602e34b4e0455c549b85385b1baf9966845962b313699e7cb847543a
@@ -14568,7 +14568,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:^3.1.1":
+"prettier@npm:^3.6.2":
   version: 3.6.2
   resolution: "prettier@npm:3.6.2"
   bin:
@@ -14782,7 +14782,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"qs@npm:^6.10.3, qs@npm:^6.12.3, qs@npm:^6.9.4":
+"qs@npm:^6.12.3, qs@npm:^6.14.0, qs@npm:^6.9.4":
   version: 6.14.0
   resolution: "qs@npm:6.14.0"
   dependencies:
@@ -14921,7 +14921,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-chartkick@npm:^0.5.2":
+"react-chartkick@npm:^0.5.4":
   version: 0.5.4
   resolution: "react-chartkick@npm:0.5.4"
   dependencies:
@@ -14965,7 +14965,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-dom@npm:^18.0.2":
+"react-dom@npm:^18.3.1":
   version: 18.3.1
   resolution: "react-dom@npm:18.3.1"
   dependencies:
@@ -15126,7 +15126,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-router-dom@npm:^6.3.0":
+"react-router-dom@npm:^6.30.1":
   version: 6.30.1
   resolution: "react-router-dom@npm:6.30.1"
   dependencies:
@@ -15139,7 +15139,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-router@npm:6.30.1, react-router@npm:^6.0.0":
+"react-router@npm:6.30.1, react-router@npm:^6.30.1":
   version: 6.30.1
   resolution: "react-router@npm:6.30.1"
   dependencies:
@@ -15212,7 +15212,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-use@npm:^17.2.4, react-use@npm:^17.3.2":
+"react-use@npm:^17.2.4, react-use@npm:^17.3.2, react-use@npm:^17.6.0":
   version: 17.6.0
   resolution: "react-use@npm:17.6.0"
   dependencies:
@@ -15260,7 +15260,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react@npm:^18.0.2":
+"react@npm:^18.3.1":
   version: 18.3.1
   resolution: "react@npm:18.3.1"
   dependencies:
@@ -16937,7 +16937,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"swr@npm:^2.0.0, swr@npm:^2.2.5":
+"swr@npm:^2.0.0, swr@npm:^2.3.6":
   version: 2.3.6
   resolution: "swr@npm:2.3.6"
   dependencies:
@@ -17487,13 +17487,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^5.3.3":
-  version: 5.9.2
-  resolution: "typescript@npm:5.9.2"
+"typescript@npm:^5.9.3":
+  version: 5.9.3
+  resolution: "typescript@npm:5.9.3"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 10c0/cd635d50f02d6cf98ed42de2f76289701c1ec587a363369255f01ed15aaf22be0813226bff3c53e99d971f9b540e0b3cc7583dbe05faded49b1b0bed2f638a18
+  checksum: 10c0/6bd7552ce39f97e711db5aa048f6f9995b53f1c52f7d8667c1abdc1700c68a76a308f579cd309ce6b53646deb4e9a1be7c813a93baaf0a28ccd536a30270e1c5
   languageName: node
   linkType: hard
 
@@ -17507,13 +17507,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A^5.3.3#optional!builtin<compat/typescript>":
-  version: 5.9.2
-  resolution: "typescript@patch:typescript@npm%3A5.9.2#optional!builtin<compat/typescript>::version=5.9.2&hash=5786d5"
+"typescript@patch:typescript@npm%3A^5.9.3#optional!builtin<compat/typescript>":
+  version: 5.9.3
+  resolution: "typescript@patch:typescript@npm%3A5.9.3#optional!builtin<compat/typescript>::version=5.9.3&hash=5786d5"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 10c0/34d2a8e23eb8e0d1875072064d5e1d9c102e0bdce56a10a25c0b917b8aa9001a9cf5c225df12497e99da107dc379360bc138163c66b55b95f5b105b50578067e
+  checksum: 10c0/ad09fdf7a756814dce65bc60c1657b40d44451346858eea230e10f2e95a289d9183b6e32e5c11e95acc0ccc214b4f36289dcad4bf1886b0adb84d711d336a430
   languageName: node
   linkType: hard
 

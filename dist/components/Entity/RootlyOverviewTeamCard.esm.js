@@ -1,6 +1,5 @@
 import { stringifyEntityRef } from '@backstage/catalog-model';
 import { HeaderIconLinkRow, Progress } from '@backstage/core-components';
-import { useApi, configApiRef, discoveryApiRef, identityApiRef } from '@backstage/core-plugin-api';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { Card, CardHeader, IconButton, Divider, CardContent, Typography, List, ListItem, ListItemText, ListItemSecondaryAction } from '@material-ui/core';
 import Link from '@material-ui/core/Link';
@@ -59,10 +58,7 @@ const getViewIncidentsForTeamLink = (team) => {
 };
 const RootlyOverviewTeamCard = () => {
   const { entity } = useEntity();
-  const configApi = useApi(configApiRef);
-  const discoveryApi = useApi(discoveryApiRef);
-  const identifyApi = useApi(identityApiRef);
-  const rootlyClient = useRootlyClient({ discovery: discoveryApi, identify: identifyApi, config: configApi, organizationId: entity.metadata.annotations?.[ROOTLY_ANNOTATION_ORG_ID] });
+  const rootlyClient = useRootlyClient({ organizationId: entity.metadata.annotations?.[ROOTLY_ANNOTATION_ORG_ID] });
   const [reload, setReload] = useState(false);
   const createIncidentLink = {
     label: "Create Incident",

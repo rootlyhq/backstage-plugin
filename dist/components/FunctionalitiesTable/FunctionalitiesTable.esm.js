@@ -7,7 +7,6 @@ import { Alert } from '@material-ui/lab';
 import React, { useState, useCallback } from 'react';
 import { useAsync } from 'react-use';
 import { RootlyApi } from '@rootly/backstage-plugin-common';
-import { useApi, configApiRef, discoveryApiRef, identityApiRef } from '@backstage/core-plugin-api';
 import { useRootlyClient } from '../../api.esm.js';
 import { SearchBarBase } from '@backstage/plugin-search-react';
 
@@ -33,15 +32,7 @@ const FunctionalitiesTable = ({
   params
 }) => {
   const classes = useStyles();
-  const configApi = useApi(configApiRef);
-  const discoveryApi = useApi(discoveryApiRef);
-  const identifyApi = useApi(identityApiRef);
-  const rootlyClient = useRootlyClient({
-    discovery: discoveryApi,
-    identify: identifyApi,
-    config: configApi,
-    organizationId
-  });
+  const rootlyClient = useRootlyClient({ organizationId });
   const smallColumnStyle = {
     width: "5%",
     maxWidth: "5%"

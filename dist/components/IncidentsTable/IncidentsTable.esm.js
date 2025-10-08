@@ -1,5 +1,4 @@
 import { Table } from '@backstage/core-components';
-import { useApi, configApiRef, discoveryApiRef, identityApiRef } from '@backstage/core-plugin-api';
 import { makeStyles, Tooltip, Chip } from '@material-ui/core';
 import Link from '@material-ui/core/Link';
 import { Alert } from '@material-ui/lab';
@@ -34,15 +33,7 @@ const IncidentsTable = ({
   params
 }) => {
   const classes = useStyles();
-  const configApi = useApi(configApiRef);
-  const discoveryApi = useApi(discoveryApiRef);
-  const identifyApi = useApi(identityApiRef);
-  const rootlyClient = useRootlyClient({
-    discovery: discoveryApi,
-    identify: identifyApi,
-    config: configApi,
-    organizationId
-  });
+  const rootlyClient = useRootlyClient({ organizationId });
   const smallColumnStyle = {
     width: "5%",
     maxWidth: "5%"
