@@ -1,5 +1,10 @@
 # @rootly/backstage-plugin
 
+## 1.2.0
+
+- Pin Backstage dependencies to specific versions
+- Upgrade @testing-library/react from 14.3.1 to 15.0.7
+
 ## 1.1.0
 
 - Upgrade Backstage CLI and dependencies
