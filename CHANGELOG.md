@@ -1,5 +1,11 @@
 # @rootly/backstage-plugin
 
+## 1.2.1
+
+- Fix package.json metadata for Backstage compliance
+- Convert pluginPackages from string to array format
+- Add repository directory field
+
 ## 1.2.0
 
 - Pin Backstage dependencies to specific versions
