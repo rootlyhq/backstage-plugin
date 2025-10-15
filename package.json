@@ -25,12 +25,15 @@
   "backstage": {
     "role": "frontend-plugin",
     "pluginId": "rootly",
-    "pluginPackages": "rootly"
+    "pluginPackages": [
+      "@rootly/backstage-plugin"
+    ]
   },
   "homepage": "https://github.com/rootlyhq/backstage-plugin",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rootlyhq/backstage-plugin.git"
+    "url": "git+https://github.com/rootlyhq/backstage-plugin.git",
+    "directory": "."
   },
   "keywords": [
     "backstage",
