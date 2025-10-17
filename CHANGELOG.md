@@ -1,5 +1,9 @@
 # @rootly/backstage-plugin
 
+## 1.2.2
+
+- Update react-dom peer dependency to support React 18
+
 ## 1.2.1
 
 - Fix package.json metadata for Backstage compliance
