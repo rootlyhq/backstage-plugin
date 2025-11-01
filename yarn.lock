@@ -5789,7 +5789,7 @@ __metadata:
     "@backstage/plugin-search": "npm:^1.4.31"
     "@backstage/plugin-search-react": "npm:^1.9.5"
     "@backstage/test-utils": "npm:^1.7.11"
-    "@backstage/theme": "npm:^0.6.8"
+    "@backstage/theme": "npm:^0.7.0"
     "@material-ui/core": "npm:^4.12.4"
     "@material-ui/icons": "npm:^4.11.3"
     "@material-ui/lab": "npm:4.0.0-alpha.61"
