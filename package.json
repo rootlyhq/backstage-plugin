@@ -86,7 +86,7 @@
   },
   "devDependencies": {
     "@backstage/cli": "^0.34.3",
-    "@backstage/core-app-api": "^1.19.0",
+    "@backstage/core-app-api": "^1.19.1",
     "@backstage/dev-utils": "^1.1.14",
     "@backstage/frontend-defaults": "^0.3.1",
     "@backstage/plugin-catalog": "^1.31.3",
