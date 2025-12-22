@@ -313,23 +313,20 @@ The Rootly Entity Processor serves several purposes:
 
 ### How It Works
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                    Backstage Catalog                            │
-│  ┌──────────────┐    ┌──────────────────┐    ┌──────────────┐  │
-│  │   Entity     │───▶│ Rootly Entity    │───▶│  Processed   │  │
-│  │   Provider   │    │ Processor        │    │  Entity      │  │
-│  └──────────────┘    └──────────────────┘    └──────────────┘  │
-│                              │                                  │
-└──────────────────────────────┼──────────────────────────────────┘
-                               │
-                               ▼
-                      ┌─────────────────┐
-                      │   Rootly API    │
-                      │  - Services     │
-                      │  - Teams        │
-                      │  - Functions    │
-                      └─────────────────┘
+```mermaid
+flowchart LR
+    subgraph Backstage Catalog
+        A[Entity Provider] --> B[Rootly Entity Processor]
+        B --> C[Processed Entity]
+    end
+
+    B <-->|Sync| D[Rootly API]
+
+    subgraph Rootly
+        D --> E[Services]
+        D --> F[Teams]
+        D --> G[Functionalities]
+    end
 ```
 
 The processor runs during Backstage's catalog refresh cycle (typically every few minutes). For each entity with Rootly annotations:
