@@ -293,22 +293,127 @@ const systemPage = (
 );
 ```
 
-## Configuring the Entity Processor ( required )
+## Entity Processor
 
-You can enable the entity processor in your Backstage instance by injecting the dependency in the backend system in `packages/backend/src/index.ts`.
+The `@rootly/backstage-plugin-entity-processor` is a backend plugin that automatically synchronizes your Backstage catalog entities with Rootly. It's a required companion to the frontend plugin.
 
-```jsx
+### Why Use the Entity Processor?
+
+In Backstage's architecture, [entity processors](https://backstage.io/docs/features/software-catalog/external-integrations/) are middleware components that sit in the catalog's processing pipeline. They intercept entities as they flow through ingestion and can transform, validate, or enrich them.
+
+The Rootly Entity Processor serves several purposes:
+
+1. **Bidirectional Sync** - Automatically keeps Backstage entities and Rootly resources (services, functionalities, teams) in sync. When you annotate a Backstage entity with a Rootly service, the processor updates Rootly with the entity's `backstage_id`, creating a two-way link.
+
+2. **Auto-Import** - When enabled via annotations (e.g., `rootly.com/service-auto-import: enabled`), the processor automatically creates corresponding resources in Rootly if they don't exist. This eliminates manual setup when onboarding new services.
+
+3. **Annotation Management** - The processor enriches entities by adding resolved IDs back to annotations. For example, if you specify a `service-slug`, it will add the corresponding `service-id` after resolution.
+
+4. **Multi-Organization Support** - Handles routing to different Rootly organizations based on the `rootly.com/organization-id` annotation.
+
+### How It Works
+
+```mermaid
+flowchart LR
+    subgraph Backstage Catalog
+        A[Entity Provider] --> B[Rootly Entity Processor]
+        B --> C[Processed Entity]
+    end
+
+    B <-->|Sync| D[Rootly API]
+
+    subgraph Rootly
+        D --> E[Services]
+        D --> F[Teams]
+        D --> G[Functionalities]
+    end
+```
+
+The processor runs during Backstage's catalog refresh cycle (typically every few minutes). For each entity with Rootly annotations:
+
+1. **Detection** - Checks if the entity has any Rootly annotations (`service-id`, `service-slug`, `functionality-id`, etc.)
+2. **Resolution** - Looks up the referenced resource in Rootly via the API
+3. **Sync** - Updates the Rootly resource with the Backstage entity reference (`backstage_id`)
+4. **Auto-Import** - If the resource doesn't exist and auto-import is enabled, creates it in Rootly
+5. **Annotation Update** - Adds resolved IDs back to the entity's annotations
+
+### Installation
+
+Add the plugin to your backend app:
+
+```bash
+yarn add --cwd packages/backend @rootly/backstage-plugin-entity-processor
+```
+
+Enable the entity processor in your Backstage backend:
+
+```ts
 // packages/backend/src/index.ts
 import { createBackend } from '@backstage/backend-defaults';
 
 const backend = createBackend();
 
-...
+// ... other plugins
 
 backend.add(import('@rootly/backstage-plugin-entity-processor'));
 
 backend.start();
 ```
+
+### Configuration
+
+The entity processor uses the same configuration as the frontend plugin. Ensure your `app-config.yaml` includes the Rootly proxy configuration:
+
+```yaml
+# app-config.yaml
+rootly:
+  rootly-main:
+    proxyPath: /rootly/api
+
+proxy:
+  endpoints:
+    '/rootly/api':
+      target: 'https://api.rootly.com'
+      headers:
+        Authorization: Bearer ${ROOTLY_TOKEN}
+```
+
+### Supported Annotations
+
+The processor responds to the following annotations:
+
+| Annotation | Description | Auto-Import |
+|------------|-------------|-------------|
+| `rootly.com/service-id` | Link to a Rootly service by UUID | - |
+| `rootly.com/service-slug` | Link to a Rootly service by slug | - |
+| `rootly.com/service-auto-import` | Set to `enabled` to auto-create service | Yes |
+| `rootly.com/functionality-id` | Link to a Rootly functionality by UUID | - |
+| `rootly.com/functionality-slug` | Link to a Rootly functionality by slug | - |
+| `rootly.com/functionality-auto-import` | Set to `enabled` to auto-create functionality | Yes |
+| `rootly.com/team-id` | Link to a Rootly team by UUID | - |
+| `rootly.com/team-slug` | Link to a Rootly team by slug | - |
+| `rootly.com/team-auto-import` | Set to `enabled` to auto-create team | Yes |
+| `rootly.com/organization-id` | Target Rootly organization (for multi-org setups) | - |
+
+### Example: Auto-Import Service
+
+```yaml
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: payments-service
+  annotations:
+    rootly.com/service-slug: payments-service
+    rootly.com/service-auto-import: enabled  # Creates service in Rootly if not found
+spec:
+  type: service
+  owner: payments-team
+  lifecycle: production
+```
+
+When this entity is processed:
+- If `payments-service` exists in Rootly → links it to this Backstage entity
+- If `payments-service` doesn't exist → creates it in Rootly and links it
 
 ## New Frontend System
 
