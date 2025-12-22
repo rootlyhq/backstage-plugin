@@ -6072,7 +6072,7 @@ __metadata:
     "@backstage/cli": "npm:^0.34.4"
     "@backstage/core-app-api": "npm:^1.19.1"
     "@backstage/core-compat-api": "npm:^0.5.3"
-    "@backstage/core-components": "npm:^0.18.2"
+    "@backstage/core-components": "npm:^0.18.3"
     "@backstage/core-plugin-api": "npm:^1.11.1"
     "@backstage/dev-utils": "npm:^1.1.16"
     "@backstage/frontend-defaults": "npm:^0.3.3"
