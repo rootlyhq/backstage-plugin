@@ -93,7 +93,7 @@
     "@backstage/plugin-search": "^1.4.31",
     "@backstage/test-utils": "^1.7.11",
     "@testing-library/jest-dom": "^6.9.1",
-    "@testing-library/react": "^15.0.7",
+    "@testing-library/react": "^16.3.1",
     "@testing-library/user-event": "^14.6.1",
     "@types/contrast-color": "^1.0.3",
     "@types/dom-to-image": "^2.6.7",
