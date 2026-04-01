@@ -6323,7 +6323,7 @@ __metadata:
     react-router: "npm:^6.30.1"
     react-router-dom: "npm:^6.30.1"
     react-use: "npm:^17.6.0"
-    swr: "npm:^2.3.6"
+    swr: "npm:^2.4.1"
     typescript: "npm:^5.9.3"
   peerDependencies:
     react: ^16.13.1 || ^17.0.0 || ^18.0.0
@@ -19516,7 +19516,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"swr@npm:^2.0.0, swr@npm:^2.3.6":
+"swr@npm:^2.0.0":
   version: 2.3.6
   resolution: "swr@npm:2.3.6"
   dependencies:
@@ -19525,6 +19525,18 @@ __metadata:
   peerDependencies:
     react: ^16.11.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
   checksum: 10c0/9534f350982e36a3ae0a13da8c0f7da7011fc979e77f306e60c4e5db0f9b84f17172c44f973441ba56bb684b69b0d9838ab40011a6b6b3e32d0cd7f3d5405f99
+  languageName: node
+  linkType: hard
+
+"swr@npm:^2.4.1":
+  version: 2.4.1
+  resolution: "swr@npm:2.4.1"
+  dependencies:
+    dequal: "npm:^2.0.3"
+    use-sync-external-store: "npm:^1.6.0"
+  peerDependencies:
+    react: ^16.11.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+  checksum: 10c0/34d61fb4653ac8875ad24e7c6da37e210b0e90fce0815dc59f013b7554a0bd267e79aac0f8ae5fbf04992e2a1815ee3da581b0dab3ed6ac4c2ce0e82b351320f
   languageName: node
   linkType: hard
 
@@ -20386,6 +20398,15 @@ __metadata:
   peerDependencies:
     react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
   checksum: 10c0/1b8663515c0be34fa653feb724fdcce3984037c78dd4a18f68b2c8be55cc1a1084c578d5b75f158d41b5ddffc2bf5600766d1af3c19c8e329bb20af2ec6f52f4
+  languageName: node
+  linkType: hard
+
+"use-sync-external-store@npm:^1.6.0":
+  version: 1.6.0
+  resolution: "use-sync-external-store@npm:1.6.0"
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+  checksum: 10c0/35e1179f872a53227bdf8a827f7911da4c37c0f4091c29b76b1e32473d1670ebe7bcd880b808b7549ba9a5605c233350f800ffab963ee4a4ee346ee983b6019b
   languageName: node
   linkType: hard
 
