@@ -1,6 +1,31 @@
 version: 2
+
 updates:
-  - package-ecosystem: 'npm'
-    directory: '/'
+  - package-ecosystem: "npm"
+    directory: "/"
     schedule:
-      interval: 'monthly'
+      interval: "weekly"
+    open-pull-requests-limit: 20
+    cooldown:
+      default-days: 3
+      semver-major-days: 7
+    groups:
+      backstage:
+        applies-to: version-updates
+        patterns:
+          - "@backstage/*"
+      minor-and-patch:
+        applies-to: version-updates
+        update-types:
+          - "minor"
+          - "patch"
+        exclude-patterns:
+          - "@backstage/*"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 20
+    cooldown:
+      default-days: 3
