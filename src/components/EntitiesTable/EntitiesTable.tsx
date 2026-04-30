@@ -12,7 +12,10 @@ import {
   RootlyService,
   RootlyFunctionality,
   RootlyTeam,
+  RootlyCatalogEntity,
   ROOTLY_ANNOTATION_ORG_ID,
+  ROOTLY_ANNOTATION_CATALOG_ENTITY_ID,
+  ROOTLY_ANNOTATION_CATALOG_ENTITY_SLUG,
   RootlyApi,
 } from '@rootly/backstage-plugin-common';
 import { useRootlyClient } from '../../api';
@@ -152,9 +155,50 @@ export const EntitiesTable = () => {
           {entity.linkedTeam.attributes.name}
         </Link>
       );
-    } 
+    }
       entity.linkedTeam = undefined;
       return <div>Not Linked</div>;
+  };
+
+  const fetchCatalogEntity = (entity: RootlyEntity) => {
+    const catalogEntityAnnotation =
+      entity.metadata.annotations?.[ROOTLY_ANNOTATION_CATALOG_ENTITY_ID] ||
+      entity.metadata.annotations?.[ROOTLY_ANNOTATION_CATALOG_ENTITY_SLUG];
+
+    if (!catalogEntityAnnotation) {
+      return <div>-</div>;
+    }
+
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const rootlyClient = useRootlyClient({ organizationId: entity.metadata.annotations?.[ROOTLY_ANNOTATION_ORG_ID]});
+
+    const {
+      value: response,
+      loading,
+      error,
+    } = useAsync(
+      async () =>
+        await rootlyClient.getCatalogEntity(catalogEntityAnnotation),
+      [],
+    );
+    if (loading) {
+      return <Progress />;
+    } else if (error) {
+      return <div>Error</div>;
+    }
+    if (response?.data) {
+      entity.linkedCatalogEntity = response.data as RootlyCatalogEntity;
+      return (
+        <Link
+          target="blank"
+          href={RootlyApi.getCatalogEntityDetailsURL(entity.linkedCatalogEntity)}
+        >
+          {entity.linkedCatalogEntity.attributes.name}
+        </Link>
+      );
+    }
+    entity.linkedCatalogEntity = undefined;
+    return <div>Not Linked</div>;
   };
 
   const columns: TableColumn<RootlyEntity>[] = [
@@ -208,6 +252,15 @@ export const EntitiesTable = () => {
         return fetchTeam(rowData);
       },
     },
+    {
+      title: 'Rootly Catalog Entity',
+      field: 'linked',
+      cellStyle: smallColumnStyle,
+      headerStyle: smallColumnStyle,
+      render: rowData => {
+        return fetchCatalogEntity(rowData);
+      },
+    },
   ];
 
   if (error) {
@@ -221,7 +274,7 @@ export const EntitiesTable = () => {
           kind: entity.kind,
           name: entity.metadata.name,
         });
-        return { ...entity, id: entityTriplet, rootlyKind: undefined, linkedService: undefined, linkedFunctionality: undefined, linkedTeam: undefined};
+        return { ...entity, id: entityTriplet, rootlyKind: undefined, linkedService: undefined, linkedFunctionality: undefined, linkedTeam: undefined, linkedCatalogEntity: undefined};
       })
     : [];
 
