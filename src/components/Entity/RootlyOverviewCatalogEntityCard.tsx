@@ -1,4 +1,3 @@
-import { stringifyEntityRef } from '@backstage/catalog-model';
 import {
   HeaderIconLinkRow,
   IconLinkVerticalProps,
@@ -28,7 +27,6 @@ import {
   ROOTLY_ANNOTATION_CATALOG_ENTITY_ID,
   ROOTLY_ANNOTATION_CATALOG_ENTITY_SLUG,
   RootlyApi,
-  RootlyCatalogEntity,
 } from '@rootly/backstage-plugin-common';
 import { useRootlyClient } from '../../api';
 
