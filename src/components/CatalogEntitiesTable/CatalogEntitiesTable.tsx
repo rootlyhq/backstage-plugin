@@ -189,7 +189,7 @@ export const CatalogEntitiesTable = ({
               }}
               label="Catalog"
             >
-              {catalogs.map(catalog => (
+              {catalogs.map((catalog: any) => (
                 <MenuItem key={catalog.id} value={catalog.id}>
                   {catalog.attributes.name}
                 </MenuItem>

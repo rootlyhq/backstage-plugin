@@ -121,7 +121,7 @@ export const RootlyOverviewCatalogEntityCard = () => {
                 <CardContent>
                   <Typography variant="subtitle1">Properties</Typography>
                   <List dense>
-                    {catalogEntity.attributes.properties.map(prop => (
+                    {catalogEntity.attributes.properties.map((prop: any) => (
                       <ListItem
                         key={prop.catalog_property_id}
                         style={{ paddingLeft: 0 }}
