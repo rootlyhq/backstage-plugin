@@ -191,7 +191,7 @@ export const EntitiesTable = () => {
       return (
         <Link
           target="blank"
-          href={RootlyApi.getCatalogEntityDetailsURL(entity.linkedCatalogEntity)}
+          href={RootlyApi.getCatalogEntityDetailsURL(entity.linkedCatalogEntity, undefined)}
         >
           {entity.linkedCatalogEntity.attributes.name}
         </Link>

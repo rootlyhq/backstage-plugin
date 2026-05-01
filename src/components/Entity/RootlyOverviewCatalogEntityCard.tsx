@@ -69,7 +69,7 @@ export const RootlyOverviewCatalogEntityCard = () => {
         label: 'View in Rootly',
         disabled: false,
         icon: <WhatshotIcon />,
-        href: RootlyApi.getCatalogEntityDetailsURL(catalogEntity),
+        href: RootlyApi.getCatalogEntityDetailsURL(catalogEntity, undefined),
       }
     : undefined;
 

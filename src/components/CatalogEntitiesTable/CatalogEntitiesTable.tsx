@@ -78,6 +78,7 @@ export const CatalogEntitiesTable = ({
 
   const catalogs = catalogsResponse?.data || [];
   const activeCatalogId = selectedCatalogId || catalogs[0]?.id || '';
+  const activeCatalogSlug = catalogs.find((c: any) => c.id === activeCatalogId)?.attributes?.slug || '';
 
   const {
     value: response,
@@ -105,13 +106,13 @@ export const CatalogEntitiesTable = ({
       >
         <Link
           target="blank"
-          href={RootlyApi.getCatalogEntityDetailsURL(rowData)}
+          href={RootlyApi.getCatalogEntityDetailsURL(rowData, activeCatalogSlug)}
         >
           {rowData.attributes.name}
         </Link>
       </Tooltip>
     );
-  }, []);
+  }, [activeCatalogSlug]);
 
   const backstageColumn = useCallback((rowData: RootlyCatalogEntity) => {
     if (rowData.attributes.backstage_id) {
