@@ -1,6 +1,6 @@
 # Rootly plugin for Backstage
 
-[![npm version](https://badge.fury.io/js/@rootly%2Fbackstage-plugin-common.svg)](https://badge.fury.io/js/@rootly%2Fbackstage-plugin-common)
+[![npm version](https://badge.fury.io/js/@rootly%2Fbackstage-plugin.svg)](https://badge.fury.io/js/@rootly%2Fbackstage-plugin)
 [![License](https://img.shields.io/badge/license-MIT-blue)](https://opensource.org/licenses/MIT)
 
 The Rootly plugin is a frontend plugin that displays Rootly services, incidents in Backstage. The plugin includes three components that can be integrated into Backstage:
