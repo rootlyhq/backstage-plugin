@@ -40,20 +40,11 @@ class RootlyApiImpl {
       );
     }
     let apiHost;
-    try {
-      const proxyPath = apiProxyPath ?? "/rootly/api";
-      const endpoints = this.#config.getConfig("proxy").getConfig("endpoints");
-      for (const key of endpoints.keys()) {
-        if (key === proxyPath) {
-          const target = endpoints.getConfig(key).getOptionalString("target");
-          if (target) {
-            const url = new URL(target);
-            apiHost = `${url.protocol}//${url.host}`;
-          }
-          break;
-        }
-      }
-    } catch (_) {
+    const orgKey = organizationId || configKeys.find(
+      (k) => this.#config.getOptionalBoolean(`rootly.${k}.isDefault`)
+    ) || configKeys.at(0);
+    if (orgKey) {
+      apiHost = this.#config.getOptionalString(`rootly.${orgKey}.apiHost`);
     }
     return new RootlyApi({
       apiProxyPath,

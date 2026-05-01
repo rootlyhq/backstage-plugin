@@ -22,6 +22,8 @@ export interface Config {
     [key: string]: {
       isDefault?: boolean;
       apiKey: string;
+      proxyPath?: string;
+      apiHost?: string;
     };
   };
 }
