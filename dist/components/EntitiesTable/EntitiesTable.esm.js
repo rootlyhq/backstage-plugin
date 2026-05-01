@@ -143,7 +143,7 @@ const EntitiesTable = () => {
       loading: loading2,
       error: error2
     } = useAsync(
-      async () => await rootlyClient.getCatalogEntity(catalogEntityAnnotation),
+      async () => await rootlyClient.getCatalogEntity(catalogEntityAnnotation, { include: "catalog" }),
       []
     );
     if (loading2) {
@@ -153,11 +153,14 @@ const EntitiesTable = () => {
     }
     if (response?.data) {
       entity.linkedCatalogEntity = response.data;
+      const catalogSlug = response.included?.find(
+        (i) => i.type === "catalogs"
+      )?.attributes?.slug;
       return /* @__PURE__ */ React.createElement(
         Link,
         {
           target: "blank",
-          href: rootlyClient.getCatalogEntityDetailsURL(entity.linkedCatalogEntity, void 0)
+          href: rootlyClient.getCatalogEntityDetailsURL(entity.linkedCatalogEntity, catalogSlug)
         },
         entity.linkedCatalogEntity.attributes.name
       );
