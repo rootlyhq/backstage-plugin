@@ -1,2 +1,6 @@
-export { RootlyOverviewCard } from './RootlyOverviewCard.esm.js';
+import { RootlyOverviewCard } from './RootlyOverviewCard.esm.js';
+
+
+
+export { RootlyOverviewCard };
 //# sourceMappingURL=index.esm.js.map

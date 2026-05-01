@@ -13,6 +13,7 @@ import { IncidentsTable } from '../IncidentsTable/IncidentsTable.esm.js';
 import { ServicesTable } from '../ServicesTable/ServicesTable.esm.js';
 import { FunctionalitiesTable } from '../FunctionalitiesTable/FunctionalitiesTable.esm.js';
 import { TeamsTable } from '../TeamsTable/TeamsTable.esm.js';
+import { CatalogEntitiesTable } from '../CatalogEntitiesTable/CatalogEntitiesTable.esm.js';
 import { DefaultRootlyPageLayout } from './DefaultRootlyPageLayout.esm.js';
 
 const DefaultRootlyPage = ({ organizationId }) => {
@@ -24,7 +25,7 @@ const DefaultRootlyPage = ({ organizationId }) => {
         include: "environments,services,functionalities,groups,incident_types"
       }
     }
-  )), /* @__PURE__ */ React.createElement(DefaultRootlyPageLayout.Route, { path: "entities", title: "Entities" }, /* @__PURE__ */ React.createElement(EntitiesList, null)), /* @__PURE__ */ React.createElement(DefaultRootlyPageLayout.Route, { path: "services", title: "Services" }, /* @__PURE__ */ React.createElement(ServicesTable, { organizationId })), /* @__PURE__ */ React.createElement(DefaultRootlyPageLayout.Route, { path: "functionalities", title: "Functionalities" }, /* @__PURE__ */ React.createElement(FunctionalitiesTable, { organizationId })), /* @__PURE__ */ React.createElement(DefaultRootlyPageLayout.Route, { path: "teams", title: "Teams" }, /* @__PURE__ */ React.createElement(TeamsTable, { organizationId })));
+  )), /* @__PURE__ */ React.createElement(DefaultRootlyPageLayout.Route, { path: "entities", title: "Entities" }, /* @__PURE__ */ React.createElement(EntitiesList, null)), /* @__PURE__ */ React.createElement(DefaultRootlyPageLayout.Route, { path: "services", title: "Services" }, /* @__PURE__ */ React.createElement(ServicesTable, { organizationId })), /* @__PURE__ */ React.createElement(DefaultRootlyPageLayout.Route, { path: "functionalities", title: "Functionalities" }, /* @__PURE__ */ React.createElement(FunctionalitiesTable, { organizationId })), /* @__PURE__ */ React.createElement(DefaultRootlyPageLayout.Route, { path: "teams", title: "Teams" }, /* @__PURE__ */ React.createElement(TeamsTable, { organizationId })), /* @__PURE__ */ React.createElement(DefaultRootlyPageLayout.Route, { path: "catalog-entities", title: "Catalog" }, /* @__PURE__ */ React.createElement(CatalogEntitiesTable, { organizationId })));
 };
 
 export { DefaultRootlyPage };

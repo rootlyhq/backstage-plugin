@@ -26,7 +26,6 @@ import {
   ROOTLY_ANNOTATION_ORG_ID,
   ROOTLY_ANNOTATION_CATALOG_ENTITY_ID,
   ROOTLY_ANNOTATION_CATALOG_ENTITY_SLUG,
-  RootlyApi,
 } from '@rootly/backstage-plugin-common';
 import { useRootlyClient } from '../../api';
 
@@ -47,7 +46,7 @@ export const RootlyOverviewCatalogEntityCard = () => {
     label: 'Create Incident',
     disabled: false,
     icon: <WhatshotIcon />,
-    href: RootlyApi.getCreateIncidentURL(),
+    href: rootlyClient.getCreateIncidentURL(),
   };
 
   const {
@@ -69,7 +68,7 @@ export const RootlyOverviewCatalogEntityCard = () => {
         label: 'View in Rootly',
         disabled: false,
         icon: <WhatshotIcon />,
-        href: RootlyApi.getCatalogEntityDetailsURL(catalogEntity, undefined),
+        href: rootlyClient.getCatalogEntityDetailsURL(catalogEntity, undefined),
       }
     : undefined;
 

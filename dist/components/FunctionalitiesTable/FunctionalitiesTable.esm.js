@@ -1,12 +1,11 @@
 import { parseEntityRef } from '@backstage/catalog-model';
 import { Table } from '@backstage/core-components';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
-import { makeStyles, Tooltip } from '@material-ui/core';
+import { Tooltip, makeStyles } from '@material-ui/core';
 import Link from '@material-ui/core/Link';
 import { Alert } from '@material-ui/lab';
 import React, { useState, useCallback } from 'react';
 import { useAsync } from 'react-use';
-import { RootlyApi } from '@rootly/backstage-plugin-common';
 import { useRootlyClient } from '../../api.esm.js';
 import { SearchBarBase } from '@backstage/plugin-search-react';
 
@@ -68,7 +67,7 @@ const FunctionalitiesTable = ({
         Link,
         {
           target: "blank",
-          href: RootlyApi.getFunctionalityDetailsURL(rowData)
+          href: rootlyClient.getFunctionalityDetailsURL(rowData)
         },
         rowData.attributes.name
       )

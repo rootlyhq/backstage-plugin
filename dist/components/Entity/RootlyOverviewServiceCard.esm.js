@@ -15,7 +15,7 @@ import React, { useState } from 'react';
 import { useAsync } from 'react-use';
 import { ColoredChip } from '../UI/ColoredChip.esm.js';
 import { StatusChip } from '../UI/StatusChip.esm.js';
-import { ROOTLY_ANNOTATION_ORG_ID, RootlyApi } from '@rootly/backstage-plugin-common';
+import { ROOTLY_ANNOTATION_ORG_ID } from '@rootly/backstage-plugin-common';
 import { useRootlyClient } from '../../api.esm.js';
 
 const truncate = (input, length) => input.length > length ? `${input.substring(0, length)}...` : input;
@@ -48,12 +48,12 @@ const IncidentListItem = ({
     }
   ), /* @__PURE__ */ React.createElement(ListItemSecondaryAction, null, /* @__PURE__ */ React.createElement(StatusChip, { status: incident.attributes.status })));
 };
-const getViewIncidentsForServiceLink = (service) => {
+const getViewIncidentsForServiceLink = (service, rootlyClient) => {
   return {
     label: "View Incidents",
     disabled: false,
     icon: /* @__PURE__ */ React.createElement(FilterList, null),
-    href: RootlyApi.getListIncidentsForServiceURL(service)
+    href: rootlyClient.getListIncidentsForServiceURL(service)
   };
 };
 const RootlyOverviewServiceCard = () => {
@@ -64,13 +64,13 @@ const RootlyOverviewServiceCard = () => {
     label: "Create Incident",
     disabled: false,
     icon: /* @__PURE__ */ React.createElement(WhatshotIcon, null),
-    href: RootlyApi.getCreateIncidentURL()
+    href: rootlyClient.getCreateIncidentURL()
   };
   const viewIncidentsLink = {
     label: "View All Incidents",
     disabled: false,
     icon: /* @__PURE__ */ React.createElement(WhatshotIcon, null),
-    href: RootlyApi.getListIncidents()
+    href: rootlyClient.getListIncidents()
   };
   const entityTriplet = stringifyEntityRef({
     namespace: entity.metadata.namespace,
@@ -134,7 +134,7 @@ const RootlyOverviewServiceCard = () => {
         {
           links: !serviceLoading && service ? [
             createIncidentLink,
-            getViewIncidentsForServiceLink(service),
+            getViewIncidentsForServiceLink(service, rootlyClient),
             viewIncidentsLink
           ] : [createIncidentLink, viewIncidentsLink]
         }

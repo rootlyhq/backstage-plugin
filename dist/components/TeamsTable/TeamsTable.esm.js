@@ -1,12 +1,11 @@
 import { parseEntityRef } from '@backstage/catalog-model';
 import { Table } from '@backstage/core-components';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
-import { makeStyles, Tooltip } from '@material-ui/core';
+import { Tooltip, makeStyles } from '@material-ui/core';
 import Link from '@material-ui/core/Link';
 import { Alert } from '@material-ui/lab';
 import React, { useState, useCallback } from 'react';
 import { useAsync } from 'react-use';
-import { RootlyApi } from '@rootly/backstage-plugin-common';
 import { useRootlyClient } from '../../api.esm.js';
 import { SearchBarBase } from '@backstage/plugin-search-react';
 
@@ -64,7 +63,7 @@ const TeamsTable = ({
       {
         title: rowData.attributes.description?.substring(0, 255) || rowData.attributes.name
       },
-      /* @__PURE__ */ React.createElement(Link, { target: "blank", href: RootlyApi.getTeamDetailsURL(rowData) }, rowData.attributes.name)
+      /* @__PURE__ */ React.createElement(Link, { target: "blank", href: rootlyClient.getTeamDetailsURL(rowData) }, rowData.attributes.name)
     );
   }, []);
   const backstageColumn = useCallback((rowData) => {

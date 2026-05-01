@@ -5,4 +5,5 @@ export { IncidentsTable } from './components/IncidentsTable/IncidentsTable.esm.j
 export { ServicesTable } from './components/ServicesTable/ServicesTable.esm.js';
 export { FunctionalitiesTable } from './components/FunctionalitiesTable/FunctionalitiesTable.esm.js';
 export { TeamsTable } from './components/TeamsTable/TeamsTable.esm.js';
+export { CatalogEntitiesTable } from './components/CatalogEntitiesTable/CatalogEntitiesTable.esm.js';
 //# sourceMappingURL=index.esm.js.map

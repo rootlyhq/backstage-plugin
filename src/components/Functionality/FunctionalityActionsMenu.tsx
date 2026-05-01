@@ -11,11 +11,12 @@ import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import React from 'react';
 
 import {
-  RootlyApi,
   RootlyFunctionality,
 } from '@rootly/backstage-plugin-common';
+import { useRootlyClient } from '../../api';
 
 export const FunctionalityActionsMenu = ({ functionality }: { functionality: RootlyFunctionality }) => {
+  const rootlyClient = useRootlyClient({});
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -51,7 +52,7 @@ export const FunctionalityActionsMenu = ({ functionality }: { functionality: Roo
             <OpenInNewIcon fontSize="small" />
           </ListItemIcon>
           <Typography variant="inherit" noWrap>
-            <Link target="blank" href={RootlyApi.getFunctionalityDetailsURL(functionality)}>
+            <Link target="blank" href={rootlyClient.getFunctionalityDetailsURL(functionality)}>
               View in Rootly
             </Link>
           </Typography>

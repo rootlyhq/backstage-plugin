@@ -71,10 +71,22 @@ export class RootlyApiImpl implements RootlyApiRef {
       );
     }
 
+    const proxyTarget = this.#config.getOptionalString(
+      `proxy.endpoints.${apiProxyPath}.target`
+    );
+    let apiHost: string | undefined;
+    if (proxyTarget) {
+      try {
+        const url = new URL(proxyTarget);
+        apiHost = `${url.protocol}//${url.host}`;
+      } catch (_) {}
+    }
+
     return new RootlyApi({
       apiProxyPath,
       apiProxyUrl: this.#discovery.getBaseUrl("proxy"),
       apiToken: this.#identity.getCredentials(),
+      apiHost,
     });
   }
 }

@@ -10,7 +10,6 @@ import { useAsync } from 'react-use';
 import {
   RootlyServicesFetchOpts,
   RootlyService,
-  RootlyApi,
 } from '@rootly/backstage-plugin-common';
 import { useRootlyClient } from '../../api';
 
@@ -83,7 +82,7 @@ export const ServicesTable = ({
           rowData.attributes.name
         }
       >
-        <Link target="blank" href={RootlyApi.getServiceDetailsURL(rowData)}>
+        <Link target="blank" href={rootlyClient.getServiceDetailsURL(rowData)}>
           {rowData.attributes.name}
         </Link>
       </Tooltip>

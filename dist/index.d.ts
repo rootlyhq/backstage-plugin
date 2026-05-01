@@ -2,7 +2,7 @@ import * as react from 'react';
 import react__default from 'react';
 import * as _backstage_core_plugin_api from '@backstage/core-plugin-api';
 import { Entity } from '@backstage/catalog-model';
-import { RootlyIncidentsFetchOpts, RootlyServicesFetchOpts, RootlyFunctionalitiesFetchOpts, RootlyTeamsFetchOpts } from '@rootly/backstage-plugin-common';
+import { RootlyIncidentsFetchOpts, RootlyServicesFetchOpts, RootlyFunctionalitiesFetchOpts, RootlyTeamsFetchOpts, RootlyCatalogEntitiesFetchOpts } from '@rootly/backstage-plugin-common';
 
 declare const RootlyPage: ({ organizationId }: {
     organizationId?: string;
@@ -38,4 +38,9 @@ declare const TeamsTable: ({ organizationId, params, }: {
     params?: RootlyTeamsFetchOpts;
 }) => react__default.JSX.Element;
 
-export { FunctionalitiesTable, IncidentsTable, RootlyIncidentsPage, RootlyOverviewCard, RootlyPage, RootlyPlugin, ServicesTable, TeamsTable, isRootlyAvailable };
+declare const CatalogEntitiesTable: ({ organizationId, params, }: {
+    organizationId?: string;
+    params?: RootlyCatalogEntitiesFetchOpts;
+}) => react__default.JSX.Element;
+
+export { CatalogEntitiesTable, FunctionalitiesTable, IncidentsTable, RootlyIncidentsPage, RootlyOverviewCard, RootlyPage, RootlyPlugin, ServicesTable, TeamsTable, isRootlyAvailable };

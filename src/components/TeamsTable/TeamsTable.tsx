@@ -10,7 +10,6 @@ import { useAsync } from 'react-use';
 import {
   RootlyTeamsFetchOpts,
   RootlyTeam,
-  RootlyApi,
 } from '@rootly/backstage-plugin-common';
 import { useRootlyClient } from '../../api';
 
@@ -83,7 +82,7 @@ export const TeamsTable = ({
           rowData.attributes.name
         }
       >
-        <Link target="blank" href={RootlyApi.getTeamDetailsURL(rowData)}>
+        <Link target="blank" href={rootlyClient.getTeamDetailsURL(rowData)}>
           {rowData.attributes.name}
         </Link>
       </Tooltip>

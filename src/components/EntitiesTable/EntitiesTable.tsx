@@ -16,7 +16,6 @@ import {
   ROOTLY_ANNOTATION_ORG_ID,
   ROOTLY_ANNOTATION_CATALOG_ENTITY_ID,
   ROOTLY_ANNOTATION_CATALOG_ENTITY_SLUG,
-  RootlyApi,
 } from '@rootly/backstage-plugin-common';
 import { useRootlyClient } from '../../api';
 
@@ -65,7 +64,7 @@ export const EntitiesTable = () => {
       return (
         <Link
           target="blank"
-          href={RootlyApi.getServiceDetailsURL(entity.linkedService)}
+          href={rootlyClient.getServiceDetailsURL(entity.linkedService)}
         >
           {entity.linkedService.attributes.name}
         </Link>
@@ -108,7 +107,7 @@ export const EntitiesTable = () => {
       return (
         <Link
           target="blank"
-          href={RootlyApi.getFunctionalityDetailsURL(entity.linkedFunctionality)}
+          href={rootlyClient.getFunctionalityDetailsURL(entity.linkedFunctionality)}
         >
           {entity.linkedFunctionality.attributes.name}
         </Link>
@@ -150,7 +149,7 @@ export const EntitiesTable = () => {
       return (
         <Link
           target="blank"
-          href={RootlyApi.getTeamDetailsURL(entity.linkedTeam)}
+          href={rootlyClient.getTeamDetailsURL(entity.linkedTeam)}
         >
           {entity.linkedTeam.attributes.name}
         </Link>
@@ -191,7 +190,7 @@ export const EntitiesTable = () => {
       return (
         <Link
           target="blank"
-          href={RootlyApi.getCatalogEntityDetailsURL(entity.linkedCatalogEntity, undefined)}
+          href={rootlyClient.getCatalogEntityDetailsURL(entity.linkedCatalogEntity, undefined)}
         >
           {entity.linkedCatalogEntity.attributes.name}
         </Link>

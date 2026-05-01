@@ -87,12 +87,13 @@ const IncidentListItem = ({
 
 const getViewIncidentsForFunctionalityLink = (
   functionality: RootlyFunctionality,
+  rootlyClient: RootlyApi,
 ) => {
   return {
     label: 'View Incidents',
     disabled: false,
     icon: <FilterList />,
-    href: RootlyApi.getListIncidentsForFunctionalityURL(functionality),
+    href: rootlyClient.getListIncidentsForFunctionalityURL(functionality),
   };
 };
 
@@ -106,14 +107,14 @@ export const RootlyOverviewFunctionalityCard = () => {
     label: 'Create Incident',
     disabled: false,
     icon: <WhatshotIcon />,
-    href: RootlyApi.getCreateIncidentURL(),
+    href: rootlyClient.getCreateIncidentURL(),
   };
 
   const viewIncidentsLink: IconLinkVerticalProps = {
     label: 'View All Incidents',
     disabled: false,
     icon: <WhatshotIcon />,
-    href: RootlyApi.getListIncidents(),
+    href: rootlyClient.getListIncidents(),
   };
 
   const entityTriplet = stringifyEntityRef({
@@ -204,7 +205,7 @@ export const RootlyOverviewFunctionalityCard = () => {
               !functionalityLoading && functionality
                 ? [
                     createIncidentLink,
-                    getViewIncidentsForFunctionalityLink(functionality),
+                    getViewIncidentsForFunctionalityLink(functionality, rootlyClient),
                     viewIncidentsLink,
                   ]
                 : [createIncidentLink, viewIncidentsLink]

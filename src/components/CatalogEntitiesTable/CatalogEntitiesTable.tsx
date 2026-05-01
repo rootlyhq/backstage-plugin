@@ -17,7 +17,6 @@ import { useAsync } from 'react-use';
 import {
   RootlyCatalogEntitiesFetchOpts,
   RootlyCatalogEntity,
-  RootlyApi,
 } from '@rootly/backstage-plugin-common';
 import { useRootlyClient } from '../../api';
 
@@ -106,7 +105,7 @@ export const CatalogEntitiesTable = ({
       >
         <Link
           target="blank"
-          href={RootlyApi.getCatalogEntityDetailsURL(rowData, activeCatalogSlug)}
+          href={rootlyClient.getCatalogEntityDetailsURL(rowData, activeCatalogSlug)}
         >
           {rowData.attributes.name}
         </Link>
