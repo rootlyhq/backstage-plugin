@@ -1,6 +1,6 @@
 # Rootly plugin for Backstage
 
-[![npm version](https://badge.fury.io/js/@rootly%2Fbackstage-plugin.svg)](https://badge.fury.io/js/@rootly%2Fbackstage-plugin)
+[![npm version](https://badge.fury.io/js/@rootly%2Fbackstage-plugin-common.svg)](https://badge.fury.io/js/@rootly%2Fbackstage-plugin-common)
 [![License](https://img.shields.io/badge/license-MIT-blue)](https://opensource.org/licenses/MIT)
 
 The Rootly plugin is a frontend plugin that displays Rootly services, incidents in Backstage. The plugin includes three components that can be integrated into Backstage:
@@ -12,12 +12,13 @@ The Rootly plugin is a frontend plugin that displays Rootly services, incidents 
   - View and search a list of functionalities
   - View and search a list of teams
   - View and search a list of incidents
+  - View and search a list of catalog entities (with catalog selector)
 
-- The `RootlyOverviewCard` component which produces a summary of your entity with incidents over last 30 days and ongoing incidents.
+- The `RootlyOverviewCard` component which produces a summary of your entity with incidents over last 30 days and ongoing incidents. Also supports catalog entities with name, description, and properties display.
 
 - The `RootlyIncidentsPage` component which produces a dedicated page within your entity with details about ongoing and past incidents.
 
-You can link and import entities in rootly services through Backstage Web UI or through annotations.
+You can link and import entities in rootly services, functionalities, teams, and catalog entities through Backstage Web UI or through annotations.
 
 ## Installation
 
@@ -61,6 +62,7 @@ to authenticate with Rootly without exposing your API key to users.
 rootly:
   rootly-main:
     proxyPath: /rootly/api
+    apiHost: https://rootly.com # Optional. Defaults to https://rootly.com
 
 # Rootly multi-organizations example
 rootly:
@@ -100,8 +102,16 @@ rootly.com/functionality-slug: login # Use functionality-id or functionality-slu
 rootly.com/functionality-auto-import: enabled # This will auto import the entity as a rootly functionality if we don't find any.
 rootly.com/team-id: 39e77dcc-e056-4849-9dda-a362b2413e5c # Use team-id or team-slug. Not both.
 rootly.com/team-slug: infrastucture # Use team-id or team-slug. Not both.
-rootly.com/team-name: Infrastucture
+rootly.com/team-name: Infrastucture # Use team-id or team-slug. Not both.
+rootly.com/team-slug: infrastucture # Use team-id or team-slug. Not both.
 rootly.com/team-auto-import: enabled # This will auto import the entity as a rootly team if we don't find any.
+rootly.com/catalog-entity-id: 7a328a08-6701-445e-a1ad-ca2fb913ed1e # Use catalog-entity-id or catalog-entity-slug. Not both.
+rootly.com/catalog-entity-name: Enterprise
+rootly.com/catalog-entity-slug: enterprise # Use catalog-entity-id or catalog-entity-slug. Not both.
+rootly.com/catalog-entity-auto-import: enabled # This will auto import the entity as a rootly catalog entity if we don't find any.
+rootly.com/catalog-id: 7a328a08-6701-445e-a1ad-ca2fb913ed1e # Required for auto-import. The catalog to create the entity in.
+rootly.com/catalog-slug: customer-tier # Alternative to catalog-id. The catalog slug to find or create.
+rootly.com/catalog-description: Customer pricing tiers # Optional. Description for the catalog when auto-creating.
 ```
 
 #### Example
@@ -123,6 +133,25 @@ spec:
   type: grpc
   owner: guests
   lifecycle: experimental
+```
+
+#### Catalog Entity Example
+
+```yaml
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: enterprise-tier
+  description: Enterprise customer tier
+  annotations:
+    rootly.com/catalog-entity-slug: enterprise-tier
+    rootly.com/catalog-entity-auto-import: enabled
+    rootly.com/catalog-slug: customer-tier
+    rootly.com/catalog-description: Customer pricing tiers
+spec:
+  type: service
+  owner: guests
+  lifecycle: production
 ```
 
 ### Global
@@ -288,212 +317,25 @@ const systemPage = (
     <EntityLayout.Route path="/rootly" title="Rootly">
       // Make sure to add rootly.com/organization-id annotation to all the components part of this system
       <RootlyIncidentsPage />
-    </EntityLayout.Route>
   </EntityLayout>
 );
 ```
 
-## Entity Processor
+## Configuring the Entity Processor ( required )
 
-The `@rootly/backstage-plugin-entity-processor` is a backend plugin that automatically synchronizes your Backstage catalog entities with Rootly. It's a required companion to the frontend plugin.
+You can enable the entity processor in your Backstage instance by injecting the dependency in the backend system in `packages/backend/src/index.ts`.
 
-### Why Use the Entity Processor?
-
-In Backstage's architecture, [entity processors](https://backstage.io/docs/features/software-catalog/external-integrations/) are middleware components that sit in the catalog's processing pipeline. They intercept entities as they flow through ingestion and can transform, validate, or enrich them.
-
-The Rootly Entity Processor serves several purposes:
-
-1. **Bidirectional Sync** - Automatically keeps Backstage entities and Rootly resources (services, functionalities, teams) in sync. When you annotate a Backstage entity with a Rootly service, the processor updates Rootly with the entity's `backstage_id`, creating a two-way link.
-
-2. **Auto-Import** - When enabled via annotations (e.g., `rootly.com/service-auto-import: enabled`), the processor automatically creates corresponding resources in Rootly if they don't exist. This eliminates manual setup when onboarding new services.
-
-3. **Annotation Management** - The processor enriches entities by adding resolved IDs back to annotations. For example, if you specify a `service-slug`, it will add the corresponding `service-id` after resolution.
-
-4. **Multi-Organization Support** - Handles routing to different Rootly organizations based on the `rootly.com/organization-id` annotation.
-
-### How It Works
-
-```mermaid
-flowchart LR
-    subgraph Backstage Catalog
-        A[Entity Provider] --> B[Rootly Entity Processor]
-        B --> C[Processed Entity]
-    end
-
-    B <-->|Sync| D[Rootly API]
-
-    subgraph Rootly
-        D --> E[Services]
-        D --> F[Teams]
-        D --> G[Functionalities]
-    end
-```
-
-The processor runs during Backstage's catalog refresh cycle (typically every few minutes). For each entity with Rootly annotations:
-
-1. **Detection** - Checks if the entity has any Rootly annotations (`service-id`, `service-slug`, `functionality-id`, etc.)
-2. **Resolution** - Looks up the referenced resource in Rootly via the API
-3. **Sync** - Updates the Rootly resource with the Backstage entity reference (`backstage_id`)
-4. **Auto-Import** - If the resource doesn't exist and auto-import is enabled, creates it in Rootly
-5. **Annotation Update** - Adds resolved IDs back to the entity's annotations
-
-### Installation
-
-Add the plugin to your backend app:
-
-```bash
-yarn add --cwd packages/backend @rootly/backstage-plugin-entity-processor
-```
-
-Enable the entity processor in your Backstage backend:
-
-```ts
+```jsx
 // packages/backend/src/index.ts
 import { createBackend } from '@backstage/backend-defaults';
 
 const backend = createBackend();
 
-// ... other plugins
+...
 
 backend.add(import('@rootly/backstage-plugin-entity-processor'));
 
 backend.start();
-```
-
-### Configuration
-
-The entity processor uses the same configuration as the frontend plugin. Ensure your `app-config.yaml` includes the Rootly proxy configuration:
-
-```yaml
-# app-config.yaml
-rootly:
-  rootly-main:
-    proxyPath: /rootly/api
-
-proxy:
-  endpoints:
-    '/rootly/api':
-      target: 'https://api.rootly.com'
-      headers:
-        Authorization: Bearer ${ROOTLY_TOKEN}
-```
-
-### Supported Annotations
-
-The processor responds to the following annotations:
-
-| Annotation | Description | Auto-Import |
-|------------|-------------|-------------|
-| `rootly.com/service-id` | Link to a Rootly service by UUID | - |
-| `rootly.com/service-slug` | Link to a Rootly service by slug | - |
-| `rootly.com/service-auto-import` | Set to `enabled` to auto-create service | Yes |
-| `rootly.com/functionality-id` | Link to a Rootly functionality by UUID | - |
-| `rootly.com/functionality-slug` | Link to a Rootly functionality by slug | - |
-| `rootly.com/functionality-auto-import` | Set to `enabled` to auto-create functionality | Yes |
-| `rootly.com/team-id` | Link to a Rootly team by UUID | - |
-| `rootly.com/team-slug` | Link to a Rootly team by slug | - |
-| `rootly.com/team-auto-import` | Set to `enabled` to auto-create team | Yes |
-| `rootly.com/organization-id` | Target Rootly organization (for multi-org setups) | - |
-
-### Example: Auto-Import Service
-
-```yaml
-apiVersion: backstage.io/v1alpha1
-kind: Component
-metadata:
-  name: payments-service
-  annotations:
-    rootly.com/service-slug: payments-service
-    rootly.com/service-auto-import: enabled  # Creates service in Rootly if not found
-spec:
-  type: service
-  owner: payments-team
-  lifecycle: production
-```
-
-When this entity is processed:
-- If `payments-service` exists in Rootly → links it to this Backstage entity
-- If `payments-service` doesn't exist → creates it in Rootly and links it
-
-## New Frontend System
-
-Follow these steps to detect and configure the Rootly plugin if you'd like to use it in an application that supports the new Backstage frontend system.
-
-### Package Detection
-
-Once you install the `@rootly/backstage-plugin` package using your preferred package manager, you have to choose how the package should be detected by the app. The package can be automatically discovered when the feature discovery config is set, or it can be manually enabled via code (for more granular package customization cases).
-
-<table>
-  <tr>
-    <td>Via config</td>
-    <td>Via code</td>
-  </tr>
-  <tr>
-    <td>
-      <pre lang="yaml">
-        <code>
-# app-config.yaml
-  app:
-    # Enable package discovery for all plugins
-    packages: 'all'
-  ---
-  app:
-    # Enable package discovery only for Rootly
-    packages:
-      include:
-        - '@rootly/backstage-plugin'
-        </code>
-      </pre>
-    </td>
-    <td>
-      <pre lang="javascript">
-       <code>
-// packages/app/src/App.tsx
-import { createApp } from '@backstage/frontend-defaults';
-import rootlyPlugin from '@rootly/backstage-plugin/alpha';
-//...
-const app = createApp({
-  // ...
-  features: [
-    //...
-    rootlyPlugin,
-  ],
-});
-
-//...
-       </code>
-      </pre>
-    </td>
-  </tr>
-</table>
-
-### Extensions Configuration
-
-Currently, the plugin installs 5 extensions: 1 api, 1 page, 1 nav item (sidebar item), 1 entity page card and 1 entity page content (also known as entity page tab), see below examples of how to configure the available extensions. 
-
-```yml
-# app-config.yaml
-app:
-  extensions:
-    # Example customizing the Rootly path
-    - 'page:rootly':
-        config:
-          path: '/incidents'
-    # Example removing the Rootly sidebar item
-    - 'nav-item:rootly': false
-    # Example changing the Rootly sidebar title
-    - 'nav-item:rootly':
-        config:
-          title: 'Incidents'
-    # Example disabling the Rootly entity card
-    - 'entity-card:rootly': false
-    # Example disabling the Rootly entity content
-    - 'entity-content:rootly': false
-    # Example customizing the Rootly entity content
-    - 'entity-content:rootly':
-        config:
-          path: '/incidents'
-          title: 'incidents'
 ```
 
 ## License
