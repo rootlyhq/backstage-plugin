@@ -56,19 +56,22 @@ export const RootlyOverviewCatalogEntityCard = () => {
   } = useAsync(
     async () =>
       catalogEntityIdAnnotation
-        ? await rootlyClient.getCatalogEntity(catalogEntityIdAnnotation)
+        ? await rootlyClient.getCatalogEntity(catalogEntityIdAnnotation, { include: 'catalog' })
         : undefined,
     [reload, catalogEntityIdAnnotation],
   );
 
   const catalogEntity = catalogEntityResponse?.data;
+  const catalogSlug = catalogEntityResponse?.included?.find(
+    (i: any) => i.type === 'catalogs',
+  )?.attributes?.slug;
 
   const viewInRootlyLink: IconLinkVerticalProps | undefined = catalogEntity
     ? {
         label: 'View in Rootly',
         disabled: false,
         icon: <WhatshotIcon />,
-        href: rootlyClient.getCatalogEntityDetailsURL(catalogEntity, undefined),
+        href: rootlyClient.getCatalogEntityDetailsURL(catalogEntity, catalogSlug),
       }
     : undefined;
 
