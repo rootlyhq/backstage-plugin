@@ -2,7 +2,8 @@ import React from 'react';
 import { RootlyOverviewServiceCard } from './RootlyOverviewServiceCard.esm.js';
 import { RootlyOverviewFunctionalityCard } from './RootlyOverviewFunctionalityCard.esm.js';
 import { RootlyOverviewTeamCard } from './RootlyOverviewTeamCard.esm.js';
-import { ROOTLY_ANNOTATION_SERVICE_ID, ROOTLY_ANNOTATION_SERVICE_SLUG, ROOTLY_ANNOTATION_FUNCTIONALITY_ID, ROOTLY_ANNOTATION_FUNCTIONALITY_SLUG, ROOTLY_ANNOTATION_TEAM_ID, ROOTLY_ANNOTATION_TEAM_SLUG } from '@rootly/backstage-plugin-common';
+import { RootlyOverviewCatalogEntityCard } from './RootlyOverviewCatalogEntityCard.esm.js';
+import { ROOTLY_ANNOTATION_SERVICE_ID, ROOTLY_ANNOTATION_SERVICE_SLUG, ROOTLY_ANNOTATION_FUNCTIONALITY_ID, ROOTLY_ANNOTATION_FUNCTIONALITY_SLUG, ROOTLY_ANNOTATION_TEAM_ID, ROOTLY_ANNOTATION_TEAM_SLUG, ROOTLY_ANNOTATION_CATALOG_ENTITY_ID, ROOTLY_ANNOTATION_CATALOG_ENTITY_SLUG } from '@rootly/backstage-plugin-common';
 import { useEntity } from '@backstage/plugin-catalog-react';
 
 const RootlyOverviewCard = () => {
@@ -10,6 +11,7 @@ const RootlyOverviewCard = () => {
   const service_id_annotation = entity.metadata.annotations?.[ROOTLY_ANNOTATION_SERVICE_ID] || entity.metadata.annotations?.[ROOTLY_ANNOTATION_SERVICE_SLUG];
   const functionality_id_annotation = entity.metadata.annotations?.[ROOTLY_ANNOTATION_FUNCTIONALITY_ID] || entity.metadata.annotations?.[ROOTLY_ANNOTATION_FUNCTIONALITY_SLUG];
   const team_id_annotation = entity.metadata.annotations?.[ROOTLY_ANNOTATION_TEAM_ID] || entity.metadata.annotations?.[ROOTLY_ANNOTATION_TEAM_SLUG];
+  const catalog_entity_id_annotation = entity.metadata.annotations?.[ROOTLY_ANNOTATION_CATALOG_ENTITY_ID] || entity.metadata.annotations?.[ROOTLY_ANNOTATION_CATALOG_ENTITY_SLUG];
   const resource = () => {
     if (service_id_annotation) {
       return /* @__PURE__ */ React.createElement(RootlyOverviewServiceCard, null);
@@ -17,6 +19,8 @@ const RootlyOverviewCard = () => {
       return /* @__PURE__ */ React.createElement(RootlyOverviewFunctionalityCard, null);
     } else if (team_id_annotation) {
       return /* @__PURE__ */ React.createElement(RootlyOverviewTeamCard, null);
+    } else if (catalog_entity_id_annotation) {
+      return /* @__PURE__ */ React.createElement(RootlyOverviewCatalogEntityCard, null);
     }
     return /* @__PURE__ */ React.createElement("div", null, "No Rootly annotations found");
   };

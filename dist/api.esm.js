@@ -39,10 +39,18 @@ class RootlyApiImpl {
         `rootly.${defaultOrgId}.proxyPath`
       );
     }
+    let apiHost;
+    const orgKey = organizationId || configKeys.find(
+      (k) => this.#config.getOptionalBoolean(`rootly.${k}.isDefault`)
+    ) || configKeys.at(0);
+    if (orgKey) {
+      apiHost = this.#config.getOptionalString(`rootly.${orgKey}.apiHost`);
+    }
     return new RootlyApi({
       apiProxyPath,
       apiProxyUrl: this.#discovery.getBaseUrl("proxy"),
-      apiToken: this.#identity.getCredentials()
+      apiToken: this.#identity.getCredentials(),
+      apiHost
     });
   }
 }

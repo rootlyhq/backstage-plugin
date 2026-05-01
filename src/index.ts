@@ -5,3 +5,4 @@ export { IncidentsTable } from './components/IncidentsTable';
 export { ServicesTable } from './components/ServicesTable';
 export { FunctionalitiesTable } from './components/FunctionalitiesTable';
 export { TeamsTable } from './components/TeamsTable';
+export { CatalogEntitiesTable } from './components/CatalogEntitiesTable';

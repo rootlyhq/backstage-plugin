@@ -87,12 +87,13 @@ const IncidentListItem = ({
 
 const getViewIncidentsForTeamLink = (
   team: RootlyTeam,
+  rootlyClient: RootlyApi,
 ) => {
   return {
     label: 'View Incidents',
     disabled: false,
     icon: <FilterList />,
-    href: RootlyApi.getListIncidentsForTeamURL(team),
+    href: rootlyClient.getListIncidentsForTeamURL(team),
   };
 };
 
@@ -106,14 +107,14 @@ export const RootlyOverviewTeamCard = () => {
     label: 'Create Incident',
     disabled: false,
     icon: <WhatshotIcon />,
-    href: RootlyApi.getCreateIncidentURL(),
+    href: rootlyClient.getCreateIncidentURL(),
   };
 
   const viewIncidentsLink: IconLinkVerticalProps = {
     label: 'View All Incidents',
     disabled: false,
     icon: <WhatshotIcon />,
-    href: RootlyApi.getListIncidents(),
+    href: rootlyClient.getListIncidents(),
   };
 
   const entityTriplet = stringifyEntityRef({
@@ -204,7 +205,7 @@ export const RootlyOverviewTeamCard = () => {
               !teamLoading && team
                 ? [
                     createIncidentLink,
-                    getViewIncidentsForTeamLink(team),
+                    getViewIncidentsForTeamLink(team, rootlyClient),
                     viewIncidentsLink,
                   ]
                 : [createIncidentLink, viewIncidentsLink]

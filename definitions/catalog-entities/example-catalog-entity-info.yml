@@ -1,0 +1,14 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: example-catalog-entity
+  description: An example Backstage entity linked to a Rootly catalog entity
+  annotations:
+    rootly.com/organization-id: your-org-id
+    rootly.com/catalog-entity-slug: my-catalog-entity
+    rootly.com/catalog-entity-auto-import: enabled
+    rootly.com/catalog-id: your-catalog-id
+spec:
+  type: service
+  owner: guests
+  lifecycle: experimental

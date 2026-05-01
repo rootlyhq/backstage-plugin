@@ -6,7 +6,7 @@ type RootlyClientOptions = {
 export type RootlyApiRef = {
     getClient(options: RootlyClientOptions): RootlyApi;
 };
-export declare const rootlyApiRef: import("@backstage/core-plugin-api").ApiRef<RootlyApiRef>;
+export declare const rootlyApiRef: import("@backstage/frontend-plugin-api").ApiRef<RootlyApiRef>;
 type RootlyApiOptions = {
     config: ConfigApi;
     identity: IdentityApi;

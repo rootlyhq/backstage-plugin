@@ -11,11 +11,12 @@ import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import React from 'react';
 
 import {
-  RootlyApi,
   RootlyService,
 } from '@rootly/backstage-plugin-common';
+import { useRootlyClient } from '../../api';
 
 export const ServiceActionsMenu = ({ service }: { service: RootlyService }) => {
+  const rootlyClient = useRootlyClient({});
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -51,7 +52,7 @@ export const ServiceActionsMenu = ({ service }: { service: RootlyService }) => {
             <OpenInNewIcon fontSize="small" />
           </ListItemIcon>
           <Typography variant="inherit" noWrap>
-            <Link target="blank" href={RootlyApi.getServiceDetailsURL(service)}>
+            <Link target="blank" href={rootlyClient.getServiceDetailsURL(service)}>
               View in Rootly
             </Link>
           </Typography>

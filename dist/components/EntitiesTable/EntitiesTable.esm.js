@@ -6,7 +6,7 @@ import Link from '@material-ui/core/Link';
 import { Alert } from '@material-ui/lab';
 import React from 'react';
 import { useAsync } from 'react-use';
-import { ROOTLY_ANNOTATION_ORG_ID, RootlyApi } from '@rootly/backstage-plugin-common';
+import { ROOTLY_ANNOTATION_ORG_ID, ROOTLY_ANNOTATION_CATALOG_ENTITY_ID, ROOTLY_ANNOTATION_CATALOG_ENTITY_SLUG } from '@rootly/backstage-plugin-common';
 import { useRootlyClient } from '../../api.esm.js';
 
 const EntitiesTable = () => {
@@ -48,7 +48,7 @@ const EntitiesTable = () => {
         Link,
         {
           target: "blank",
-          href: RootlyApi.getServiceDetailsURL(entity.linkedService)
+          href: rootlyClient.getServiceDetailsURL(entity.linkedService)
         },
         entity.linkedService.attributes.name
       );
@@ -86,7 +86,7 @@ const EntitiesTable = () => {
         Link,
         {
           target: "blank",
-          href: RootlyApi.getFunctionalityDetailsURL(entity.linkedFunctionality)
+          href: rootlyClient.getFunctionalityDetailsURL(entity.linkedFunctionality)
         },
         entity.linkedFunctionality.attributes.name
       );
@@ -124,12 +124,48 @@ const EntitiesTable = () => {
         Link,
         {
           target: "blank",
-          href: RootlyApi.getTeamDetailsURL(entity.linkedTeam)
+          href: rootlyClient.getTeamDetailsURL(entity.linkedTeam)
         },
         entity.linkedTeam.attributes.name
       );
     }
     entity.linkedTeam = void 0;
+    return /* @__PURE__ */ React.createElement("div", null, "Not Linked");
+  };
+  const fetchCatalogEntity = (entity) => {
+    const catalogEntityAnnotation = entity.metadata.annotations?.[ROOTLY_ANNOTATION_CATALOG_ENTITY_ID] || entity.metadata.annotations?.[ROOTLY_ANNOTATION_CATALOG_ENTITY_SLUG];
+    if (!catalogEntityAnnotation) {
+      return /* @__PURE__ */ React.createElement("div", null, "-");
+    }
+    const rootlyClient = useRootlyClient({ organizationId: entity.metadata.annotations?.[ROOTLY_ANNOTATION_ORG_ID] });
+    const {
+      value: response,
+      loading: loading2,
+      error: error2
+    } = useAsync(
+      async () => await rootlyClient.getCatalogEntity(catalogEntityAnnotation, { include: "catalog" }),
+      []
+    );
+    if (loading2) {
+      return /* @__PURE__ */ React.createElement(Progress, null);
+    } else if (error2) {
+      return /* @__PURE__ */ React.createElement("div", null, "Error");
+    }
+    if (response?.data) {
+      entity.linkedCatalogEntity = response.data;
+      const catalogSlug = response.included?.find(
+        (i) => i.type === "catalogs"
+      )?.attributes?.slug;
+      return /* @__PURE__ */ React.createElement(
+        Link,
+        {
+          target: "blank",
+          href: rootlyClient.getCatalogEntityDetailsURL(entity.linkedCatalogEntity, catalogSlug)
+        },
+        entity.linkedCatalogEntity.attributes.name
+      );
+    }
+    entity.linkedCatalogEntity = void 0;
     return /* @__PURE__ */ React.createElement("div", null, "Not Linked");
   };
   const columns = [
@@ -182,6 +218,15 @@ const EntitiesTable = () => {
       render: (rowData) => {
         return fetchTeam(rowData);
       }
+    },
+    {
+      title: "Rootly Catalog Entity",
+      field: "linked",
+      cellStyle: smallColumnStyle,
+      headerStyle: smallColumnStyle,
+      render: (rowData) => {
+        return fetchCatalogEntity(rowData);
+      }
     }
   ];
   if (error) {
@@ -193,7 +238,7 @@ const EntitiesTable = () => {
       kind: entity.kind,
       name: entity.metadata.name
     });
-    return { ...entity, id: entityTriplet, rootlyKind: void 0, linkedService: void 0, linkedFunctionality: void 0, linkedTeam: void 0 };
+    return { ...entity, id: entityTriplet, rootlyKind: void 0, linkedService: void 0, linkedFunctionality: void 0, linkedTeam: void 0, linkedCatalogEntity: void 0 };
   }) : [];
   return /* @__PURE__ */ React.createElement(
     Table,

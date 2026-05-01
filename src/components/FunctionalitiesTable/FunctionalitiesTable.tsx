@@ -10,7 +10,6 @@ import { useAsync } from 'react-use';
 import {
   RootlyFunctionality,
   RootlyFunctionalitiesFetchOpts,
-  RootlyApi,
 } from '@rootly/backstage-plugin-common';
 import { useRootlyClient } from '../../api';
 
@@ -85,7 +84,7 @@ export const FunctionalitiesTable = ({
       >
         <Link
           target="blank"
-          href={RootlyApi.getFunctionalityDetailsURL(rowData)}
+          href={rootlyClient.getFunctionalityDetailsURL(rowData)}
         >
           {rowData.attributes.name}
         </Link>

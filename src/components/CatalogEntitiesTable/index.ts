@@ -1,0 +1,1 @@
+export { CatalogEntitiesTable } from './CatalogEntitiesTable';

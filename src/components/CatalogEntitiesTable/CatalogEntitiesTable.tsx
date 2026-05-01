@@ -1,19 +1,26 @@
 import { parseEntityRef } from '@backstage/catalog-model';
 import { Table, TableColumn } from '@backstage/core-components';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
-import { makeStyles, Tooltip } from '@material-ui/core';
+import {
+  FormControl,
+  InputLabel,
+  makeStyles,
+  MenuItem,
+  Select,
+  Tooltip,
+} from '@material-ui/core';
 import Link from '@material-ui/core/Link';
 import { Alert } from '@material-ui/lab';
 import React, { useCallback, useState } from 'react';
 import { useAsync } from 'react-use';
 
 import {
-  RootlyTeamsFetchOpts,
-  RootlyTeam,
+  RootlyCatalogEntitiesFetchOpts,
+  RootlyCatalogEntity,
 } from '@rootly/backstage-plugin-common';
 import { useRootlyClient } from '../../api';
 
-import { SearchBarBase } from '@backstage/plugin-search-react'; // Updated import
+import { SearchBarBase } from '@backstage/plugin-search-react';
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -28,21 +35,23 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     justifyContent: 'flex-end',
     marginBottom: theme.spacing(2),
+    gap: theme.spacing(2),
+    alignItems: 'center',
   },
 }));
 
 const DEFAULT_PAGE_NUMBER = 1;
 const DEFAULT_PAGE_SIZE = 10;
 
-export const TeamsTable = ({
+export const CatalogEntitiesTable = ({
   organizationId,
   params,
 }: {
   organizationId?: string;
-  params?: RootlyTeamsFetchOpts;
+  params?: RootlyCatalogEntitiesFetchOpts;
 }) => {
   const classes = useStyles();
-  const rootlyClient = useRootlyClient({organizationId: organizationId});
+  const rootlyClient = useRootlyClient({ organizationId });
 
   const smallColumnStyle = {
     width: '5%',
@@ -53,12 +62,22 @@ export const TeamsTable = ({
     maxWidth: '10%',
   };
 
+  const [selectedCatalogId, setSelectedCatalogId] = useState<string>('');
   const [page, setPage] = useState({
     number: DEFAULT_PAGE_NUMBER,
     size: DEFAULT_PAGE_SIZE,
   });
+  const [searchTerm, setSearchTerm] = useState('');
 
-  const [searchTerm, setSearchTerm] = useState(''); // State for search term
+  const {
+    value: catalogsResponse,
+    loading: catalogsLoading,
+    error: catalogsError,
+  } = useAsync(async () => await rootlyClient.getCatalogs(), [organizationId]);
+
+  const catalogs = catalogsResponse?.data || [];
+  const activeCatalogId = selectedCatalogId || catalogs[0]?.id || '';
+  const activeCatalogSlug = catalogs.find((c: any) => c.id === activeCatalogId)?.attributes?.slug || '';
 
   const {
     value: response,
@@ -66,15 +85,17 @@ export const TeamsTable = ({
     error,
   } = useAsync(
     async () =>
-      await rootlyClient.getTeams({
-        ...params,
-        page: page,
-        filter: { search: searchTerm, ...params?.filter },
-      }),
-    [organizationId, page, searchTerm],
+      activeCatalogId
+        ? await rootlyClient.getCatalogEntities(activeCatalogId, {
+            ...params,
+            page: page,
+            filter: { search: searchTerm, ...params?.filter },
+          })
+        : undefined,
+    [organizationId, activeCatalogId, page, searchTerm],
   );
 
-  const nameColumn = useCallback((rowData: RootlyTeam) => {
+  const nameColumn = useCallback((rowData: RootlyCatalogEntity) => {
     return (
       <Tooltip
         title={
@@ -82,14 +103,17 @@ export const TeamsTable = ({
           rowData.attributes.name
         }
       >
-        <Link target="blank" href={rootlyClient.getTeamDetailsURL(rowData)}>
+        <Link
+          target="blank"
+          href={rootlyClient.getCatalogEntityDetailsURL(rowData, activeCatalogSlug)}
+        >
           {rowData.attributes.name}
         </Link>
       </Tooltip>
     );
-  }, []);
+  }, [activeCatalogSlug]);
 
-  const backstageColumn = useCallback((rowData: RootlyTeam) => {
+  const backstageColumn = useCallback((rowData: RootlyCatalogEntity) => {
     if (rowData.attributes.backstage_id) {
       try {
         const entityRef = parseEntityRef(rowData.attributes.backstage_id);
@@ -101,7 +125,7 @@ export const TeamsTable = ({
     return <div>N/A</div>;
   }, []);
 
-  const columns: TableColumn<RootlyTeam>[] = [
+  const columns: TableColumn<RootlyCatalogEntity>[] = [
     {
       title: 'Name',
       field: 'name',
@@ -118,11 +142,10 @@ export const TeamsTable = ({
       render: backstageColumn,
     },
     {
-      title: 'Incidents',
-      field: 'attributes.incidents_count',
-      type: 'numeric',
-      cellStyle: mediumColumnStyle,
-      headerStyle: mediumColumnStyle,
+      title: 'Description',
+      field: 'attributes.description',
+      cellStyle: smallColumnStyle,
+      headerStyle: smallColumnStyle,
     },
     {
       title: 'Updated At',
@@ -142,6 +165,10 @@ export const TeamsTable = ({
     },
   ];
 
+  if (catalogsError) {
+    return <Alert severity="error">{catalogsError.message}</Alert>;
+  }
+
   if (error) {
     return <Alert severity="error">{error.message}</Alert>;
   }
@@ -151,15 +178,33 @@ export const TeamsTable = ({
   return (
     <>
       <div className={classes.searchContainer}>
-        {/* Backstage SearchBar */}
+        {!catalogsLoading && catalogs.length > 0 && (
+          <FormControl variant="outlined" size="small" style={{ minWidth: 200 }}>
+            <InputLabel>Catalog</InputLabel>
+            <Select
+              value={activeCatalogId}
+              onChange={e => {
+                setSelectedCatalogId(e.target.value as string);
+                setPage({ number: DEFAULT_PAGE_NUMBER, size: page.size });
+              }}
+              label="Catalog"
+            >
+              {catalogs.map((catalog: any) => (
+                <MenuItem key={catalog.id} value={catalog.id}>
+                  {catalog.attributes.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        )}
         <SearchBarBase
-          onChange={setSearchTerm} // Directly pass the search term to setSearchTerm
-          placeholder="Search Teams"
+          onChange={setSearchTerm}
+          placeholder="Search Catalog Entities"
           value={searchTerm}
         />
       </div>
       <Table
-        isLoading={loading}
+        isLoading={loading || catalogsLoading}
         options={{
           sorting: true,
           search: false,
@@ -173,7 +218,9 @@ export const TeamsTable = ({
         data={data}
         page={page.number - 1}
         totalCount={response?.meta.total_count}
-        emptyContent={<div className={classes.empty}>No teams</div>}
+        emptyContent={
+          <div className={classes.empty}>No catalog entities</div>
+        }
         onPageChange={pageIndex => setPage({ ...page, number: pageIndex + 1 })}
         onRowsPerPageChange={rowsPerPage =>
           setPage({ ...page, size: rowsPerPage })

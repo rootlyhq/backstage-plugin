@@ -4,6 +4,7 @@ import { IncidentsTable } from '../IncidentsTable';
 import { ServicesTable } from '../ServicesTable';
 import { FunctionalitiesTable } from '../FunctionalitiesTable';
 import { TeamsTable } from '../TeamsTable';
+import { CatalogEntitiesTable } from '../CatalogEntitiesTable';
 import { DefaultRootlyPageLayout } from './DefaultRootlyPageLayout';
 
 export const DefaultRootlyPage = ({ organizationId }: { organizationId?: string }) => {
@@ -29,6 +30,9 @@ export const DefaultRootlyPage = ({ organizationId }: { organizationId?: string 
       </DefaultRootlyPageLayout.Route>
       <DefaultRootlyPageLayout.Route path="teams" title="Teams">
         <TeamsTable organizationId={organizationId} />
+      </DefaultRootlyPageLayout.Route>
+      <DefaultRootlyPageLayout.Route path="catalog-entities" title="Catalog">
+        <CatalogEntitiesTable organizationId={organizationId} />
       </DefaultRootlyPageLayout.Route>
     </DefaultRootlyPageLayout>
   );
