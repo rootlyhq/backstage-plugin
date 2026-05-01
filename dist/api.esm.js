@@ -39,16 +39,14 @@ class RootlyApiImpl {
         `rootly.${defaultOrgId}.proxyPath`
       );
     }
-    const proxyTarget = this.#config.getOptionalString(
-      `proxy.endpoints.${apiProxyPath}.target`
-    );
     let apiHost;
-    if (proxyTarget) {
-      try {
+    try {
+      const proxyTarget = this.#config.getConfig("proxy").getConfig("endpoints").getConfig(apiProxyPath ?? "/rootly/api").getOptionalString("target");
+      if (proxyTarget) {
         const url = new URL(proxyTarget);
         apiHost = `${url.protocol}//${url.host}`;
-      } catch (_) {
       }
+    } catch (_) {
     }
     return new RootlyApi({
       apiProxyPath,
