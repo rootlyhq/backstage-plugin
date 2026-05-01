@@ -1,5 +1,18 @@
 # @rootly/backstage-plugin
 
+## 1.3.0
+
+- Add catalog entity support
+- New `RootlyOverviewCatalogEntityCard` component for entity detail pages
+- New `CatalogEntitiesTable` with catalog selector dropdown, search, and pagination
+- Add "Catalog" tab to the main Rootly page
+- Add "Rootly Catalog Entity" column to the Entities table
+- Extend `isRootlyAvailable` to detect catalog entity annotations
+- URL helpers now instance methods with configurable `apiHost` (defaults to `https://rootly.com`)
+- New `apiHost` config option under `rootly.{orgId}.apiHost`
+- Add `apiHost` and `proxyPath` to config schema
+
+
 ## 1.2.2
 
 - Update react-dom peer dependency to support React 18
