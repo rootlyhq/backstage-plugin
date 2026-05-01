@@ -41,10 +41,17 @@ class RootlyApiImpl {
     }
     let apiHost;
     try {
-      const proxyTarget = this.#config.getConfig("proxy").getConfig("endpoints").getConfig(apiProxyPath ?? "/rootly/api").getOptionalString("target");
-      if (proxyTarget) {
-        const url = new URL(proxyTarget);
-        apiHost = `${url.protocol}//${url.host}`;
+      const proxyPath = apiProxyPath ?? "/rootly/api";
+      const endpoints = this.#config.getConfig("proxy").getConfig("endpoints");
+      for (const key of endpoints.keys()) {
+        if (key === proxyPath) {
+          const target = endpoints.getConfig(key).getOptionalString("target");
+          if (target) {
+            const url = new URL(target);
+            apiHost = `${url.protocol}//${url.host}`;
+          }
+          break;
+        }
       }
     } catch (_) {
     }
