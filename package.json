@@ -115,5 +115,12 @@
     "config.d.ts"
   ],
   "configSchema": "config.d.ts",
-  "packageManager": "yarn@4.9.4"
+  "packageManager": "yarn@4.9.4",
+  "resolutions": {
+    "fast-uri": "^3.1.2",
+    "qs": "^6.15.2",
+    "brace-expansion": "^5.0.6",
+    "ws": "^8.20.1",
+    "webpack-dev-server": "^5.2.4"
+  }
 }
