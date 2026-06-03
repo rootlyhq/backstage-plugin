@@ -112,6 +112,57 @@ rootly.com/catalog-slug: customer-tier # Alternative to catalog-id. The catalog 
 rootly.com/catalog-description: Customer pricing tiers # Optional. Description for the catalog when auto-creating.
 ```
 
+#### Attribute pass-through annotations
+
+You can set any Rootly API attribute on services, functionalities, teams, and catalog entities using the `attr` prefix:
+
+```yaml
+rootly.com/service-attr-<api_attribute>: "value"
+rootly.com/functionality-attr-<api_attribute>: "value"
+rootly.com/team-attr-<api_attribute>: "value"
+rootly.com/catalog-entity-attr-<api_attribute>: "value"
+```
+
+Value coercion rules:
+- `"true"` / `"false"` → boolean
+- Values starting with `[` or `{` → parsed as JSON (arrays, objects)
+- Everything else → plain string
+
+Example:
+
+```yaml
+annotations:
+  rootly.com/service-slug: my-service
+  rootly.com/service-auto-import: enabled
+  rootly.com/service-attr-color: "#FF5733"
+  rootly.com/service-attr-notify_emails: '["oncall@company.com","team@company.com"]'
+  rootly.com/service-attr-slack_channels: '[{"id":"C01ABC123","name":"oncall-channel"}]'
+  rootly.com/service-attr-show_uptime: "true"
+  rootly.com/service-attr-github_repository_name: "myorg/my-service"
+```
+
+Hardcoded fields (`name`, `description`, `backstage_id`, `pagerduty_id`, `owner_group_ids`) always take precedence and cannot be overridden via pass-through annotations.
+
+#### Custom catalog property annotations
+
+You can populate custom catalog properties (metadata fields) on services and catalog entities:
+
+```yaml
+rootly.com/service-property-<slug_or_id>: "value"
+rootly.com/catalog-entity-property-<slug_or_id>: "value"
+```
+
+The key after the prefix is the catalog property slug or UUID. The value is passed as-is to the Rootly API.
+
+Example:
+
+```yaml
+annotations:
+  rootly.com/service-slug: my-service
+  rootly.com/service-property-impact-level: "critical"
+  rootly.com/service-property-slack-channel: '{"id":"C01FE4P7458","name":"service-channel"}'
+```
+
 #### Example
 
 ```yaml
