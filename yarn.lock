@@ -1150,6 +1150,30 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@backstage/frontend-plugin-api@npm:^0.17.1":
+  version: 0.17.1
+  resolution: "@backstage/frontend-plugin-api@npm:0.17.1"
+  dependencies:
+    "@backstage/config": "npm:^1.3.8"
+    "@backstage/errors": "npm:^1.3.1"
+    "@backstage/filter-predicates": "npm:^0.1.3"
+    "@backstage/types": "npm:^1.2.2"
+    "@backstage/version-bridge": "npm:^1.0.12"
+    "@standard-schema/spec": "npm:^1.1.0"
+    zod: "npm:^4.0.0"
+    zod-to-json-schema: "npm:^3.25.1"
+  peerDependencies:
+    "@types/react": ^17.0.0 || ^18.0.0
+    react: ^17.0.0 || ^18.0.0
+    react-dom: ^17.0.0 || ^18.0.0
+    react-router-dom: ^6.30.2
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+  checksum: 10c0/b79197554f2d8915ad698405e7c169e0835463060780b48bbbf34e8a3a094b576ad6d21bbe1d72994d3961db7d8654510efcf09f25f9f5c2f439a9e6c71ad68d
+  languageName: node
+  linkType: hard
+
 "@backstage/integration-react@npm:^1.2.18":
   version: 1.2.18
   resolution: "@backstage/integration-react@npm:1.2.18"
@@ -3924,7 +3948,7 @@ __metadata:
     "@backstage/core-plugin-api": "npm:^1.12.6"
     "@backstage/dev-utils": "npm:^1.1.23"
     "@backstage/frontend-defaults": "npm:^0.5.2"
-    "@backstage/frontend-plugin-api": "npm:^0.17.0"
+    "@backstage/frontend-plugin-api": "npm:^0.17.1"
     "@backstage/plugin-catalog": "npm:^2.0.5"
     "@backstage/plugin-catalog-react": "npm:^3.0.0"
     "@backstage/plugin-search": "npm:^1.7.4"
