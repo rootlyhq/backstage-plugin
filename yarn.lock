@@ -3939,7 +3939,7 @@ __metadata:
     history: "npm:^5.3.0"
     install: "npm:^0.13.0"
     jest-canvas-mock: "npm:^2.5.8"
-    jest-fetch-mock: "npm:^3.0.3"
+    jest-fetch-mock: "npm:^4.2.0"
     moment: "npm:^2.30.1"
     prettier: "npm:^3.9.5"
     qs: "npm:^6.15.3"
@@ -7123,7 +7123,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cross-fetch@npm:^3.0.4":
+"cross-fetch@npm:^3.1.8":
   version: 3.2.0
   resolution: "cross-fetch@npm:3.2.0"
   dependencies:
@@ -10961,13 +10961,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-fetch-mock@npm:^3.0.3":
-  version: 3.0.3
-  resolution: "jest-fetch-mock@npm:3.0.3"
+"jest-fetch-mock@npm:^4.2.0":
+  version: 4.2.0
+  resolution: "jest-fetch-mock@npm:4.2.0"
   dependencies:
-    cross-fetch: "npm:^3.0.4"
-    promise-polyfill: "npm:^8.1.3"
-  checksum: 10c0/21ffe8c902ca5adafa7ed61760e100e4c290e99b0b487645f5bb92938ea64c2d1d9dc8af46e65fb7917d6237586067d53af756583a77330dbb4fbda079a63c29
+    cross-fetch: "npm:^3.1.8"
+  checksum: 10c0/6b02bba4d48db46881be0a5f6b7b105ea3e33d6a7c26ae1e3370297a997d888ac45ad2601034511852ed900f0da75ebe19bf3b99cb34471d4def93ac1e3712f4
   languageName: node
   linkType: hard
 
@@ -14216,13 +14215,6 @@ __metadata:
   version: 0.11.10
   resolution: "process@npm:0.11.10"
   checksum: 10c0/40c3ce4b7e6d4b8c3355479df77aeed46f81b279818ccdc500124e6a5ab882c0cc81ff7ea16384873a95a74c4570b01b120f287abbdd4c877931460eca6084b3
-  languageName: node
-  linkType: hard
-
-"promise-polyfill@npm:^8.1.3":
-  version: 8.3.0
-  resolution: "promise-polyfill@npm:8.3.0"
-  checksum: 10c0/97141f07a31a6be135ec9ed53700a3423a771cabec0ba5e08fcb2bf8cfda855479ff70e444fceb938f560be42b450cd032c14f4a940ed2ad1e5b4dcb78368dce
   languageName: node
   linkType: hard
 
