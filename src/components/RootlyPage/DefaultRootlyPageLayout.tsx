@@ -7,7 +7,7 @@ import { Header, Page, RoutedTabs } from '@backstage/core-components';
 type SubRoute = {
   path: string;
   title: string;
-  children: JSX.Element;
+  children: React.ReactElement;
   tabProps?: TabProps<React.ElementType, { component?: React.ElementType }>;
 };
 
@@ -16,9 +16,7 @@ const Route: (props: SubRoute) => null = () => null;
 // This causes all mount points that are discovered within this route to use the path of the route itself
 attachComponentData(Route, 'core.gatherMountPoints', true);
 
-function createSubRoutesFromChildren(
-  childrenProps: React.ReactNode,
-): SubRoute[] {
+function createSubRoutesFromChildren(childrenProps: React.ReactNode): SubRoute[] {
   // Directly comparing child.type with Route will not work with in
   // combination with react-hot-loader in storybook
   // https://github.com/gaearon/react-hot-loader/issues/304
@@ -29,7 +27,7 @@ function createSubRoutesFromChildren(
   ).type;
 
   return Children.toArray(childrenProps).flatMap(child => {
-    if (!isValidElement(child)) {
+    if (!isValidElement<SubRoute>(child)) {
       return [];
     }
 

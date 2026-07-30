@@ -1,9 +1,5 @@
 import { stringifyEntityRef } from '@backstage/catalog-model';
-import {
-  HeaderIconLinkRow,
-  IconLinkVerticalProps,
-  Progress,
-} from '@backstage/core-components';
+import { HeaderIconLinkRow, IconLinkVerticalProps, Progress } from '@backstage/core-components';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import {
   Card,
@@ -15,10 +11,10 @@ import {
   ListItem,
   ListItemSecondaryAction,
   ListItemText,
-  Typography,
+  Typography
 } from '@material-ui/core';
 import Link from '@material-ui/core/Link';
-import { FilterList } from '@material-ui/icons';
+import FilterList from '@material-ui/icons/FilterList';
 import CachedIcon from '@material-ui/icons/Cached';
 import WhatshotIcon from '@material-ui/icons/Whatshot';
 import { Alert } from '@material-ui/lab';
@@ -31,46 +27,29 @@ import { useAsync } from 'react-use';
 import { ColoredChip } from '../UI/ColoredChip';
 import { StatusChip } from '../UI/StatusChip';
 
-import {
-  ROOTLY_ANNOTATION_ORG_ID,
-  RootlyApi,
-  RootlyIncident,
-  RootlyService,
-} from '@rootly/backstage-plugin-common';
+import { ROOTLY_ANNOTATION_ORG_ID, RootlyApi, RootlyIncident, RootlyService } from '@rootly/backstage-plugin-common';
 import { useRootlyClient } from '../../api';
 
-const truncate = (input: string, length: number) =>
-  input.length > length ? `${input.substring(0, length)}...` : input;
+const truncate = (input: string, length: number) => (input.length > length ? `${input.substring(0, length)}...` : input);
 
-const IncidentListItem = ({
-  incident,
-}: {
-  incident: RootlyIncident;
-  rootlyClient: RootlyApi;
-}) => {
+const IncidentListItem = ({ incident }: { incident: RootlyIncident; rootlyClient: RootlyApi }) => {
   return (
     <ListItem dense key={incident.id} style={{ paddingLeft: 0 }}>
       <ListItemText
         primary={
           <>
-            <Link
-              style={{ marginRight: 8 }}
-              target="blank"
-              href={incident.attributes.url}
-            >
+            <Link style={{ marginRight: 8 }} target="blank" href={incident.attributes.url}>
               {truncate(incident.attributes.title, 100)}
             </Link>
             <ColoredChip
               label={incident.attributes.severity?.data.attributes.name}
-              tooltip={
-                incident.attributes.severity?.data.attributes.description
-              }
+              tooltip={incident.attributes.severity?.data.attributes.description}
               color={incident.attributes.severity?.data.attributes.color}
             />
           </>
         }
         primaryTypographyProps={{
-          variant: 'body1',
+          variant: 'body1'
         }}
         secondary={
           <Typography noWrap variant="body2" color="textSecondary">
@@ -85,15 +64,12 @@ const IncidentListItem = ({
   );
 };
 
-const getViewIncidentsForServiceLink = (
-  service: RootlyService,
-  rootlyClient: RootlyApi,
-) => {
+const getViewIncidentsForServiceLink = (service: RootlyService, rootlyClient: RootlyApi) => {
   return {
     label: 'View Incidents',
     disabled: false,
     icon: <FilterList />,
-    href: rootlyClient.getListIncidentsForServiceURL(service),
+    href: rootlyClient.getListIncidentsForServiceURL(service)
   };
 };
 
@@ -115,7 +91,9 @@ const getViewIncidentsForServiceLink = (
 
 export const RootlyOverviewServiceCard = () => {
   const { entity } = useEntity();
-  const rootlyClient = useRootlyClient({organizationId: entity.metadata.annotations?.[ROOTLY_ANNOTATION_ORG_ID]});
+  const rootlyClient = useRootlyClient({
+    organizationId: entity.metadata.annotations?.[ROOTLY_ANNOTATION_ORG_ID]
+  });
 
   const [reload, setReload] = useState(false);
 
@@ -123,78 +101,70 @@ export const RootlyOverviewServiceCard = () => {
     label: 'Create Incident',
     disabled: false,
     icon: <WhatshotIcon />,
-    href: rootlyClient.getCreateIncidentURL(),
+    href: rootlyClient.getCreateIncidentURL()
   };
 
   const viewIncidentsLink: IconLinkVerticalProps = {
     label: 'View All Incidents',
     disabled: false,
     icon: <WhatshotIcon />,
-    href: rootlyClient.getListIncidents(),
+    href: rootlyClient.getListIncidents()
   };
 
   const entityTriplet = stringifyEntityRef({
     namespace: entity.metadata.namespace,
     kind: entity.kind,
-    name: entity.metadata.name,
+    name: entity.metadata.name
   });
 
   const {
     value: serviceResponse,
     loading: serviceLoading,
-    error: serviceError,
+    error: serviceError
   } = useAsync(
     async () =>
       await rootlyClient.getServices({
         filter: {
-          backstage_id: entityTriplet,
-        },
+          backstage_id: entityTriplet
+        }
       }),
-    [reload],
+    [reload]
   );
 
-  const service =
-    serviceResponse && serviceResponse.data && serviceResponse.data.length > 0
-      ? serviceResponse.data[0]
-      : null;
+  const service = serviceResponse && serviceResponse.data && serviceResponse.data.length > 0 ? serviceResponse.data[0] : null;
 
   const {
     value: incidentsResponse,
     loading: incidentsLoading,
-    error: incidentsError,
+    error: incidentsError
   } = useAsync(
     async () =>
       service
         ? await rootlyClient.getIncidents({
             filter: {
               services: service.attributes.slug,
-              status: 'started,mitigated',
-            },
+              status: 'started,mitigated'
+            }
           })
         : { data: [] },
-    [service],
+    [service]
   );
 
   const {
     value: chartResponse,
     loading: chartLoading,
-    error: chartError,
+    error: chartError
   } = useAsync(
     async () =>
       service
         ? await rootlyClient.getServiceIncidentsChart(service, {
-            period: 'day',
+            period: 'day'
           })
         : { data: [] },
-    [service],
+    [service]
   );
 
-  const incidents =
-    incidentsResponse &&
-    incidentsResponse.data &&
-    incidentsResponse.data.length > 0
-      ? incidentsResponse.data
-      : null;
+  const incidents = incidentsResponse && incidentsResponse.data && incidentsResponse.data.length > 0 ? incidentsResponse.data : null;
 
   return (
     <Card>
@@ -203,13 +173,7 @@ export const RootlyOverviewServiceCard = () => {
         action={
           <>
             {service && (
-              <IconButton
-                component={Link}
-                aria-label="Refresh"
-                disabled={false}
-                title="Refresh"
-                onClick={() => setReload(!reload)}
-              >
+              <IconButton component={Link} aria-label="Refresh" disabled={false} title="Refresh" onClick={() => setReload(!reload)}>
                 <CachedIcon />
               </IconButton>
             )}
@@ -219,11 +183,7 @@ export const RootlyOverviewServiceCard = () => {
           <HeaderIconLinkRow
             links={
               !serviceLoading && service
-                ? [
-                    createIncidentLink,
-                    getViewIncidentsForServiceLink(service, rootlyClient),
-                    viewIncidentsLink,
-                  ]
+                ? [createIncidentLink, getViewIncidentsForServiceLink(service, rootlyClient), viewIncidentsLink]
                 : [createIncidentLink, viewIncidentsLink]
             }
           />
@@ -235,14 +195,8 @@ export const RootlyOverviewServiceCard = () => {
           {!chartLoading && !chartError && chartResponse && (
             <>
               <CardContent>
-                <Typography variant="subtitle1">
-                  Incidents over last 30 days
-                </Typography>
-                <LineChart
-                  data={chartResponse.data}
-                  height="150px"
-                  colors={[blue[300]]}
-                />
+                <Typography variant="subtitle1">Incidents over last 30 days</Typography>
+                <LineChart data={chartResponse.data} height="150px" colors={[blue[300]]} />
               </CardContent>
               <Divider />
             </>
@@ -252,36 +206,21 @@ export const RootlyOverviewServiceCard = () => {
       <CardContent>
         {(serviceLoading || incidentsLoading) && <Progress />}
         {serviceError && <Alert severity="error">{serviceError.message}</Alert>}
-        {incidentsError && (
-          <Alert severity="error">{incidentsError.message}</Alert>
+        {incidentsError && <Alert severity="error">{incidentsError.message}</Alert>}
+        {!incidentsLoading && !incidentsError && !incidentsLoading && incidents && (
+          <>
+            {incidents && incidents.length >= 0 && (
+              <Typography variant="subtitle1">
+                There is <strong>{incidents.length}</strong> ongoing incidents for this service
+              </Typography>
+            )}
+            {incidents && incidents.length === 0 && <Typography variant="subtitle1">No ongoing incidents</Typography>}
+            <List dense>
+              {incidents &&
+                incidents.map((incident: RootlyIncident) => <IncidentListItem incident={incident} rootlyClient={rootlyClient} />)}
+            </List>
+          </>
         )}
-        {!incidentsLoading &&
-          !incidentsError &&
-          !incidentsLoading &&
-          incidents && (
-            <>
-              {incidents && incidents.length >= 0 && (
-                <Typography variant="subtitle1">
-                  There is <strong>{incidents.length}</strong> ongoing incidents
-                  for this service
-                </Typography>
-              )}
-              {incidents && incidents.length === 0 && (
-                <Typography variant="subtitle1">
-                  No ongoing incidents
-                </Typography>
-              )}
-              <List dense>
-                {incidents &&
-                  incidents.map((incident: RootlyIncident) => (
-                    <IncidentListItem
-                      incident={incident}
-                      rootlyClient={rootlyClient}
-                    />
-                  ))}
-              </List>
-            </>
-          )}
       </CardContent>
     </Card>
   );

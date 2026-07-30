@@ -26,10 +26,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 const DEFAULT_PAGE_NUMBER = 1;
 const DEFAULT_PAGE_SIZE = 10;
-const ServicesTable = ({
-  organizationId,
-  params
-}) => {
+const ServicesTable = ({ organizationId, params }) => {
   const classes = useStyles();
   const rootlyClient = useRootlyClient({ organizationId });
   const smallColumnStyle = {
@@ -57,15 +54,12 @@ const ServicesTable = ({
     }),
     [organizationId, page, searchTerm]
   );
-  const nameColumn = useCallback((rowData) => {
-    return /* @__PURE__ */ React.createElement(
-      Tooltip,
-      {
-        title: rowData.attributes.description?.substring(0, 255) || rowData.attributes.name
-      },
-      /* @__PURE__ */ React.createElement(Link, { target: "blank", href: rootlyClient.getServiceDetailsURL(rowData) }, rowData.attributes.name)
-    );
-  }, []);
+  const nameColumn = useCallback(
+    (rowData) => {
+      return /* @__PURE__ */ React.createElement(Tooltip, { title: rowData.attributes.description?.substring(0, 255) || rowData.attributes.name }, /* @__PURE__ */ React.createElement(Link, { target: "blank", href: rootlyClient.getServiceDetailsURL(rowData) }, rowData.attributes.name));
+    },
+    [rootlyClient]
+  );
   const backstageColumn = useCallback((rowData) => {
     if (rowData.attributes.backstage_id) {
       try {

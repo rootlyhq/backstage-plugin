@@ -1,78 +1,62 @@
 import { parseEntityRef } from '@backstage/catalog-model';
 import { Table, TableColumn } from '@backstage/core-components';
 import { EntityRefLink } from '@backstage/plugin-catalog-react';
-import {
-  FormControl,
-  InputLabel,
-  makeStyles,
-  MenuItem,
-  Select,
-  Tooltip,
-} from '@material-ui/core';
+import { FormControl, InputLabel, makeStyles, MenuItem, Select, Tooltip } from '@material-ui/core';
 import Link from '@material-ui/core/Link';
 import { Alert } from '@material-ui/lab';
 import React, { useCallback, useState } from 'react';
 import { useAsync } from 'react-use';
 
-import {
-  RootlyCatalogEntitiesFetchOpts,
-  RootlyCatalogEntity,
-} from '@rootly/backstage-plugin-common';
+import { RootlyCatalogEntitiesFetchOpts, RootlyCatalogEntity } from '@rootly/backstage-plugin-common';
 import { useRootlyClient } from '../../api';
 
 import { SearchBarBase } from '@backstage/plugin-search-react';
 
 const useStyles = makeStyles(theme => ({
   container: {
-    width: 850,
+    width: 850
   },
   empty: {
     padding: theme.spacing(2),
     display: 'flex',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   searchContainer: {
     display: 'flex',
     justifyContent: 'flex-end',
     marginBottom: theme.spacing(2),
     gap: theme.spacing(2),
-    alignItems: 'center',
-  },
+    alignItems: 'center'
+  }
 }));
 
 const DEFAULT_PAGE_NUMBER = 1;
 const DEFAULT_PAGE_SIZE = 10;
 
-export const CatalogEntitiesTable = ({
-  organizationId,
-  params,
-}: {
-  organizationId?: string;
-  params?: RootlyCatalogEntitiesFetchOpts;
-}) => {
+export const CatalogEntitiesTable = ({ organizationId, params }: { organizationId?: string; params?: RootlyCatalogEntitiesFetchOpts }) => {
   const classes = useStyles();
   const rootlyClient = useRootlyClient({ organizationId });
 
   const smallColumnStyle = {
     width: '5%',
-    maxWidth: '5%',
+    maxWidth: '5%'
   };
   const mediumColumnStyle = {
     width: '10%',
-    maxWidth: '10%',
+    maxWidth: '10%'
   };
 
   const [selectedCatalogId, setSelectedCatalogId] = useState<string>('');
   const [page, setPage] = useState({
     number: DEFAULT_PAGE_NUMBER,
-    size: DEFAULT_PAGE_SIZE,
+    size: DEFAULT_PAGE_SIZE
   });
   const [searchTerm, setSearchTerm] = useState('');
 
   const {
     value: catalogsResponse,
     loading: catalogsLoading,
-    error: catalogsError,
+    error: catalogsError
   } = useAsync(async () => await rootlyClient.getCatalogs(), [organizationId]);
 
   const catalogs = catalogsResponse?.data || [];
@@ -82,36 +66,31 @@ export const CatalogEntitiesTable = ({
   const {
     value: response,
     loading,
-    error,
+    error
   } = useAsync(
     async () =>
       activeCatalogId
         ? await rootlyClient.getCatalogEntities(activeCatalogId, {
             ...params,
             page: page,
-            filter: { search: searchTerm, ...params?.filter },
+            filter: { search: searchTerm, ...params?.filter }
           })
         : undefined,
-    [organizationId, activeCatalogId, page, searchTerm],
+    [organizationId, activeCatalogId, page, searchTerm]
   );
 
-  const nameColumn = useCallback((rowData: RootlyCatalogEntity) => {
-    return (
-      <Tooltip
-        title={
-          rowData.attributes.description?.substring(0, 255) ||
-          rowData.attributes.name
-        }
-      >
-        <Link
-          target="blank"
-          href={rootlyClient.getCatalogEntityDetailsURL(rowData, activeCatalogSlug)}
-        >
-          {rowData.attributes.name}
-        </Link>
-      </Tooltip>
-    );
-  }, [activeCatalogSlug]);
+  const nameColumn = useCallback(
+    (rowData: RootlyCatalogEntity) => {
+      return (
+        <Tooltip title={rowData.attributes.description?.substring(0, 255) || rowData.attributes.name}>
+          <Link target="blank" href={rootlyClient.getCatalogEntityDetailsURL(rowData, activeCatalogSlug)}>
+            {rowData.attributes.name}
+          </Link>
+        </Tooltip>
+      );
+    },
+    [activeCatalogSlug, rootlyClient]
+  );
 
   const backstageColumn = useCallback((rowData: RootlyCatalogEntity) => {
     if (rowData.attributes.backstage_id) {
@@ -132,20 +111,20 @@ export const CatalogEntitiesTable = ({
       highlight: true,
       cellStyle: smallColumnStyle,
       headerStyle: smallColumnStyle,
-      render: nameColumn,
+      render: nameColumn
     },
     {
       title: 'Backstage',
       field: 'backstage',
       cellStyle: smallColumnStyle,
       headerStyle: smallColumnStyle,
-      render: backstageColumn,
+      render: backstageColumn
     },
     {
       title: 'Description',
       field: 'attributes.description',
       cellStyle: smallColumnStyle,
-      headerStyle: smallColumnStyle,
+      headerStyle: smallColumnStyle
     },
     {
       title: 'Updated At',
@@ -153,7 +132,7 @@ export const CatalogEntitiesTable = ({
       type: 'datetime',
       dateSetting: { locale: 'en-US' },
       cellStyle: mediumColumnStyle,
-      headerStyle: mediumColumnStyle,
+      headerStyle: mediumColumnStyle
     },
     {
       title: 'Created At',
@@ -161,8 +140,8 @@ export const CatalogEntitiesTable = ({
       type: 'datetime',
       dateSetting: { locale: 'en-US' },
       cellStyle: mediumColumnStyle,
-      headerStyle: mediumColumnStyle,
-    },
+      headerStyle: mediumColumnStyle
+    }
   ];
 
   if (catalogsError) {
@@ -197,11 +176,7 @@ export const CatalogEntitiesTable = ({
             </Select>
           </FormControl>
         )}
-        <SearchBarBase
-          onChange={setSearchTerm}
-          placeholder="Search Catalog Entities"
-          value={searchTerm}
-        />
+        <SearchBarBase onChange={setSearchTerm} placeholder="Search Catalog Entities" value={searchTerm} />
       </div>
       <Table
         isLoading={loading || catalogsLoading}
@@ -211,20 +186,16 @@ export const CatalogEntitiesTable = ({
           paging: true,
           actionsColumnIndex: -1,
           pageSize: DEFAULT_PAGE_SIZE,
-          padding: 'dense',
+          padding: 'dense'
         }}
         localization={{ header: { actions: undefined } }}
         columns={columns}
         data={data}
         page={page.number - 1}
         totalCount={response?.meta.total_count}
-        emptyContent={
-          <div className={classes.empty}>No catalog entities</div>
-        }
+        emptyContent={<div className={classes.empty}>No catalog entities</div>}
         onPageChange={pageIndex => setPage({ ...page, number: pageIndex + 1 })}
-        onRowsPerPageChange={rowsPerPage =>
-          setPage({ ...page, size: rowsPerPage })
-        }
+        onRowsPerPageChange={rowsPerPage => setPage({ ...page, size: rowsPerPage })}
       />
     </>
   );
