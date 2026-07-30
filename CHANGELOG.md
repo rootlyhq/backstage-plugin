@@ -1,5 +1,12 @@
 # @rootly/backstage-plugin
 
+## 1.3.1
+
+- Refresh vulnerable transitive dependencies and development tooling
+- Upgrade Jest DOM and fetch mocking dependencies with compatibility fixes
+- Preserve React Router 7 and supported Backstage peer ranges
+- Migrate navigation metadata to the current Backstage frontend API
+
 ## 1.3.0
 
 - Add catalog entity support
