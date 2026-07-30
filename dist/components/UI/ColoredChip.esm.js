@@ -13,16 +13,7 @@ const ColoredChip = ({
   const textColor = contrastColor({ bgColor: backgroundColor });
   const coloredIcon = icon ? React.cloneElement(icon, { style: { color: textColor } }) : void 0;
   if (label) {
-    return /* @__PURE__ */ React.createElement(Tooltip, { title: tooltip || label }, /* @__PURE__ */ React.createElement(
-      Chip,
-      {
-        label,
-        style: { backgroundColor, color: textColor },
-        size: "small",
-        onClick,
-        icon: coloredIcon
-      }
-    ));
+    return /* @__PURE__ */ React.createElement(Tooltip, { title: tooltip || label }, /* @__PURE__ */ React.createElement(Chip, { label, style: { backgroundColor, color: textColor }, size: "small", onClick, icon: coloredIcon }));
   }
   return /* @__PURE__ */ React.createElement(Chip, { label: "N/A", size: "small" });
 };

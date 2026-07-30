@@ -1,6 +1,11 @@
 import ReactDOM from "react-dom/client";
 
 import { createApp } from "@backstage/frontend-defaults";
+import type {
+  AnyApiFactory,
+  ApiFactory,
+  ExtensionBlueprintParams,
+} from "@backstage/frontend-plugin-api";
 import { catalogApiRef } from "@backstage/plugin-catalog-react";
 import catalogPlugin from "@backstage/plugin-catalog/alpha";
 import searchPlugin from "@backstage/plugin-search/alpha";
@@ -11,10 +16,18 @@ import rootlyPlugin from "../src/alpha";
 import { rootlyApi } from "./rootlyApiMock";
 import { catalogApi } from "./catalogApiMock";
 
+type DefineApiParams = <
+  TApi,
+  TImpl extends TApi,
+  TDeps extends Record<string, unknown>,
+>(
+  params: ApiFactory<TApi, TImpl, TDeps>,
+) => ExtensionBlueprintParams<AnyApiFactory>;
+
 const catalogPluginOverrides = catalogPlugin.withOverrides({
   extensions: [
     catalogPlugin.getExtension("api:catalog").override({
-      params: (defineParams) =>
+      params: (defineParams: DefineApiParams) =>
         defineParams({
           api: catalogApiRef,
           deps: {},
@@ -27,7 +40,7 @@ const catalogPluginOverrides = catalogPlugin.withOverrides({
 const rootlyPluginOverrides = rootlyPlugin.withOverrides({
   extensions: [
     rootlyPlugin.getExtension("api:rootly").override({
-      params: (defineParams) =>
+      params: (defineParams: DefineApiParams) =>
         defineParams({
           api: rootlyApiRef,
           deps: {},

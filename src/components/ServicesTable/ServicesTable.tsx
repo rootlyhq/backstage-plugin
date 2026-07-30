@@ -7,55 +7,46 @@ import { Alert } from '@material-ui/lab';
 import React, { useCallback, useState } from 'react';
 import { useAsync } from 'react-use';
 
-import {
-  RootlyServicesFetchOpts,
-  RootlyService,
-} from '@rootly/backstage-plugin-common';
+import { RootlyServicesFetchOpts, RootlyService } from '@rootly/backstage-plugin-common';
 import { useRootlyClient } from '../../api';
 
 import { SearchBarBase } from '@backstage/plugin-search-react'; // Updated import
 
 const useStyles = makeStyles(theme => ({
   container: {
-    width: 850,
+    width: 850
   },
   empty: {
     padding: theme.spacing(2),
     display: 'flex',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   searchContainer: {
     display: 'flex',
     justifyContent: 'flex-end',
-    marginBottom: theme.spacing(2),
-  },
+    marginBottom: theme.spacing(2)
+  }
 }));
 
 const DEFAULT_PAGE_NUMBER = 1;
 const DEFAULT_PAGE_SIZE = 10;
 
-export const ServicesTable = ({
-  organizationId,
-  params,
-}: {
-  organizationId?: string;
-  params?: RootlyServicesFetchOpts;
-}) => {
+export const ServicesTable = ({ organizationId, params }: { organizationId?: string; params?: RootlyServicesFetchOpts }) => {
   const classes = useStyles();
-  const rootlyClient = useRootlyClient({organizationId: organizationId});
+  const rootlyClient = useRootlyClient({ organizationId: organizationId });
 
   const smallColumnStyle = {
     width: '5%',
-    maxWidth: '5%',
+    maxWidth: '5%'
   };
   const mediumColumnStyle = {
     width: '10%',
-    maxWidth: '10%',
+    maxWidth: '10%'
   };
 
   const [page, setPage] = useState({
     number: DEFAULT_PAGE_NUMBER,
-    size: DEFAULT_PAGE_SIZE,
+    size: DEFAULT_PAGE_SIZE
   });
 
   const [searchTerm, setSearchTerm] = useState(''); // State for search term
@@ -63,31 +54,29 @@ export const ServicesTable = ({
   const {
     value: response,
     loading,
-    error,
+    error
   } = useAsync(
     async () =>
       await rootlyClient.getServices({
         ...params,
         page: page,
-        filter: { search: searchTerm, ...params?.filter },
+        filter: { search: searchTerm, ...params?.filter }
       }),
-    [organizationId, page, searchTerm],
+    [organizationId, page, searchTerm]
   );
 
-  const nameColumn = useCallback((rowData: RootlyService) => {
-    return (
-      <Tooltip
-        title={
-          rowData.attributes.description?.substring(0, 255) ||
-          rowData.attributes.name
-        }
-      >
-        <Link target="blank" href={rootlyClient.getServiceDetailsURL(rowData)}>
-          {rowData.attributes.name}
-        </Link>
-      </Tooltip>
-    );
-  }, []);
+  const nameColumn = useCallback(
+    (rowData: RootlyService) => {
+      return (
+        <Tooltip title={rowData.attributes.description?.substring(0, 255) || rowData.attributes.name}>
+          <Link target="blank" href={rootlyClient.getServiceDetailsURL(rowData)}>
+            {rowData.attributes.name}
+          </Link>
+        </Tooltip>
+      );
+    },
+    [rootlyClient]
+  );
 
   const backstageColumn = useCallback((rowData: RootlyService) => {
     if (rowData.attributes.backstage_id) {
@@ -108,21 +97,21 @@ export const ServicesTable = ({
       highlight: true,
       cellStyle: smallColumnStyle,
       headerStyle: smallColumnStyle,
-      render: nameColumn,
+      render: nameColumn
     },
     {
       title: 'Backstage',
       field: 'backstage',
       cellStyle: smallColumnStyle,
       headerStyle: smallColumnStyle,
-      render: backstageColumn,
+      render: backstageColumn
     },
     {
       title: 'Incidents',
       field: 'attributes.incidents_count',
       type: 'numeric',
       cellStyle: mediumColumnStyle,
-      headerStyle: mediumColumnStyle,
+      headerStyle: mediumColumnStyle
     },
     {
       title: 'Updated At',
@@ -130,7 +119,7 @@ export const ServicesTable = ({
       type: 'datetime',
       dateSetting: { locale: 'en-US' },
       cellStyle: mediumColumnStyle,
-      headerStyle: mediumColumnStyle,
+      headerStyle: mediumColumnStyle
     },
     {
       title: 'Created At',
@@ -138,8 +127,8 @@ export const ServicesTable = ({
       type: 'datetime',
       dateSetting: { locale: 'en-US' },
       cellStyle: mediumColumnStyle,
-      headerStyle: mediumColumnStyle,
-    },
+      headerStyle: mediumColumnStyle
+    }
   ];
 
   if (error) {
@@ -166,7 +155,7 @@ export const ServicesTable = ({
           paging: true,
           actionsColumnIndex: -1,
           pageSize: DEFAULT_PAGE_SIZE,
-          padding: 'dense',
+          padding: 'dense'
         }}
         localization={{ header: { actions: undefined } }}
         columns={columns}
@@ -175,9 +164,7 @@ export const ServicesTable = ({
         totalCount={response?.meta.total_count}
         emptyContent={<div className={classes.empty}>No services</div>}
         onPageChange={pageIndex => setPage({ ...page, number: pageIndex + 1 })}
-        onRowsPerPageChange={rowsPerPage =>
-          setPage({ ...page, size: rowsPerPage })
-        }
+        onRowsPerPageChange={rowsPerPage => setPage({ ...page, size: rowsPerPage })}
       />
     </>
   );

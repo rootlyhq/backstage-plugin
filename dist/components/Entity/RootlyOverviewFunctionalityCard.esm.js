@@ -3,7 +3,7 @@ import { HeaderIconLinkRow, Progress } from '@backstage/core-components';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { Card, CardHeader, IconButton, Divider, CardContent, Typography, List, ListItem, ListItemText, ListItemSecondaryAction } from '@material-ui/core';
 import Link from '@material-ui/core/Link';
-import { FilterList } from '@material-ui/icons';
+import FilterList from '@material-ui/icons/FilterList';
 import CachedIcon from '@material-ui/icons/Cached';
 import WhatshotIcon from '@material-ui/icons/Whatshot';
 import { Alert } from '@material-ui/lab';
@@ -19,21 +19,11 @@ import { ROOTLY_ANNOTATION_ORG_ID } from '@rootly/backstage-plugin-common';
 import { useRootlyClient } from '../../api.esm.js';
 
 const truncate = (input, length) => input.length > length ? `${input.substring(0, length)}...` : input;
-const IncidentListItem = ({
-  incident
-}) => {
+const IncidentListItem = ({ incident }) => {
   return /* @__PURE__ */ React.createElement(ListItem, { dense: true, key: incident.id, style: { paddingLeft: 0 } }, /* @__PURE__ */ React.createElement(
     ListItemText,
     {
-      primary: /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(
-        Link,
-        {
-          style: { marginRight: 8 },
-          target: "blank",
-          href: incident.attributes.url
-        },
-        truncate(incident.attributes.title, 100)
-      ), /* @__PURE__ */ React.createElement(
+      primary: /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(Link, { style: { marginRight: 8 }, target: "blank", href: incident.attributes.url }, truncate(incident.attributes.title, 100)), /* @__PURE__ */ React.createElement(
         ColoredChip,
         {
           label: incident.attributes.severity?.data.attributes.name,
@@ -58,7 +48,9 @@ const getViewIncidentsForFunctionalityLink = (functionality, rootlyClient) => {
 };
 const RootlyOverviewFunctionalityCard = () => {
   const { entity } = useEntity();
-  const rootlyClient = useRootlyClient({ organizationId: entity.metadata.annotations?.[ROOTLY_ANNOTATION_ORG_ID] });
+  const rootlyClient = useRootlyClient({
+    organizationId: entity.metadata.annotations?.[ROOTLY_ANNOTATION_ORG_ID]
+  });
   const [reload, setReload] = useState(false);
   const createIncidentLink = {
     label: "Create Incident",
@@ -118,42 +110,15 @@ const RootlyOverviewFunctionalityCard = () => {
     CardHeader,
     {
       title: "Rootly",
-      action: /* @__PURE__ */ React.createElement(React.Fragment, null, functionality && /* @__PURE__ */ React.createElement(
-        IconButton,
-        {
-          component: Link,
-          "aria-label": "Refresh",
-          disabled: false,
-          title: "Refresh",
-          onClick: () => setReload(!reload)
-        },
-        /* @__PURE__ */ React.createElement(CachedIcon, null)
-      )),
+      action: /* @__PURE__ */ React.createElement(React.Fragment, null, functionality && /* @__PURE__ */ React.createElement(IconButton, { component: Link, "aria-label": "Refresh", disabled: false, title: "Refresh", onClick: () => setReload(!reload) }, /* @__PURE__ */ React.createElement(CachedIcon, null))),
       subheader: /* @__PURE__ */ React.createElement(
         HeaderIconLinkRow,
         {
-          links: !functionalityLoading && functionality ? [
-            createIncidentLink,
-            getViewIncidentsForFunctionalityLink(functionality, rootlyClient),
-            viewIncidentsLink
-          ] : [createIncidentLink, viewIncidentsLink]
+          links: !functionalityLoading && functionality ? [createIncidentLink, getViewIncidentsForFunctionalityLink(functionality, rootlyClient), viewIncidentsLink] : [createIncidentLink, viewIncidentsLink]
         }
       )
     }
-  ), functionality && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(Divider, null), !chartLoading && !chartError && chartResponse && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(CardContent, null, /* @__PURE__ */ React.createElement(Typography, { variant: "subtitle1" }, "Incidents over last 30 days"), /* @__PURE__ */ React.createElement(
-    LineChart,
-    {
-      data: chartResponse.data,
-      height: "150px",
-      colors: [blue[300]]
-    }
-  )), /* @__PURE__ */ React.createElement(Divider, null))), /* @__PURE__ */ React.createElement(CardContent, null, (functionalityLoading || incidentsLoading) && /* @__PURE__ */ React.createElement(Progress, null), functionalityError && /* @__PURE__ */ React.createElement(Alert, { severity: "error" }, functionalityError.message), incidentsError && /* @__PURE__ */ React.createElement(Alert, { severity: "error" }, incidentsError.message), !incidentsLoading && !incidentsError && !incidentsLoading && incidents && /* @__PURE__ */ React.createElement(React.Fragment, null, incidents && incidents.length >= 0 && /* @__PURE__ */ React.createElement(Typography, { variant: "subtitle1" }, "There is ", /* @__PURE__ */ React.createElement("strong", null, incidents.length), " ongoing incidents for this functionality"), incidents && incidents.length === 0 && /* @__PURE__ */ React.createElement(Typography, { variant: "subtitle1" }, "No ongoing incidents"), /* @__PURE__ */ React.createElement(List, { dense: true }, incidents && incidents.map((incident) => /* @__PURE__ */ React.createElement(
-    IncidentListItem,
-    {
-      incident,
-      rootlyClient
-    }
-  ))))));
+  ), functionality && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(Divider, null), !chartLoading && !chartError && chartResponse && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(CardContent, null, /* @__PURE__ */ React.createElement(Typography, { variant: "subtitle1" }, "Incidents over last 30 days"), /* @__PURE__ */ React.createElement(LineChart, { data: chartResponse.data, height: "150px", colors: [blue[300]] })), /* @__PURE__ */ React.createElement(Divider, null))), /* @__PURE__ */ React.createElement(CardContent, null, (functionalityLoading || incidentsLoading) && /* @__PURE__ */ React.createElement(Progress, null), functionalityError && /* @__PURE__ */ React.createElement(Alert, { severity: "error" }, functionalityError.message), incidentsError && /* @__PURE__ */ React.createElement(Alert, { severity: "error" }, incidentsError.message), !incidentsLoading && !incidentsError && !incidentsLoading && incidents && /* @__PURE__ */ React.createElement(React.Fragment, null, incidents && incidents.length >= 0 && /* @__PURE__ */ React.createElement(Typography, { variant: "subtitle1" }, "There is ", /* @__PURE__ */ React.createElement("strong", null, incidents.length), " ongoing incidents for this functionality"), incidents && incidents.length === 0 && /* @__PURE__ */ React.createElement(Typography, { variant: "subtitle1" }, "No ongoing incidents"), /* @__PURE__ */ React.createElement(List, { dense: true }, incidents && incidents.map((incident) => /* @__PURE__ */ React.createElement(IncidentListItem, { incident, rootlyClient }))))));
 };
 
 export { RootlyOverviewFunctionalityCard };

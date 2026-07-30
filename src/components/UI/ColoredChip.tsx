@@ -7,12 +7,12 @@ export const ColoredChip = ({
   tooltip,
   color,
   icon,
-  onClick,
+  onClick
 }: {
   label?: string;
   tooltip?: string;
   color?: string;
-  icon?: React.ReactElement;
+  icon?: React.ReactElement<{ style?: React.CSSProperties }>;
   onClick?: () => void;
 }) => {
   const backgroundColor = color || '#FFF';
@@ -24,16 +24,9 @@ export const ColoredChip = ({
   if (label) {
     return (
       <Tooltip title={tooltip || label}>
-        <Chip
-          label={label}
-          style={{ backgroundColor, color: textColor }}
-          size="small"
-          onClick={onClick}
-          icon={coloredIcon}
-        />
+        <Chip label={label} style={{ backgroundColor, color: textColor }} size="small" onClick={onClick} icon={coloredIcon} />
       </Tooltip>
     );
-  } 
-    return <Chip label="N/A" size="small" />;
-  
+  }
+  return <Chip label="N/A" size="small" />;
 };

@@ -23,22 +23,22 @@ declare const IncidentsTable: ({ organizationId, params, }: {
     params?: RootlyIncidentsFetchOpts;
 }) => react__default.JSX.Element;
 
-declare const ServicesTable: ({ organizationId, params, }: {
+declare const ServicesTable: ({ organizationId, params }: {
     organizationId?: string;
     params?: RootlyServicesFetchOpts;
 }) => react__default.JSX.Element;
 
-declare const FunctionalitiesTable: ({ organizationId, params, }: {
+declare const FunctionalitiesTable: ({ organizationId, params }: {
     organizationId?: string;
     params?: RootlyFunctionalitiesFetchOpts;
 }) => react__default.JSX.Element;
 
-declare const TeamsTable: ({ organizationId, params, }: {
+declare const TeamsTable: ({ organizationId, params }: {
     organizationId?: string;
     params?: RootlyTeamsFetchOpts;
 }) => react__default.JSX.Element;
 
-declare const CatalogEntitiesTable: ({ organizationId, params, }: {
+declare const CatalogEntitiesTable: ({ organizationId, params }: {
     organizationId?: string;
     params?: RootlyCatalogEntitiesFetchOpts;
 }) => react__default.JSX.Element;

@@ -5,7 +5,6 @@ import { RootlyRouteRef } from "../plugin";
 
 import { rootlyApi } from "./apis";
 import { rootlyPage } from "./pages";
-import { rootlyNavItem } from "./navItems";
 import { rootlyOverviewEntityCard } from "./entityCards";
 import { rootlyIncidentsEntityContent } from "./entityContents";
 
@@ -19,7 +18,6 @@ export const rootlyPlugin = createFrontendPlugin({
   extensions: [
     rootlyApi,
     rootlyPage,
-    rootlyNavItem,
     rootlyOverviewEntityCard,
     rootlyIncidentsEntityContent,
   ],

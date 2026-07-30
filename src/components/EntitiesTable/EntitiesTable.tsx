@@ -15,193 +15,142 @@ import {
   RootlyCatalogEntity,
   ROOTLY_ANNOTATION_ORG_ID,
   ROOTLY_ANNOTATION_CATALOG_ENTITY_ID,
-  ROOTLY_ANNOTATION_CATALOG_ENTITY_SLUG,
+  ROOTLY_ANNOTATION_CATALOG_ENTITY_SLUG
 } from '@rootly/backstage-plugin-common';
 import { useRootlyClient } from '../../api';
 
-export const EntitiesTable = () => {
-  const catalogApi = useApi(catalogApiRef);
+type RootlyEntityCellProps = {
+  entity: RootlyEntity;
+};
 
-  const smallColumnStyle = {
-    width: '5%',
-    maxWidth: '5%',
-  };
+const getEntityTriplet = (entity: Pick<RootlyEntity, 'metadata' | 'kind'>) =>
+  stringifyEntityRef({
+    namespace: entity.metadata.namespace,
+    kind: entity.kind,
+    name: entity.metadata.name
+  });
 
-  const { value, loading, error } = useAsync(
-    async () => await catalogApi.getEntities(),
+const ServiceLinkCell = ({ entity }: RootlyEntityCellProps) => {
+  const rootlyClient = useRootlyClient({
+    organizationId: entity.metadata.annotations?.[ROOTLY_ANNOTATION_ORG_ID]
+  });
+  const entityTriplet = getEntityTriplet(entity);
+  const {
+    value: response,
+    loading,
+    error
+  } = useAsync(() => rootlyClient.getServices({ filter: { backstage_id: entityTriplet } }), [entityTriplet, rootlyClient]);
+
+  if (loading) return <Progress />;
+  if (error) return <div>Error</div>;
+
+  const service = response?.data[0] as RootlyService | undefined;
+  return service ? (
+    <Link target="blank" href={rootlyClient.getServiceDetailsURL(service)}>
+      {service.attributes.name}
+    </Link>
+  ) : (
+    <div>Not Linked</div>
+  );
+};
+
+const FunctionalityLinkCell = ({ entity }: RootlyEntityCellProps) => {
+  const rootlyClient = useRootlyClient({
+    organizationId: entity.metadata.annotations?.[ROOTLY_ANNOTATION_ORG_ID]
+  });
+  const entityTriplet = getEntityTriplet(entity);
+  const {
+    value: response,
+    loading,
+    error
+  } = useAsync(
+    () =>
+      rootlyClient.getFunctionalities({
+        filter: { backstage_id: entityTriplet }
+      }),
+    [entityTriplet, rootlyClient]
   );
 
-  const fetchService = (entity: RootlyEntity) => {
+  if (loading) return <Progress />;
+  if (error) return <div>Error</div>;
 
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const rootlyClient = useRootlyClient({organizationId: entity.metadata.annotations?.[ROOTLY_ANNOTATION_ORG_ID]});
+  const functionality = response?.data[0] as RootlyFunctionality | undefined;
+  return functionality ? (
+    <Link target="blank" href={rootlyClient.getFunctionalityDetailsURL(functionality)}>
+      {functionality.attributes.name}
+    </Link>
+  ) : (
+    <div>Not Linked</div>
+  );
+};
 
-    const entityTriplet = stringifyEntityRef({
-      namespace: entity.metadata.namespace,
-      kind: entity.kind,
-      name: entity.metadata.name,
-    });
-    const {
-      value: response,
-      loading,
-      error,
-    } = useAsync(
-      async () =>
-        await rootlyClient.getServices({
-          filter: {
-            backstage_id: entityTriplet,
-          },
-        }),
-      [],
-    );
-    if (loading) {
-      return <Progress />;
-    } else if (error) {
-      return <div>Error</div>;
-    }
-    if (response && response.data.length > 0) {
-      entity.linkedService = response.data[0] as RootlyService;
-      return (
-        <Link
-          target="blank"
-          href={rootlyClient.getServiceDetailsURL(entity.linkedService)}
-        >
-          {entity.linkedService.attributes.name}
-        </Link>
-      );
-    } 
-      entity.linkedService = undefined;
-      return <div>Not Linked</div>;
+const TeamLinkCell = ({ entity }: RootlyEntityCellProps) => {
+  const rootlyClient = useRootlyClient({
+    organizationId: entity.metadata.annotations?.[ROOTLY_ANNOTATION_ORG_ID]
+  });
+  const entityTriplet = getEntityTriplet(entity);
+  const {
+    value: response,
+    loading,
+    error
+  } = useAsync(() => rootlyClient.getTeams({ filter: { backstage_id: entityTriplet } }), [entityTriplet, rootlyClient]);
+
+  if (loading) return <Progress />;
+  if (error) return <div>Error</div>;
+
+  const team = response?.data[0] as RootlyTeam | undefined;
+  return team ? (
+    <Link target="blank" href={rootlyClient.getTeamDetailsURL(team)}>
+      {team.attributes.name}
+    </Link>
+  ) : (
+    <div>Not Linked</div>
+  );
+};
+
+const CatalogEntityLinkCell = ({ entity }: RootlyEntityCellProps) => {
+  const rootlyClient = useRootlyClient({
+    organizationId: entity.metadata.annotations?.[ROOTLY_ANNOTATION_ORG_ID]
+  });
+  const catalogEntityAnnotation =
+    entity.metadata.annotations?.[ROOTLY_ANNOTATION_CATALOG_ENTITY_ID] ||
+    entity.metadata.annotations?.[ROOTLY_ANNOTATION_CATALOG_ENTITY_SLUG];
+  const {
+    value: response,
+    loading,
+    error
+  } = useAsync(
+    () =>
+      catalogEntityAnnotation
+        ? rootlyClient.getCatalogEntity(catalogEntityAnnotation, {
+            include: 'catalog'
+          })
+        : Promise.resolve(undefined),
+    [catalogEntityAnnotation, rootlyClient]
+  );
+
+  if (!catalogEntityAnnotation) return <div>-</div>;
+  if (loading) return <Progress />;
+  if (error) return <div>Error</div>;
+
+  const catalogEntity = response?.data as RootlyCatalogEntity | undefined;
+  const catalogSlug = response?.included?.find((included: any) => included.type === 'catalogs')?.attributes?.slug;
+
+  return catalogEntity ? (
+    <Link target="blank" href={rootlyClient.getCatalogEntityDetailsURL(catalogEntity, catalogSlug)}>
+      {catalogEntity.attributes.name}
+    </Link>
+  ) : (
+    <div>Not Linked</div>
+  );
+};
+export const EntitiesTable = () => {
+  const catalogApi = useApi(catalogApiRef);
+  const smallColumnStyle = {
+    width: '5%',
+    maxWidth: '5%'
   };
-
-  const fetchFunctionality = (entity: RootlyEntity) => {
-
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const rootlyClient = useRootlyClient({organizationId: entity.metadata.annotations?.[ROOTLY_ANNOTATION_ORG_ID]});
-
-    const entityTriplet = stringifyEntityRef({
-      namespace: entity.metadata.namespace,
-      kind: entity.kind,
-      name: entity.metadata.name,
-    });
-    const {
-      value: response,
-      loading,
-      error,
-    } = useAsync(
-      async () =>
-        await rootlyClient.getFunctionalities({
-          filter: {
-            backstage_id: entityTriplet,
-          },
-        }),
-      [],
-    );
-    if (loading) {
-      return <Progress />;
-    } else if (error) {
-      return <div>Error</div>;
-    }
-    if (response && response.data.length > 0) {
-      entity.linkedFunctionality = response.data[0] as RootlyFunctionality;
-      return (
-        <Link
-          target="blank"
-          href={rootlyClient.getFunctionalityDetailsURL(entity.linkedFunctionality)}
-        >
-          {entity.linkedFunctionality.attributes.name}
-        </Link>
-      );
-    } 
-      entity.linkedFunctionality = undefined;
-      return <div>Not Linked</div>;
-  };
-
-  const fetchTeam = (entity: RootlyEntity) => {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const rootlyClient = useRootlyClient({ organizationId: entity.metadata.annotations?.[ROOTLY_ANNOTATION_ORG_ID]});
-
-    const entityTriplet = stringifyEntityRef({
-      namespace: entity.metadata.namespace,
-      kind: entity.kind,
-      name: entity.metadata.name,
-    });
-    const {
-      value: response,
-      loading,
-      error,
-    } = useAsync(
-      async () =>
-        await rootlyClient.getTeams({
-          filter: {
-            backstage_id: entityTriplet,
-          },
-        }),
-      [],
-    );
-    if (loading) {
-      return <Progress />;
-    } else if (error) {
-      return <div>Error</div>;
-    }
-    if (response && response.data.length > 0) {
-      entity.linkedTeam = response.data[0] as RootlyTeam;
-      return (
-        <Link
-          target="blank"
-          href={rootlyClient.getTeamDetailsURL(entity.linkedTeam)}
-        >
-          {entity.linkedTeam.attributes.name}
-        </Link>
-      );
-    }
-      entity.linkedTeam = undefined;
-      return <div>Not Linked</div>;
-  };
-
-  const fetchCatalogEntity = (entity: RootlyEntity) => {
-    const catalogEntityAnnotation =
-      entity.metadata.annotations?.[ROOTLY_ANNOTATION_CATALOG_ENTITY_ID] ||
-      entity.metadata.annotations?.[ROOTLY_ANNOTATION_CATALOG_ENTITY_SLUG];
-
-    if (!catalogEntityAnnotation) {
-      return <div>-</div>;
-    }
-
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const rootlyClient = useRootlyClient({ organizationId: entity.metadata.annotations?.[ROOTLY_ANNOTATION_ORG_ID]});
-
-    const {
-      value: response,
-      loading,
-      error,
-    } = useAsync(
-      async () =>
-        await rootlyClient.getCatalogEntity(catalogEntityAnnotation, { include: 'catalog' }),
-      [],
-    );
-    if (loading) {
-      return <Progress />;
-    } else if (error) {
-      return <div>Error</div>;
-    }
-    if (response?.data) {
-      entity.linkedCatalogEntity = response.data as RootlyCatalogEntity;
-      const catalogSlug = response.included?.find(
-        (i: any) => i.type === 'catalogs',
-      )?.attributes?.slug;
-      return (
-        <Link
-          target="blank"
-          href={rootlyClient.getCatalogEntityDetailsURL(entity.linkedCatalogEntity, catalogSlug)}
-        >
-          {entity.linkedCatalogEntity.attributes.name}
-        </Link>
-      );
-    }
-    entity.linkedCatalogEntity = undefined;
-    return <div>Not Linked</div>;
-  };
+  const { value, loading, error } = useAsync(() => catalogApi.getEntities(), [catalogApi]);
 
   const columns: TableColumn<RootlyEntity>[] = [
     {
@@ -209,7 +158,7 @@ export const EntitiesTable = () => {
       field: 'kind',
       highlight: true,
       cellStyle: smallColumnStyle,
-      headerStyle: smallColumnStyle,
+      headerStyle: smallColumnStyle
     },
     {
       title: 'Name',
@@ -217,52 +166,42 @@ export const EntitiesTable = () => {
       highlight: true,
       cellStyle: smallColumnStyle,
       headerStyle: smallColumnStyle,
-      render: rowData => {
-        return <EntityRefLink entityRef={rowData} />;
-      },
+      render: rowData => <EntityRefLink entityRef={rowData} />
     },
     {
       title: 'Description',
       field: 'metadata.description',
       cellStyle: smallColumnStyle,
-      headerStyle: smallColumnStyle,
+      headerStyle: smallColumnStyle
     },
     {
       title: 'Rootly Service',
       field: 'linked',
       cellStyle: smallColumnStyle,
       headerStyle: smallColumnStyle,
-      render: rowData => {
-        return fetchService(rowData);
-      },
+      render: rowData => <ServiceLinkCell entity={rowData} />
     },
     {
       title: 'Rootly Functionality',
       field: 'linked',
       cellStyle: smallColumnStyle,
       headerStyle: smallColumnStyle,
-      render: rowData => {
-        return fetchFunctionality(rowData);
-      },
+      render: rowData => <FunctionalityLinkCell entity={rowData} />
     },
     {
       title: 'Rootly Team',
       field: 'linked',
       cellStyle: smallColumnStyle,
       headerStyle: smallColumnStyle,
-      render: rowData => {
-        return fetchTeam(rowData);
-      },
+      render: rowData => <TeamLinkCell entity={rowData} />
     },
     {
       title: 'Rootly Catalog Entity',
       field: 'linked',
       cellStyle: smallColumnStyle,
       headerStyle: smallColumnStyle,
-      render: rowData => {
-        return fetchCatalogEntity(rowData);
-      },
-    },
+      render: rowData => <CatalogEntityLinkCell entity={rowData} />
+    }
   ];
 
   if (error) {
@@ -270,14 +209,15 @@ export const EntitiesTable = () => {
   }
 
   const data = value
-    ? value.items.map(entity => {
-        const entityTriplet = stringifyEntityRef({
-          namespace: entity.metadata.namespace,
-          kind: entity.kind,
-          name: entity.metadata.name,
-        });
-        return { ...entity, id: entityTriplet, rootlyKind: undefined, linkedService: undefined, linkedFunctionality: undefined, linkedTeam: undefined, linkedCatalogEntity: undefined};
-      })
+    ? value.items.map(entity => ({
+        ...entity,
+        id: getEntityTriplet(entity),
+        rootlyKind: undefined,
+        linkedService: undefined,
+        linkedFunctionality: undefined,
+        linkedTeam: undefined,
+        linkedCatalogEntity: undefined
+      }))
     : [];
 
   return (
@@ -290,7 +230,7 @@ export const EntitiesTable = () => {
         actionsColumnIndex: -1,
         pageSize: 25,
         pageSizeOptions: [25, 50, 100, 150, 200],
-        padding: 'dense',
+        padding: 'dense'
       }}
       localization={{ header: { actions: undefined } }}
       columns={columns}

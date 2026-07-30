@@ -1,27 +1,10 @@
 import { Grid, TabProps } from '@material-ui/core';
-import {
-  default as React,
-  useState,
-  useEffect,
-  useCallback,
-  useMemo,
-  useRef,
-} from 'react';
-import {
-  Content,
-  ContentHeader,
-  Page,
-  Progress,
-} from '@backstage/core-components';
+import { default as React, useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { Content, ContentHeader, Page, Progress } from '@backstage/core-components';
 import { Alert } from '@material-ui/lab';
 import { IncidentsTable } from '../IncidentsTable';
 import { useRootlyClient } from '../../api';
-import {
-  RootlyEntity,
-  RootlyService,
-  RootlyFunctionality,
-  RootlyTeam,
-} from '@rootly/backstage-plugin-common';
+import { RootlyEntity, RootlyService, RootlyFunctionality, RootlyTeam } from '@rootly/backstage-plugin-common';
 import { stringifyEntityRef } from '@backstage/catalog-model';
 import { ROOTLY_ANNOTATION_ORG_ID } from '@rootly/backstage-plugin-common';
 import { AsyncState } from 'react-use/lib/useAsync';
@@ -29,7 +12,7 @@ import { AsyncState } from 'react-use/lib/useAsync';
 type SubRoute = {
   path: string;
   title: string;
-  children: JSX.Element;
+  children: React.ReactElement;
   tabProps?: TabProps<React.ElementType, { component?: React.ElementType }>;
 };
 
@@ -42,12 +25,11 @@ const extractEntities = (entities: RootlyEntity[], kind: string) =>
     .filter(entity => entity.rootlyKind === kind)
     .reduce(
       (acc, entity) => {
-        const orgId =
-          entity.metadata.annotations?.[ROOTLY_ANNOTATION_ORG_ID] || 'unknown';
+        const orgId = entity.metadata.annotations?.[ROOTLY_ANNOTATION_ORG_ID] || 'unknown';
         const entityRef = stringifyEntityRef({
           namespace: entity.metadata.namespace,
           kind: entity.kind,
-          name: entity.metadata.name,
+          name: entity.metadata.name
         });
         if (!acc[orgId]) {
           acc[orgId] = [];
@@ -55,41 +37,23 @@ const extractEntities = (entities: RootlyEntity[], kind: string) =>
         acc[orgId].push(entityRef);
         return acc;
       },
-      {} as Record<string, string[]>,
+      {} as Record<string, string[]>
     );
 
-const getTableParams = (
-  services: RootlyService[],
-  functionalities: RootlyFunctionality[],
-  teams: RootlyTeam[],
-  status?: string,
-) => ({
+const getTableParams = (services: RootlyService[], functionalities: RootlyFunctionality[], teams: RootlyTeam[], status?: string) => ({
   filter: {
     status,
     services: services.map(o => o.attributes.slug).join(','),
     functionalities: functionalities.map(o => o.attributes.slug).join(','),
-    groups: teams.map(o => o.attributes.slug).join(','),
+    groups: teams.map(o => o.attributes.slug).join(',')
   },
-  include: 'environments,teams,services,functionalities,groups,incident_types',
+  include: 'environments,teams,services,functionalities,groups,incident_types'
 });
 
-export const RootlySystemIncidentsPageLayout = ({
-  entities,
-}: {
-  entities: RootlyEntity[];
-}) => {
-  const serviceEntitiesTriplets = useMemo(
-    () => extractEntities(entities, 'Service'),
-    [entities],
-  );
-  const functionalityEntitiesTriplets = useMemo(
-    () => extractEntities(entities, 'Functionality'),
-    [entities],
-  );
-  const teamEntitiesTriplets = useMemo(
-    () => extractEntities(entities, 'Team'),
-    [entities],
-  );
+export const RootlySystemIncidentsPageLayout = ({ entities }: { entities: RootlyEntity[] }) => {
+  const serviceEntitiesTriplets = useMemo(() => extractEntities(entities, 'Service'), [entities]);
+  const functionalityEntitiesTriplets = useMemo(() => extractEntities(entities, 'Functionality'), [entities]);
+  const teamEntitiesTriplets = useMemo(() => extractEntities(entities, 'Team'), [entities]);
 
   const [responses, setResponses] = useState<{
     services: RootlyResourceAsyncStateType;
@@ -98,7 +62,7 @@ export const RootlySystemIncidentsPageLayout = ({
   }>({
     services: new Map(),
     functionalities: new Map(),
-    teams: new Map(),
+    teams: new Map()
   });
 
   const [loading, setLoading] = useState(true);
@@ -106,64 +70,59 @@ export const RootlySystemIncidentsPageLayout = ({
   const hasFetched = useRef(false); // To prevent multiple fetch attempts
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const fetchData = async (
-    entitiesTriplets: Record<string, string[]>,
-    type: string,
-  ): Promise<RootlyResourceAsyncStateType> => {
+  const fetchData = async (entitiesTriplets: Record<string, string[]>, type: string): Promise<RootlyResourceAsyncStateType> => {
     const res = new Map<string, AsyncState<any>>();
-    const fetchPromises = Object.entries(entitiesTriplets).map(
-      async ([orgId, ids]) => {
-        try {
-          // eslint-disable-next-line react-hooks/rules-of-hooks
-          const rootlyClient = useRootlyClient({organizationId: orgId});
-          switch (type) {
-            case 'Services': {
-              const results = await rootlyClient.getServices({
-                filter: { backstage_id: ids.join(',') },
-              });
-              res.set(orgId, {
-                value: results,
-                loading: false,
-                error: undefined,
-              });
-              break;
-            }
-            case 'Functionalities': {
-              const results = await rootlyClient.getFunctionalities({
-                filter: { backstage_id: ids.join(',') },
-              });
-              res.set(orgId, {
-                value: results,
-                loading: false,
-                error: undefined,
-              });
-              break;
-            }
-            case 'Teams': {
-              const results = await rootlyClient.getTeams({
-                filter: { backstage_id: ids.join(',') },
-              });
-              res.set(orgId, {
-                value: results,
-                loading: false,
-                error: undefined,
-              });
-              break;
-            }
-            default: {
-              throw new Error('Invalid entity type');
-            }
+    const fetchPromises = Object.entries(entitiesTriplets).map(async ([orgId, ids]) => {
+      try {
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        const rootlyClient = useRootlyClient({ organizationId: orgId });
+        switch (type) {
+          case 'Services': {
+            const results = await rootlyClient.getServices({
+              filter: { backstage_id: ids.join(',') }
+            });
+            res.set(orgId, {
+              value: results,
+              loading: false,
+              error: undefined
+            });
+            break;
           }
-        } catch (e) {
-          res.set(orgId, {
-            value: undefined,
-            loading: false,
-            error: e as Error,
-          });
+          case 'Functionalities': {
+            const results = await rootlyClient.getFunctionalities({
+              filter: { backstage_id: ids.join(',') }
+            });
+            res.set(orgId, {
+              value: results,
+              loading: false,
+              error: undefined
+            });
+            break;
+          }
+          case 'Teams': {
+            const results = await rootlyClient.getTeams({
+              filter: { backstage_id: ids.join(',') }
+            });
+            res.set(orgId, {
+              value: results,
+              loading: false,
+              error: undefined
+            });
+            break;
+          }
+          default: {
+            throw new Error('Invalid entity type');
+          }
         }
-        return res;
-      },
-    );
+      } catch (e) {
+        res.set(orgId, {
+          value: undefined,
+          loading: false,
+          error: e as Error
+        });
+      }
+      return res;
+    });
     await Promise.all(fetchPromises);
     return res;
   };
@@ -177,7 +136,7 @@ export const RootlySystemIncidentsPageLayout = ({
       const [services, functionalities, teams] = await Promise.all([
         fetchData(serviceEntitiesTriplets, 'Services'),
         fetchData(functionalityEntitiesTriplets, 'Functionalities'),
-        fetchData(teamEntitiesTriplets, 'Teams'),
+        fetchData(teamEntitiesTriplets, 'Teams')
       ]);
       setResponses({ services, functionalities, teams });
     } catch (e) {
@@ -185,12 +144,7 @@ export const RootlySystemIncidentsPageLayout = ({
     } finally {
       setLoading(false);
     }
-  }, [
-    fetchData,
-    serviceEntitiesTriplets,
-    functionalityEntitiesTriplets,
-    teamEntitiesTriplets,
-  ]);
+  }, [fetchData, serviceEntitiesTriplets, functionalityEntitiesTriplets, teamEntitiesTriplets]);
 
   useEffect(() => {
     fetchAllData();
@@ -216,11 +170,7 @@ export const RootlySystemIncidentsPageLayout = ({
   });
 
   const orgKeys: string[] = [
-    ...new Set([
-      ...responses.services.keys(),
-      ...responses.functionalities.keys(),
-      ...responses.teams.keys(),
-    ]),
+    ...new Set([...responses.services.keys(), ...responses.functionalities.keys(), ...responses.teams.keys()])
   ].sort();
 
   return (
@@ -234,12 +184,7 @@ export const RootlySystemIncidentsPageLayout = ({
               <Grid item>
                 <IncidentsTable
                   organizationId={orgId}
-                  params={getTableParams(
-                    services[orgId] || [],
-                    functionalities[orgId] || [],
-                    teams[orgId] || [],
-                    'started,mitigated',
-                  )}
+                  params={getTableParams(services[orgId] || [], functionalities[orgId] || [], teams[orgId] || [], 'started,mitigated')}
                 />
               </Grid>
             </Grid>
@@ -248,11 +193,7 @@ export const RootlySystemIncidentsPageLayout = ({
               <Grid item>
                 <IncidentsTable
                   organizationId={orgId}
-                  params={getTableParams(
-                    services[orgId] || [],
-                    functionalities[orgId] || [],
-                    teams[orgId] || [],
-                  )}
+                  params={getTableParams(services[orgId] || [], functionalities[orgId] || [], teams[orgId] || [])}
                 />
               </Grid>
             </Grid>

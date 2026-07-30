@@ -3,7 +3,7 @@ import { default as React } from 'react';
 type SubRoute = {
     path: string;
     title: string;
-    children: JSX.Element;
+    children: React.ReactElement;
     tabProps?: TabProps<React.ElementType, {
         component?: React.ElementType;
     }>;
