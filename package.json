@@ -107,7 +107,7 @@
     "jest": "^30.0.0",
     "jest-canvas-mock": "^2.5.8",
     "jest-fetch-mock": "^4.2.0",
-    "jsdom": "^27.1.0",
+    "jsdom": "^30.0.1",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-router": "^7.18.0",
