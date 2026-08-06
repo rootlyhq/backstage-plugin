@@ -4720,13 +4720,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rootly/backstage-plugin-common@npm:^1.4.0":
-  version: 1.4.0
-  resolution: "@rootly/backstage-plugin-common@npm:1.4.0"
+"@rootly/backstage-plugin-common@npm:^1.4.1":
+  version: 1.4.1
+  resolution: "@rootly/backstage-plugin-common@npm:1.4.1"
   dependencies:
     "@backstage/catalog-model": "npm:^1.9.0"
-    qs: "npm:^6.15.2"
-  checksum: 10c0/86e5d3681ae5969ce56bd3ad12ff4c85e1e57cfcfdefa511a3e327996b6ef4cb5f0a695563c4789635574515e9940a1ac8e8228f53d8d9edeb9662d596dba040
+    qs: "npm:^6.15.3"
+  checksum: 10c0/0f41a53020f9d4aa38a7b540e4f2d3629616f975454b11f20f61a859e16b34b6fa652be9d34e29fc0b02e60e8dceb6d23b38f8a5b4ab53e5a4a3b17145c838a9
   languageName: node
   linkType: hard
 
@@ -4754,7 +4754,7 @@ __metadata:
     "@material-ui/core": "npm:^4.12.4"
     "@material-ui/icons": "npm:^4.11.3"
     "@material-ui/lab": "npm:4.0.0-alpha.61"
-    "@rootly/backstage-plugin-common": "npm:^1.4.0"
+    "@rootly/backstage-plugin-common": "npm:^1.4.1"
     "@spotify/prettier-config": "npm:^15.0.0"
     "@testing-library/dom": "npm:^10.4.1"
     "@testing-library/jest-dom": "npm:^7.0.0"
@@ -4763,7 +4763,7 @@ __metadata:
     "@types/contrast-color": "npm:^1.0.3"
     "@types/dom-to-image": "npm:^2.6.7"
     "@types/jest": "npm:^30.0.0"
-    "@types/node": "npm:^26.1.1"
+    "@types/node": "npm:^26.1.2"
     "@types/react": "npm:^18.3.0"
     "@types/react-dom": "npm:^18.3.0"
     chart.js: "npm:^4.5.1"
@@ -4784,7 +4784,7 @@ __metadata:
     react-chartkick: "npm:^0.5.4"
     react-dom: "npm:^19.2.8"
     react-router: "npm:^7.18.0"
-    react-router-dom: "npm:^7.18.1"
+    react-router-dom: "npm:^7.18.2"
     react-use: "npm:^17.6.1"
     swr: "npm:^2.4.2"
     typescript: "npm:^6.0.3"
@@ -5724,12 +5724,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^26.1.1":
-  version: 26.1.1
-  resolution: "@types/node@npm:26.1.1"
+"@types/node@npm:^26.1.2":
+  version: 26.1.2
+  resolution: "@types/node@npm:26.1.2"
   dependencies:
     undici-types: "npm:~8.3.0"
-  checksum: 10c0/25ac5093195736dd074d5027adbba85617bc951d5a41506ebd3b9073048acb7233613f3822d5f9b9447f9c0841c91f6387c46283916767e3ef79f23917452c46
+  checksum: 10c0/a45503222c7db8f374afd5c9381db63dd95b6b1f703abea0890dd3d4a09eeb41da489e08a1a45baf18fe89fb77fbf310ff2789f680c490b04dafc41a60800a86
   languageName: node
   linkType: hard
 
@@ -16913,35 +16913,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-router-dom@npm:^7.18.1":
-  version: 7.18.1
-  resolution: "react-router-dom@npm:7.18.1"
+"react-router-dom@npm:^7.18.2":
+  version: 7.18.2
+  resolution: "react-router-dom@npm:7.18.2"
   dependencies:
-    react-router: "npm:7.18.1"
+    react-router: "npm:7.18.2"
   peerDependencies:
     react: ">=18"
     react-dom: ">=18"
-  checksum: 10c0/5efb99f2f09cecf445788f3459a8f5ff952ed85061f2d40f8de25fdd6e2ce6aeea8e40e4bacad470ea42a45d0460feb6fb59c62f14d87720b43d5c96cd9b2cb6
+  checksum: 10c0/234926d664a5b5c355aeb8642f505784facbb63321231428f24e5ea7fb859876443082d63eef4b8167a01ea8d8dab231a666736343c3e4a86a05b2fcb88927b5
   languageName: node
   linkType: hard
 
-"react-router@npm:7.18.1":
-  version: 7.18.1
-  resolution: "react-router@npm:7.18.1"
-  dependencies:
-    cookie: "npm:^1.0.1"
-    set-cookie-parser: "npm:^2.6.0"
-  peerDependencies:
-    react: ">=18"
-    react-dom: ">=18"
-  peerDependenciesMeta:
-    react-dom:
-      optional: true
-  checksum: 10c0/1a559de58d656bad5565f2232e4f4fab7e9f5282dfaf95bc24f195a06e7e85b281077fe5c21ed3ff527e3d90d930447e0d0bb0f0713950d2a56ad0f0377a7d09
-  languageName: node
-  linkType: hard
-
-"react-router@npm:^7.18.0":
+"react-router@npm:7.18.2, react-router@npm:^7.18.0":
   version: 7.18.2
   resolution: "react-router@npm:7.18.2"
   dependencies:
