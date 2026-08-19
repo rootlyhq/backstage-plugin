@@ -28,29 +28,6 @@ const entity = (kind: string): Entity => ({
 });
 
 describe("alpha frontend extensions", () => {
-  const originalWarn = console.warn;
-  let consoleWarnSpy: jest.SpyInstance;
-
-  beforeAll(() => {
-    consoleWarnSpy = jest
-      .spyOn(console, "warn")
-      .mockImplementation((...args) => {
-        if (
-          typeof args[0] === "string" &&
-          args[0].startsWith(
-            "The following icons were registered as IconComponent",
-          )
-        ) {
-          return;
-        }
-        originalWarn.call(console, ...args);
-      });
-  });
-
-  afterAll(() => {
-    consoleWarnSpy.mockRestore();
-  });
-
   it("loads the Rootly page extension", async () => {
     renderInTestApp(createExtensionTester(rootlyPage).reactElement());
 
