@@ -1,8 +1,15 @@
 import type { DiscoveryApi, IdentityApi } from "@backstage/core-plugin-api";
-import { mockApis } from "@backstage/frontend-test-utils";
+import { mockApis, renderInTestApp } from "@backstage/frontend-test-utils";
 import { RootlyApi } from "@rootly/backstage-plugin-common";
+import { screen } from "@testing-library/react";
+import { createElement } from "react";
 
-import { RootlyApiImpl } from "./api";
+import {
+  rootlyApiRef,
+  RootlyApiImpl,
+  type RootlyApiRef,
+  useRootlyClient,
+} from "./api";
 
 jest.mock("@rootly/backstage-plugin-common", () => ({
   ...jest.requireActual("@rootly/backstage-plugin-common"),
@@ -118,6 +125,32 @@ describe("RootlyApiImpl", () => {
       apiProxyUrl: proxyUrl,
       apiToken: credentials,
       apiHost: undefined,
+    });
+  });
+});
+
+describe("useRootlyClient", () => {
+  it("uses an application-provided Rootly API override", async () => {
+    const customClient = {} as RootlyApi;
+    const getClient = jest.fn().mockReturnValue(customClient);
+    const customApi: RootlyApiRef = { getClient };
+
+    const Probe = () => {
+      const client = useRootlyClient({ organizationId: "organization-id" });
+      return createElement(
+        "div",
+        null,
+        client === customClient ? "Custom client" : "Fallback client",
+      );
+    };
+
+    renderInTestApp(createElement(Probe), {
+      apis: [[rootlyApiRef, customApi]],
+    });
+
+    expect(await screen.findByText("Custom client")).toBeInTheDocument();
+    expect(getClient).toHaveBeenCalledWith({
+      organizationId: "organization-id",
     });
   });
 });
