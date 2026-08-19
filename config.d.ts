@@ -15,14 +15,18 @@
  */
 
 export interface Config {
-  /**
-   * @deepVisibility frontend
-   **/
   rootly?: {
     [key: string]: {
+      /** @visibility frontend */
       isDefault?: boolean;
-      apiKey: string;
+      /**
+       * @deprecated API keys are configured on the Backstage proxy endpoint.
+       * @visibility secret
+       */
+      apiKey?: string;
+      /** @visibility frontend */
       proxyPath?: string;
+      /** @visibility frontend */
       apiHost?: string;
     };
   };
