@@ -1,4 +1,23 @@
-import { expect, test } from "@playwright/test";
+import { expect, test as base } from "@playwright/test";
+
+const test = base.extend<{ browserErrors: string[] }>({
+  browserErrors: async ({ page }, provide) => {
+    const errors: string[] = [];
+
+    page.on("console", message => {
+      if (message.type() === "error") {
+        errors.push(`console: ${message.text()}`);
+      }
+    });
+    page.on("pageerror", error => errors.push(`page: ${error.message}`));
+
+    await provide(errors);
+  },
+});
+
+test.afterEach(async ({ browserErrors }) => {
+  expect(browserErrors).toEqual([]);
+});
 
 test.beforeEach(async ({ page }) => {
   await page.goto("/rootly");
@@ -46,6 +65,26 @@ test("navigates between Rootly resource tables backed by the dev API", async ({
   await expect(page).toHaveURL(/\/rootly\/teams$/);
   await expect(
     page.getByRole("link", { name: "Backstage Plugin Test Team" }),
+  ).toBeVisible();
+});
+
+test("keeps a deep-linked resource route working after reload", async ({
+  page,
+}) => {
+  await page.getByRole("tab", { name: "Services" }).click();
+  await expect(page).toHaveURL(/\/rootly\/services$/);
+
+  await page.reload();
+
+  await expect(page).toHaveURL(/\/rootly\/services$/);
+  await expect(
+    page.getByRole("tab", { name: "Services", selected: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("link", {
+      name: "backstage-plugin-test-service",
+      description: "Backstage Plugin Test Service",
+    }),
   ).toBeVisible();
 });
 
