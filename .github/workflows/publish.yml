@@ -30,7 +30,9 @@ jobs:
       - run: corepack enable
       - run: yarn install --immutable
       - run: yarn lint
-      - run: yarn test --watchAll=false
+      # The two-core hosted publish runner can starve Testing Library's async
+      # timers when Jest runs every suite concurrently.
+      - run: yarn test --watchAll=false --runInBand
       - run: yarn build
       - run: npm publish --dry-run --access public
       - run: npm publish --provenance --access public
