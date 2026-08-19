@@ -1,5 +1,11 @@
 # @rootly/backstage-plugin
 
+## 1.3.2
+
+- Allow the documented proxy-only Rootly configuration to pass strict validation
+- Keep the legacy `apiKey` setting optional and secret so it is not exposed to the frontend
+- Refresh minor and patch development dependencies
+
 ## 1.3.1
 
 - Refresh vulnerable transitive dependencies and development tooling
