@@ -1,6 +1,56 @@
 export const rootlyApi = {
   getClient() {
     return {
+      getServiceDetailsURL() {
+        return "https://rootly.example/services/backstage-plugin-test-service";
+      },
+      getFunctionalityDetailsURL() {
+        return "https://rootly.example/functionalities/backstage-plugin-test-functionality";
+      },
+      getTeamDetailsURL() {
+        return "https://rootly.example/teams/backstage-plugin-test-team";
+      },
+      getCatalogEntityDetailsURL() {
+        return "https://rootly.example/catalog/entities/backstage-plugin-test-service";
+      },
+      async getCatalogs() {
+        return {
+          data: [
+            {
+              id: "<catalog_id>",
+              type: "catalogs",
+              attributes: {
+                name: "Backstage Plugin Test Catalog",
+                slug: "backstage-plugin-test-catalog",
+              },
+            },
+          ],
+        };
+      },
+      async getCatalogEntities() {
+        return {
+          data: [
+            {
+              id: "<catalog_entity_id>",
+              type: "catalog_entities",
+              attributes: {
+                backstage_id: "component:default/backstage-plugin-test-service",
+                created_at: "2025-09-05T02:19:33.876-07:00",
+                description: "Backstage Plugin Test Catalog Entity",
+                name: "Backstage Plugin Test Catalog Entity",
+                updated_at: "2025-09-05T02:29:40.608-07:00",
+              },
+            },
+          ],
+          meta: {
+            current_page: 1,
+            next_page: null,
+            prev_page: null,
+            total_count: 1,
+            total_pages: 1,
+          },
+        };
+      },
       async getServices() {
         return {
           data: [
