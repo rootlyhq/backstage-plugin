@@ -36,7 +36,7 @@ function createSubRoutesFromChildren(childrenProps: React.ReactNode): SubRoute[]
     }
 
     if (child.type !== routeType) {
-      throw new Error('Child of ExploreLayout must be an ExploreLayout.Route');
+      throw new Error('Child of DefaultRootlyPageLayout must be a DefaultRootlyPageLayout.Route');
     }
 
     const { path, title, children, tabProps } = child.props;
