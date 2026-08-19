@@ -1,5 +1,12 @@
 # @rootly/backstage-plugin
 
+## 1.3.3
+
+- Stabilize Rootly client identity to prevent repeated entity requests and render loops
+- Add Playwright browser coverage for Rootly routes, resources, and catalog integration
+- Run end-to-end tests on Blacksmith and retain Playwright reports
+- Align the development app with the React 18 and React Router 6 Backstage runtime
+
 ## 1.3.2
 
 - Allow the documented proxy-only Rootly configuration to pass strict validation
