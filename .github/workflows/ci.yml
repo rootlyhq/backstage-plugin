@@ -23,4 +23,4 @@ jobs:
       - run: yarn lint
       - run: yarn test --watchAll=false
       - run: yarn build
-      - run: npm publish --dry-run --access public
+      - run: npm pack --dry-run
