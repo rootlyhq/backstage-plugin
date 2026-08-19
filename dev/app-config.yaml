@@ -2,10 +2,6 @@ app:
   title: Backstage Example App
   baseUrl: http://localhost:3000
   extensions:
-    # Redirect from the Home to the Rootly page
-    - "page:rootly":
-        config:
-          path: "/"
     # Disable these Search plugin extensions
     - "nav-item:search": false
     # Disable these Catalog plugin extensions

@@ -10,6 +10,7 @@ import {
   useApiHolder,
 } from "@backstage/core-plugin-api";
 import { RootlyApi } from "@rootly/backstage-plugin-common";
+import { useMemo } from "react";
 
 type RootlyClientOptions = {
   organizationId?: string;
@@ -97,6 +98,15 @@ export const useRootlyClient = ({
   const identity = useApi(identityApiRef);
   const discovery = useApi(discoveryApiRef);
   const apis = useApiHolder();
-  const rootlyApi = apis.get(rootlyApiRef) || RootlyApiImpl.fromOptions({ config, identity, discovery });
-    return rootlyApi.getClient({ organizationId });
+  const rootlyApi = useMemo(
+    () =>
+      apis.get(rootlyApiRef) ||
+      RootlyApiImpl.fromOptions({ config, identity, discovery }),
+    [apis, config, identity, discovery],
+  );
+
+  return useMemo(
+    () => rootlyApi.getClient({ organizationId }),
+    [rootlyApi, organizationId],
+  );
 };

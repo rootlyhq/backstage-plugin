@@ -1,8 +1,8 @@
 import type { DiscoveryApi, IdentityApi } from "@backstage/core-plugin-api";
 import { mockApis, renderInTestApp } from "@backstage/frontend-test-utils";
 import { RootlyApi } from "@rootly/backstage-plugin-common";
-import { screen } from "@testing-library/react";
-import { createElement } from "react";
+import { fireEvent, screen } from "@testing-library/react";
+import { createElement, useState } from "react";
 
 import {
   rootlyApiRef,
@@ -136,10 +136,11 @@ describe("useRootlyClient", () => {
     const customApi: RootlyApiRef = { getClient };
 
     const Probe = () => {
+      const [, setRenderCount] = useState(0);
       const client = useRootlyClient({ organizationId: "organization-id" });
       return createElement(
-        "div",
-        null,
+        "button",
+        { onClick: () => setRenderCount(count => count + 1), type: "button" },
         client === customClient ? "Custom client" : "Fallback client",
       );
     };
@@ -152,5 +153,8 @@ describe("useRootlyClient", () => {
     expect(getClient).toHaveBeenCalledWith({
       organizationId: "organization-id",
     });
+
+    fireEvent.click(screen.getByRole("button", { name: "Custom client" }));
+    expect(getClient).toHaveBeenCalledTimes(1);
   });
 });
