@@ -164,7 +164,7 @@ export const RootlyOverviewServiceCard = () => {
     [service]
   );
 
-  const incidents = incidentsResponse && incidentsResponse.data && incidentsResponse.data.length > 0 ? incidentsResponse.data : null;
+  const incidents = incidentsResponse?.data ?? null;
 
   return (
     <Card>
@@ -209,12 +209,13 @@ export const RootlyOverviewServiceCard = () => {
         {incidentsError && <Alert severity="error">{incidentsError.message}</Alert>}
         {!incidentsLoading && !incidentsError && !incidentsLoading && incidents && (
           <>
-            {incidents && incidents.length >= 0 && (
+            {incidents.length > 0 ? (
               <Typography variant="subtitle1">
                 There is <strong>{incidents.length}</strong> ongoing incidents for this service
               </Typography>
+            ) : (
+              <Typography variant="subtitle1">No ongoing incidents</Typography>
             )}
-            {incidents && incidents.length === 0 && <Typography variant="subtitle1">No ongoing incidents</Typography>}
             <List dense>
               {incidents &&
                 incidents.map((incident: RootlyIncident) => <IncidentListItem incident={incident} rootlyClient={rootlyClient} />)}

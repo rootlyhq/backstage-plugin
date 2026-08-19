@@ -15,7 +15,7 @@ export class IncidentWrapper {
       });
       return this.included?.filter((i: { type: string; id: string }) => {
         return i.type === 'environments' && ids.includes(i.id);
-      });
+      }) ?? [];
     } 
       return [];
     
@@ -28,7 +28,7 @@ export class IncidentWrapper {
       });
       return this.included?.filter((i: { type: string; id: string }) => {
         return i.type === 'services' && ids.includes(i.id);
-      });
+      }) ?? [];
     } 
       return [];
     
@@ -41,7 +41,7 @@ export class IncidentWrapper {
       });
       return this.included?.filter((i: { type: string; id: string }) => {
         return i.type === 'functionalities' && ids.includes(i.id);
-      });
+      }) ?? [];
     } 
       return [];
     
@@ -54,7 +54,7 @@ export class IncidentWrapper {
       });
       return this.included?.filter((i: { type: string; id: string }) => {
         return i.type === 'groups' && ids.includes(i.id);
-      });
+      }) ?? [];
     } 
       return [];
     
@@ -67,7 +67,7 @@ export class IncidentWrapper {
       });
       return this.included?.filter((i: { type: string; id: string }) => {
         return i.type === 'incident_types' && ids.includes(i.id);
-      });
+      }) ?? [];
     } 
       return [];
     

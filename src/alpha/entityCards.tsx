@@ -5,10 +5,10 @@ import { EntityCardBlueprint } from "@backstage/plugin-catalog-react/alpha";
 /** @alpha */
 export const rootlyOverviewEntityCard = EntityCardBlueprint.make({
   params: {
-    filter: "kind:component",
+    filter: { kind: "component" },
     loader: async () =>
       import("../components/Entity").then((m) =>
-        compatWrapper(<m.RootlyOverviewCard />)
+        compatWrapper(<m.RootlyOverviewCard />),
       ),
   },
 });

@@ -40,6 +40,16 @@
     "plugin",
     "rootly"
   ],
+  "jest": {
+    "coverageThreshold": {
+      "global": {
+        "branches": 70,
+        "functions": 60,
+        "lines": 75,
+        "statements": 75
+      }
+    }
+  },
   "sideEffects": false,
   "scripts": {
     "start": "backstage-cli package start --config ./dev/app-config.yaml",
@@ -86,9 +96,11 @@
   "devDependencies": {
     "@backstage/cli": "^0.36.4",
     "@backstage/cli-defaults": "^0.1.4",
+    "@backstage/config-loader": "^1.11.0",
     "@backstage/core-app-api": "^1.20.3",
     "@backstage/dev-utils": "^1.1.25",
     "@backstage/frontend-defaults": "^0.5.4",
+    "@backstage/frontend-test-utils": "^0.6.2",
     "@backstage/plugin-catalog": "^2.0.7",
     "@backstage/plugin-search": "^1.7.6",
     "@backstage/test-utils": "^1.7.20",

@@ -1,16 +1,17 @@
-name: Publish
+name: CI
 
 on:
-  release:
-    types: [published]
+  pull_request:
+  push:
+    branches: [master]
+
+permissions:
+  contents: read
 
 jobs:
-  publish:
+  verify:
     runs-on: blacksmith-2vcpu-ubuntu-2404
     timeout-minutes: 10
-    permissions:
-      contents: read
-      id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - run: corepack enable
@@ -18,11 +19,8 @@ jobs:
         with:
           node-version: 24
           cache: yarn
-      - run: npm install -g npm@latest
-      - run: corepack enable
       - run: yarn install --immutable
       - run: yarn lint
-      - run: yarn test --watchAll=false
+      - run: yarn test --watchAll=false --coverage --coverageReporters=text-summary
       - run: yarn build
-      - run: npm publish --dry-run --access public
-      - run: npm publish --provenance --access public
+      - run: npm pack --dry-run
