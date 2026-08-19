@@ -12,7 +12,8 @@ on:
 
 jobs:
   publish:
-    runs-on: blacksmith-2vcpu-ubuntu-2404
+    # npm trusted publishing and provenance reject self-hosted runners.
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
       contents: read
