@@ -5201,7 +5201,7 @@ __metadata:
     "@testing-library/dom": "npm:^10.4.1"
     "@testing-library/jest-dom": "npm:^7.0.1"
     "@testing-library/react": "npm:^16.3.1"
-    "@testing-library/user-event": "npm:^14.6.3"
+    "@testing-library/user-event": "npm:^14.6.4"
     "@types/contrast-color": "npm:^1.0.3"
     "@types/dom-to-image": "npm:^2.6.7"
     "@types/jest": "npm:^30.0.0"
@@ -5210,7 +5210,7 @@ __metadata:
     "@types/react-dom": "npm:^18.3.0"
     chart.js: "npm:^4.5.1"
     chartkick: "npm:^5.0.1"
-    concurrently: "npm:^10.0.4"
+    concurrently: "npm:^10.0.5"
     contrast-color: "npm:^1.0.1"
     cross-fetch: "npm:^4.1.0"
     history: "npm:^5.3.0"
@@ -5228,7 +5228,7 @@ __metadata:
     react-router: "npm:^6.30.2"
     react-router-dom: "npm:^6.30.2"
     react-use: "npm:^17.6.1"
-    swr: "npm:^2.5.0"
+    swr: "npm:^2.5.1"
     typescript: "npm:^6.0.3"
   peerDependencies:
     react: ^16.13.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
@@ -5766,12 +5766,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/user-event@npm:^14.6.3":
-  version: 14.6.3
-  resolution: "@testing-library/user-event@npm:14.6.3"
+"@testing-library/user-event@npm:^14.6.4":
+  version: 14.6.4
+  resolution: "@testing-library/user-event@npm:14.6.4"
   peerDependencies:
     "@testing-library/dom": ">=7.21.4"
-  checksum: 10c0/60c401edcc1b39f98aefd0e236af69c1a0454e3a7b91b92d62e2d654b044c51d39abc4a7ee0f5675566e7246dc5fc5e91af872a49da7e30a5f0e9e52f5a83a82
+  checksum: 10c0/2460efb88c16ce6e56f64e403cc3e1905d8378a95003933924f31e3c724f5a42dd28d6fe51a9881ecd2e3b5b2e0b12363f3c7a816df90845553180b2a219b647
   languageName: node
   linkType: hard
 
@@ -8632,9 +8632,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"concurrently@npm:^10.0.4":
-  version: 10.0.4
-  resolution: "concurrently@npm:10.0.4"
+"concurrently@npm:^10.0.5":
+  version: 10.0.5
+  resolution: "concurrently@npm:10.0.5"
   dependencies:
     chalk: "npm:5.6.2"
     rxjs: "npm:7.8.2"
@@ -8645,7 +8645,7 @@ __metadata:
   bin:
     conc: dist/bin/index.js
     concurrently: dist/bin/index.js
-  checksum: 10c0/8f4c1380541230425350cba407df59728532728105a1575cba3d9fae97e13621b905cde0f03f22f26be21505544b3b1e10a45080db27330bb1891495c019a8df
+  checksum: 10c0/2e66ece2f2a016b4f8b175f88f67d84bbedc8eff864310d37fe8c82e58459a40cfe69c5f0fe8ce9fc97f028157d7adb1c71629433e305e95f447a7840e417ad9
   languageName: node
   linkType: hard
 
@@ -19426,15 +19426,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"swr@npm:^2.5.0":
-  version: 2.5.0
-  resolution: "swr@npm:2.5.0"
+"swr@npm:^2.5.1":
+  version: 2.5.1
+  resolution: "swr@npm:2.5.1"
   dependencies:
     dequal: "npm:^2.0.3"
     use-sync-external-store: "npm:^1.6.0"
   peerDependencies:
     react: ^16.11.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-  checksum: 10c0/8f53bf64c5948bc925e36c2d0200e8f7c840c7e9bd353ff4e7e618c5e4447233dbcdb50d0c14a4a5ab38c69fa096ddbe629f23faa1638ecb302e679f4e4cd6a2
+  checksum: 10c0/46a815a8abaf38378c6febc3beacedf4d7e1fafce0656ff6ed23561cfa9e380de3831d708b36d516f70bd3d0decac824108bce96d0826f258c33cf56e1e837b6
   languageName: node
   linkType: hard
 
