@@ -1,5 +1,16 @@
 # @rootly/backstage-plugin
 
+## 1.4.0
+
+- Fetch fresh Backstage credentials for every Rootly API request so long-lived pages keep working after the Backstage token expires (requires `@rootly/backstage-plugin-common` 1.5.0)
+- Upgrade to Backstage 1.55.3 (`@backstage/cli` 0.36.6) and refresh the Backstage dependency tree
+- Align peer dependencies with Backstage: `react`/`react-dom` `^17.0.0 || ^18.0.0`, `react-router`/`react-router-dom` `^6.30.2`
+- Move build tooling (`@backstage/cli`, `prettier`) out of runtime `dependencies`; use the Backstage Prettier config
+- Remove unused dependencies (`history`, `qs`, `install`, `concurrently`, `@spotify/prettier-config`, `swr`, `cross-fetch`, `@types/dom-to-image`)
+- Use the TypeScript 5.8 line supported by the Backstage CLI and `@types/node` 24
+- Move the toolchain to Node.js 24 and Yarn 4.13.0
+- Update pinned GitHub Actions, tighten workflow permissions, and ignore Dependabot majors Backstage cannot adopt
+
 ## 1.3.3
 
 - Stabilize Rootly client identity to prevent repeated entity requests and render loops
