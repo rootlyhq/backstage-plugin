@@ -70,6 +70,7 @@ rootly:
     proxyPath: /rootly/api
   rootly-sandbox:
     proxyPath: /rootly-sandbox/api
+    showTestIncidents: true # optional, see "Test incidents" below
 
 ...
 
@@ -84,6 +85,25 @@ proxy:
       headers:
         Authorization: Bearer ${ROOTLY_SANDBOX_TOKEN}
 ```
+
+#### Configuration options
+
+Each entry under `rootly` accepts:
+
+| Option              | Description                                                                                                                                        |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `proxyPath`         | Backstage proxy path that forwards to the Rootly API.                                                                                              |
+| `isDefault`         | Organization used when a component does not pass `organizationId`. Defaults to the first entry.                                                    |
+| `apiHost`           | Rootly web host used to build links (for example `https://rootly.com`).                                                                            |
+| `showTestIncidents` | Include test incidents (kind `test` / `test_sub`) in incident tables by default. Defaults to `false`, so test incidents are hidden unless enabled. |
+
+#### Test incidents
+
+Incident tables hide test incidents by default by sending
+`filter[kind][not_in]=test,test_sub` to the Rootly API. Set
+`showTestIncidents: true` on an organization (for example a sandbox account) to
+list them by default. Users can still flip the **Show test incidents** toggle in
+the incidents table filter bar.
 
 ### Annotations
 
@@ -247,6 +267,26 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
   </SidebarPage>
 );
 ```
+
+#### Incidents table: filters and sorting
+
+The incidents tables on the `RootlyPage` and `RootlyIncidentsPage` include a
+filter bar with **Status**, **Severity**, **Teams**, **Services** and
+**Environments** filters, plus a **Show test incidents** toggle. Search,
+filters, sorting and pagination are all sent to the Rootly API, so they apply
+across every incident rather than only the rows of the current page.
+
+- Filters already fixed by a page are hidden. On an entity page (scoped to a
+  service, functionality, team or system) the team, service and environment
+  filters are hidden because the Rootly API ORs relationship filters together,
+  so adding one would widen the results instead of narrowing them. For the same
+  reason, selecting several of teams, services and environments on the global
+  page returns incidents linked to _any_ of the selected items.
+- The **Started At**, **Mitigated At** and **Resolved At** columns can be
+  sorted (newest started first by default). Other columns are not sortable
+  because the Rootly API cannot sort on them.
+- `IncidentsTable` is exported and accepts `params` (a fixed scope merged into
+  every request) and `showFilters` (set to `false` to hide the filter bar).
 
 ### Entity
 

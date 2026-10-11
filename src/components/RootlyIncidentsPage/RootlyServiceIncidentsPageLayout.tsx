@@ -74,6 +74,7 @@ export const RootlyServiceIncidentsPageLayout = ({ entity, organizationId }: { e
           <Grid item>
             <IncidentsTable
               organizationId={organizationId}
+              showFilters={false}
               params={{
                 filter: {
                   services: service.attributes.slug,

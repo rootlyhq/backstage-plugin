@@ -73,9 +73,10 @@ export const RootlyFunctionalityIncidentsPageLayout = ({ entity, organizationId 
           <Grid item>
             <IncidentsTable
               organizationId={organizationId}
+              showFilters={false}
               params={{
                 filter: {
-                  functionalitys: functionality.attributes.slug,
+                  functionalities: functionality.attributes.slug,
                   status: 'started,mitigated'
                 },
                 include: 'environments,services,functionalities,groups,incident_types'
@@ -90,7 +91,7 @@ export const RootlyFunctionalityIncidentsPageLayout = ({ entity, organizationId 
               organizationId={organizationId}
               params={{
                 filter: {
-                  functionalitys: functionality.attributes.slug
+                  functionalities: functionality.attributes.slug
                 },
                 include: 'environments,services,functionalities,groups,incident_types'
               }}

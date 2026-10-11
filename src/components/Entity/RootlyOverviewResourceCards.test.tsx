@@ -4,7 +4,7 @@ import {
   ROOTLY_ANNOTATION_CATALOG_ENTITY_ID,
   ROOTLY_ANNOTATION_ORG_ID,
 } from "@rootly/backstage-plugin-common";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import type { ComponentType, ReactNode } from "react";
 
 import { RootlyOverviewCatalogEntityCard } from "./RootlyOverviewCatalogEntityCard";
@@ -212,7 +212,12 @@ describe.each(cases)("Rootly $type overview card", (testCase) => {
   it("loads the annotated organization, resource, incidents, and chart", async () => {
     render(<CardComponent />);
 
-    expect(await screen.findByText("No ongoing incidents")).toBeInTheDocument();
+    // The card briefly shows "No ongoing incidents" before the resource has
+    // loaded, so wait for the incidents request and the final render.
+    await waitFor(() => expect(mockGetIncidents).toHaveBeenCalled());
+    await waitFor(() =>
+      expect(screen.getByText("No ongoing incidents")).toBeInTheDocument(),
+    );
     expect(mockUseRootlyClient).toHaveBeenCalledWith({
       organizationId: "organization-id",
     });

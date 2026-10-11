@@ -73,6 +73,7 @@ export const RootlyTeamIncidentsPageLayout = ({ entity, organizationId }: { enti
           <Grid item>
             <IncidentsTable
               organizationId={organizationId}
+              showFilters={false}
               params={{
                 filter: {
                   teams: team.attributes.slug,

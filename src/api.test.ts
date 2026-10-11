@@ -5,10 +5,12 @@ import { fireEvent, screen } from "@testing-library/react";
 import { createElement, useState } from "react";
 
 import {
+  resolveRootlyOrganizationKey,
   rootlyApiRef,
   RootlyApiImpl,
   type RootlyApiRef,
   useRootlyClient,
+  useRootlyInstanceSettings,
 } from "./api";
 
 jest.mock("@rootly/backstage-plugin-common", () => ({
@@ -167,5 +169,52 @@ describe("useRootlyClient", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Custom client" }));
     expect(getClient).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe("resolveRootlyOrganizationKey", () => {
+  const config = mockApis.config({
+    data: { rootly: { first: {}, second: { isDefault: true } } },
+  });
+
+  it("prefers the requested organization, then the default, then the first", () => {
+    expect(resolveRootlyOrganizationKey(config, "first")).toBe("first");
+    expect(resolveRootlyOrganizationKey(config)).toBe("second");
+    expect(
+      resolveRootlyOrganizationKey(
+        mockApis.config({ data: { rootly: { only: {}, other: {} } } }),
+      ),
+    ).toBe("only");
+    expect(resolveRootlyOrganizationKey(mockApis.config())).toBeUndefined();
+  });
+});
+
+describe("useRootlyInstanceSettings", () => {
+  const Probe = ({ organizationId }: { organizationId?: string }) => {
+    const { showTestIncidents } = useRootlyInstanceSettings({
+      organizationId,
+    });
+    return createElement("span", null, `show test: ${showTestIncidents}`);
+  };
+
+  const config = {
+    rootly: {
+      main: { isDefault: true, proxyPath: "/rootly/api" },
+      sandbox: { proxyPath: "/sandbox/api", showTestIncidents: true },
+    },
+  };
+
+  it("hides test incidents unless the instance enables them", async () => {
+    await renderInTestApp(createElement(Probe), {
+      config,
+    });
+    expect(await screen.findByText("show test: false")).toBeInTheDocument();
+  });
+
+  it("reads showTestIncidents from the requested instance", async () => {
+    await renderInTestApp(createElement(Probe, { organizationId: "sandbox" }), {
+      config,
+    });
+    expect(await screen.findByText("show test: true")).toBeInTheDocument();
   });
 });

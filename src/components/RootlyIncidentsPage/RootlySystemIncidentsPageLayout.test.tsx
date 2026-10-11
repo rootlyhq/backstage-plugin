@@ -36,7 +36,7 @@ jest.mock("../IncidentsTable", () => ({
     params: {
       filter: {
         functionalities: string;
-        groups: string;
+        teams: string;
         services: string;
         status?: string;
       };
@@ -117,7 +117,7 @@ describe("RootlySystemIncidentsPageLayout", () => {
       ),
     ).toEqual({
       functionalities: "functionality-a",
-      groups: "team-a",
+      teams: "team-a",
       services: "service-a",
       status: "started,mitigated",
     });
@@ -127,7 +127,7 @@ describe("RootlySystemIncidentsPageLayout", () => {
       ),
     ).toEqual({
       functionalities: "functionality-a",
-      groups: "team-a",
+      teams: "team-a",
       services: "service-a",
     });
     expect(
@@ -169,7 +169,7 @@ describe("RootlySystemIncidentsPageLayout", () => {
       ),
     ).toEqual({
       functionalities: "",
-      groups: "team-a",
+      teams: "team-a",
       services: "",
       status: "started,mitigated",
     });
