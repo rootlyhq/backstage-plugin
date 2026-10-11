@@ -83,7 +83,8 @@ export class RootlyApiImpl implements RootlyApiRef {
     return new RootlyApi({
       apiProxyPath,
       apiProxyUrl: this.#discovery.getBaseUrl("proxy"),
-      apiToken: this.#identity.getCredentials(),
+      // Fetch fresh credentials per request so long-lived pages survive token expiry.
+      apiToken: () => this.#identity.getCredentials(),
       apiHost,
     });
   }

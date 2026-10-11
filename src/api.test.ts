@@ -51,7 +51,7 @@ describe("RootlyApiImpl", () => {
     expect(MockedRootlyApi).toHaveBeenCalledWith({
       apiProxyPath: "/api/proxy/rootly",
       apiProxyUrl: proxyUrl,
-      apiToken: credentials,
+      apiToken: expect.any(Function),
       apiHost: "https://rootly.example",
     });
   });
@@ -117,13 +117,24 @@ describe("RootlyApiImpl", () => {
     );
   });
 
+  it("fetches fresh Backstage credentials on every token request", async () => {
+    createApi({ primary: {} }).getClient({});
+
+    const { apiToken } = MockedRootlyApi.mock.calls[0][0];
+    jest.mocked(identity.getCredentials).mockClear();
+    await (apiToken as () => Promise<unknown>)();
+    await (apiToken as () => Promise<unknown>)();
+
+    expect(identity.getCredentials).toHaveBeenCalledTimes(2);
+  });
+
   it("passes undefined optional settings through to the common client", () => {
     createApi({ primary: {} }).getClient({});
 
     expect(MockedRootlyApi).toHaveBeenCalledWith({
       apiProxyPath: undefined,
       apiProxyUrl: proxyUrl,
-      apiToken: credentials,
+      apiToken: expect.any(Function),
       apiHost: undefined,
     });
   });
