@@ -9,6 +9,32 @@ updates:
     cooldown:
       default-days: 3
       semver-major-days: 7
+    ignore:
+      # Backstage pins the frontend runtime to React 18, React Router 6 and
+      # Material UI v4/v5. Majors beyond those cannot be adopted until a
+      # Backstage release supports them.
+      - dependency-name: "react"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "react-dom"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@types/react"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@types/react-dom"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "react-router"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "react-router-dom"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@material-ui/*"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@mui/*"
+        update-types: ["version-update:semver-major"]
+      # Track the Node.js version used in CI (24 LTS).
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
+      # Use the TypeScript line supported by the Backstage CLI.
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major", "version-update:semver-minor"]
     groups:
       backstage:
         applies-to: version-updates
@@ -29,3 +55,8 @@ updates:
     open-pull-requests-limit: 20
     cooldown:
       default-days: 3
+    groups:
+      github-actions:
+        applies-to: version-updates
+        patterns:
+          - "*"
