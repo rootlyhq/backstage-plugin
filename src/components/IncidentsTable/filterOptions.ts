@@ -19,10 +19,6 @@ export const INCIDENT_STATUS_OPTIONS: IncidentFilterOption[] = [
 type NamedResource = { id: string; attributes: { name: string } };
 type NamedResourceList = { data?: NamedResource[] };
 
-type RootlyFetcher = {
-  fetch: (input: string, init?: RequestInit) => Promise<NamedResourceList>;
-};
-
 const toOptions = (response?: NamedResourceList): IncidentFilterOption[] =>
   (response?.data ?? []).map(resource => ({
     id: resource.id,
@@ -33,30 +29,6 @@ const listOpts = (search: string) => ({
   page: { size: OPTIONS_PAGE_SIZE },
   filter: { search },
 });
-
-/**
- * `@rootly/backstage-plugin-common` has no public severities/environments
- * methods yet, so these go through the client's authenticated proxy fetch.
- */
-const fetchNamedResources = async (
-  client: RootlyApi,
-  resource: 'severities' | 'environments',
-  search: string,
-): Promise<IncidentFilterOption[]> => {
-  const fetcher = client as unknown as Partial<RootlyFetcher>;
-  if (typeof fetcher.fetch !== 'function') {
-    return [];
-  }
-  const query = new URLSearchParams({ 'page[size]': String(OPTIONS_PAGE_SIZE) });
-  if (search) {
-    query.set('filter[search]', search);
-  }
-  return toOptions(
-    await fetcher.fetch(`/v1/${resource}?${query.toString()}`, {
-      headers: { 'Content-Type': 'application/vnd.api+json' },
-    }),
-  );
-};
 
 /** Loads the options of a filter, narrowed by what the user typed. */
 export const loadIncidentFilterOptions = async (
@@ -75,10 +47,15 @@ export const loadIncidentFilterOptions = async (
       return toOptions(await client.getTeams(listOpts(search)));
     case 'services':
       return toOptions(await client.getServices(listOpts(search)));
+    // Custom clients provided by the app may predate these lookups.
     case 'severity':
-      return fetchNamedResources(client, 'severities', search);
+      return typeof client.getSeverities === 'function'
+        ? toOptions(await client.getSeverities(listOpts(search)))
+        : [];
     case 'environments':
-      return fetchNamedResources(client, 'environments', search);
+      return typeof client.getEnvironments === 'function'
+        ? toOptions(await client.getEnvironments(listOpts(search)))
+        : [];
     default:
       return [];
   }

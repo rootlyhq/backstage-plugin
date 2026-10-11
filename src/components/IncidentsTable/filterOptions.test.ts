@@ -8,7 +8,12 @@ const createClient = () => ({
   getServices: jest
     .fn()
     .mockResolvedValue({ data: [named("s1", "Payments")] }),
-  fetch: jest.fn().mockResolvedValue({ data: [named("sev1", "SEV1")] }),
+  getSeverities: jest
+    .fn()
+    .mockResolvedValue({ data: [named("sev1", "SEV1")] }),
+  getEnvironments: jest
+    .fn()
+    .mockResolvedValue({ data: [named("env1", "Production")] }),
 });
 
 describe("loadIncidentFilterOptions", () => {
@@ -37,7 +42,7 @@ describe("loadIncidentFilterOptions", () => {
     ).resolves.toEqual([{ id: "s1", label: "Payments" }]);
   });
 
-  it("loads severities and environments from their endpoints", async () => {
+  it("loads severities and environments through the Rootly client", async () => {
     const client = createClient();
     await expect(
       loadIncidentFilterOptions(
@@ -46,23 +51,25 @@ describe("loadIncidentFilterOptions", () => {
         "sev",
       ),
     ).resolves.toEqual([{ id: "sev1", label: "SEV1" }]);
-    expect(client.fetch).toHaveBeenCalledWith(
-      "/v1/severities?page%5Bsize%5D=50&filter%5Bsearch%5D=sev",
-      expect.anything(),
-    );
+    expect(client.getSeverities).toHaveBeenCalledWith({
+      page: { size: 50 },
+      filter: { search: "sev" },
+    });
 
-    await loadIncidentFilterOptions(
-      client as unknown as RootlyApi,
-      "environments",
-      "",
-    );
-    expect(client.fetch).toHaveBeenLastCalledWith(
-      "/v1/environments?page%5Bsize%5D=50",
-      expect.anything(),
-    );
+    await expect(
+      loadIncidentFilterOptions(
+        client as unknown as RootlyApi,
+        "environments",
+        "",
+      ),
+    ).resolves.toEqual([{ id: "env1", label: "Production" }]);
+    expect(client.getEnvironments).toHaveBeenCalledWith({
+      page: { size: 50 },
+      filter: { search: "" },
+    });
   });
 
-  it("returns no options when the client cannot fetch arbitrary resources", async () => {
+  it("returns no options when a custom client lacks the lookup", async () => {
     await expect(
       loadIncidentFilterOptions({} as RootlyApi, "environments", ""),
     ).resolves.toEqual([]);

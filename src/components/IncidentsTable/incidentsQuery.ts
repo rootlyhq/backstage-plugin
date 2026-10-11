@@ -119,9 +119,7 @@ export const toIncidentsSortParam = (sort?: IncidentsSort): string => {
   return sort?.direction === 'asc' ? apiField : `-${apiField}`;
 };
 
-export type IncidentsQueryOptions = RootlyIncidentsFetchOpts & {
-  sort?: string;
-};
+export type IncidentsQueryOptions = RootlyIncidentsFetchOpts;
 
 /**
  * Builds the `GET /v1/incidents` options: the table scope from `params`, the
