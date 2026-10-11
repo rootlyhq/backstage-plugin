@@ -2,6 +2,10 @@
 
 ## 1.4.0
 
+- Add status, severity, team, service and environment filters to incidents tables, applied by the Rootly API across all pages (#47)
+- Sort incidents server-side on Started At, Mitigated At and Resolved At so the order spans every page (#48)
+- Hide test incidents by default, with a per-organization `showTestIncidents` config option and a "Show test incidents" toggle (#49)
+- Fix functionality and system incident tables sending unsupported `functionalitys` / `groups` filters
 - Fetch fresh Backstage credentials for every Rootly API request so long-lived pages keep working after the Backstage token expires (requires `@rootly/backstage-plugin-common` 1.5.0)
 - Upgrade to Backstage 1.55.3 (`@backstage/cli` 0.36.6) and refresh the Backstage dependency tree
 - Align peer dependencies with Backstage: `react`/`react-dom` `^17.0.0 || ^18.0.0`, `react-router`/`react-router-dom` `^6.30.2`

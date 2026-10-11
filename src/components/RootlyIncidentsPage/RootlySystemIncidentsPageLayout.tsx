@@ -45,7 +45,7 @@ const getTableParams = (services: RootlyService[], functionalities: RootlyFuncti
     status,
     services: services.map(o => o.attributes.slug).join(','),
     functionalities: functionalities.map(o => o.attributes.slug).join(','),
-    groups: teams.map(o => o.attributes.slug).join(',')
+    teams: teams.map(o => o.attributes.slug).join(',')
   },
   include: 'environments,teams,services,functionalities,groups,incident_types'
 });
@@ -184,6 +184,7 @@ export const RootlySystemIncidentsPageLayout = ({ entities }: { entities: Rootly
               <Grid item>
                 <IncidentsTable
                   organizationId={orgId}
+                  showFilters={false}
                   params={getTableParams(services[orgId] || [], functionalities[orgId] || [], teams[orgId] || [], 'started,mitigated')}
                 />
               </Grid>

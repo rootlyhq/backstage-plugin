@@ -28,6 +28,13 @@ export interface Config {
       proxyPath?: string;
       /** @visibility frontend */
       apiHost?: string;
+      /**
+       * Include test incidents (kind `test` / `test_sub`) in incident tables by
+       * default. Defaults to false, so test incidents are hidden unless the
+       * user turns on the "Show test incidents" toggle.
+       * @visibility frontend
+       */
+      showTestIncidents?: boolean;
     };
   };
 }

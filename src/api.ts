@@ -30,6 +30,24 @@ type RootlyApiOptions = {
   discovery: DiscoveryApi;
 };
 
+/**
+ * Resolves which `rootly.<key>` config block applies: the explicitly requested
+ * organization, otherwise the one flagged `isDefault`, otherwise the first one.
+ */
+export const resolveRootlyOrganizationKey = (
+  config: ConfigApi,
+  organizationId?: string,
+): string | undefined => {
+  if (organizationId) {
+    return organizationId;
+  }
+  const keys = config.getOptionalConfig("rootly")?.keys() ?? [];
+  return (
+    keys.find(key => config.getOptionalBoolean(`rootly.${key}.isDefault`)) ??
+    keys.at(0)
+  );
+};
+
 export class RootlyApiImpl implements RootlyApiRef {
   #config: ConfigApi;
   #identity: IdentityApi;
@@ -72,13 +90,10 @@ export class RootlyApiImpl implements RootlyApiRef {
       );
     }
 
-    let apiHost: string | undefined;
-    const orgKey = organizationId || configKeys.find(
-      k => this.#config.getOptionalBoolean(`rootly.${k}.isDefault`)
-    ) || configKeys.at(0);
-    if (orgKey) {
-      apiHost = this.#config.getOptionalString(`rootly.${orgKey}.apiHost`);
-    }
+    const orgKey = resolveRootlyOrganizationKey(this.#config, organizationId);
+    const apiHost = orgKey
+      ? this.#config.getOptionalString(`rootly.${orgKey}.apiHost`)
+      : undefined;
 
     return new RootlyApi({
       apiProxyPath,
@@ -89,6 +104,28 @@ export class RootlyApiImpl implements RootlyApiRef {
     });
   }
 }
+
+export type RootlyInstanceSettings = {
+  /** Whether test incidents (kind `test` / `test_sub`) are listed by default. */
+  showTestIncidents: boolean;
+};
+
+/** Reads per-instance frontend settings from `rootly.<key>` in app-config. */
+export const useRootlyInstanceSettings = ({
+  organizationId,
+}: {
+  organizationId?: string;
+}): RootlyInstanceSettings => {
+  const config = useApi(configApiRef);
+  return useMemo(() => {
+    const key = resolveRootlyOrganizationKey(config, organizationId);
+    return {
+      showTestIncidents: key
+        ? config.getOptionalBoolean(`rootly.${key}.showTestIncidents`) ?? false
+        : false,
+    };
+  }, [config, organizationId]);
+};
 
 export const useRootlyClient = ({
   organizationId,

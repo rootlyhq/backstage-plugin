@@ -8,6 +8,7 @@ const fullConfig = {
       apiHost: "https://rootly.example",
       isDefault: true,
       proxyPath: "/api/proxy/rootly",
+      showTestIncidents: true,
     },
   },
 };
@@ -42,6 +43,7 @@ describe("Rootly configuration schema", () => {
     expect(properties.apiHost.visibility).toBe("frontend");
     expect(properties.isDefault.visibility).toBe("frontend");
     expect(properties.proxyPath.visibility).toBe("frontend");
+    expect(properties.showTestIncidents.visibility).toBe("frontend");
   });
 
   it("removes API keys from frontend configuration", async () => {
@@ -60,6 +62,7 @@ describe("Rootly configuration schema", () => {
               apiHost: "https://rootly.example",
               isDefault: true,
               proxyPath: "/api/proxy/rootly",
+              showTestIncidents: true,
             },
           },
         },

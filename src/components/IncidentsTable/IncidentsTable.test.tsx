@@ -9,8 +9,11 @@ import { IncidentsTable } from "./IncidentsTable";
 const mockGetIncidents = jest.fn();
 const mockUseRootlyClient = jest.fn();
 
+const mockSettings = jest.fn();
+
 jest.mock("../../api", () => ({
   useRootlyClient: (options: unknown) => mockUseRootlyClient(options),
+  useRootlyInstanceSettings: (options: unknown) => mockSettings(options),
 }));
 jest.mock("../UI/ColoredChip", () => ({
   ColoredChip: ({ label }: { label?: string }) => <div>{label}</div>,
@@ -27,7 +30,7 @@ jest.mock("../UI/StatusChip", () => ({
 }));
 jest.mock("@material-ui/core", () => ({
   Chip: ({ label }: { label?: string }) => <div>{label}</div>,
-  makeStyles: () => () => ({ empty: "empty", searchContainer: "search" }),
+  makeStyles: () => () => ({ searchContainer: "search" }),
   Tooltip: ({ children }: { children: ReactNode }) => <>{children}</>,
 }));
 jest.mock("@material-ui/core/Link", () => ({
@@ -58,41 +61,126 @@ jest.mock("@backstage/plugin-search-react", () => ({
     />
   ),
 }));
-jest.mock("@backstage/core-components", () => ({
-  Table: ({
-    columns,
-    data,
-    emptyContent,
-    onPageChange,
-    onRowsPerPageChange,
+jest.mock("./IncidentsFilters", () => ({
+  IncidentsFilters: ({
+    available,
+    onFiltersChange,
+    showTestIncidents,
+    onShowTestIncidentsChange,
   }: {
-    columns: Array<{
-      field: string;
-      render?: (row: unknown) => ReactNode;
-    }>;
-    data: unknown[];
-    emptyContent: ReactNode;
-    onPageChange: (page: number) => void;
-    onRowsPerPageChange: (size: number) => void;
+    available: string[];
+    onFiltersChange: (filters: unknown) => void;
+    showTestIncidents: boolean;
+    onShowTestIncidentsChange: (show: boolean) => void;
   }) => (
     <div>
-      {data.length === 0 && emptyContent}
-      {data.map((row, rowIndex) => (
-        <div key={rowIndex}>
-          {columns.map((column) => (
-            <div key={column.field}>{column.render?.(row)}</div>
-          ))}
-        </div>
-      ))}
-      <button type="button" onClick={() => onPageChange(1)}>
-        Next page
+      <span>filters: {available.join(",")}</span>
+      <button
+        type="button"
+        onClick={() =>
+          onFiltersChange({
+            status: [{ id: "resolved", label: "Resolved" }],
+            severity: [{ id: "sev-1", label: "SEV1" }],
+            teams: [{ id: "team-1", label: "Payments" }],
+            services: [],
+            environments: [],
+          })
+        }
+      >
+        Apply filters
       </button>
-      <button type="button" onClick={() => onRowsPerPageChange(25)}>
-        Show 25
+      <button
+        type="button"
+        onClick={() => onShowTestIncidentsChange(!showTestIncidents)}
+      >
+        Toggle test incidents ({String(showTestIncidents)})
       </button>
     </div>
   ),
 }));
+
+type MockColumn = {
+  title: string;
+  field: string;
+  defaultSort?: "asc" | "desc";
+  sorting?: boolean;
+  render?: (row: unknown) => ReactNode;
+};
+type MockQuery = {
+  page: number;
+  pageSize: number;
+  orderBy?: MockColumn;
+  orderDirection: "asc" | "desc";
+};
+
+// Minimal stand-in for Material Table remote data: calls `data(query)` and
+// exposes `onQueryChange` through `tableRef` like the real component does.
+jest.mock("@backstage/core-components", () => {
+  const { useEffect, useRef, useState } =
+    jest.requireActual<typeof import("react")>("react");
+  return {
+    Table: ({
+      columns,
+      data,
+      tableRef,
+      localization,
+    }: {
+      columns: MockColumn[];
+      data: (query: MockQuery) => Promise<{ data: unknown[] }>;
+      tableRef: { current: unknown };
+      localization: { body: { emptyDataSourceMessage: string } };
+    }) => {
+      const [rows, setRows] = useState<unknown[]>([]);
+      const query = useRef<MockQuery>({
+        page: 0,
+        pageSize: 10,
+        orderBy: columns.find((column) => column.defaultSort),
+        orderDirection: "desc",
+      });
+      const run = (change: Partial<MockQuery>) => {
+        query.current = { ...query.current, ...change };
+        data(query.current).then((result) => setRows(result.data));
+      };
+      tableRef.current = { onQueryChange: run };
+      useEffect(() => run({}), []); // eslint-disable-line react-hooks/exhaustive-deps
+
+      return (
+        <div>
+          {columns.map((column) => (
+            <span key={column.title} data-sortable={String(column.sorting)}>
+              {column.title}
+            </span>
+          ))}
+          {rows.length === 0 && localization.body.emptyDataSourceMessage}
+          {rows.map((row, rowIndex) => (
+            <div key={rowIndex}>
+              {columns.map((column) => (
+                <div key={column.title}>{column.render?.(row)}</div>
+              ))}
+            </div>
+          ))}
+          <button type="button" onClick={() => run({ page: 1 })}>
+            Next page
+          </button>
+          <button type="button" onClick={() => run({ pageSize: 25 })}>
+            Show 25
+          </button>
+          <button
+            type="button"
+            onClick={() =>
+              run({
+                orderBy: columns.find((column) => column.title === "Resolved At"),
+                orderDirection: "asc",
+              })
+            }
+          >
+            Sort by resolved
+          </button>
+        </div>
+      );
+    },
+  };
+});
 
 const incident = {
   id: "incident-1",
@@ -144,15 +232,18 @@ const response = (data: RootlyIncident[]) => ({
   meta: { total_count: data.length },
 });
 
+const hideTestIncidents = { kind: { not_in: "test,test_sub" } };
+
 describe("IncidentsTable", () => {
   beforeEach(() => {
     mockGetIncidents.mockReset().mockResolvedValue(response([]));
     mockUseRootlyClient.mockReset().mockReturnValue({
       getIncidents: mockGetIncidents,
     });
+    mockSettings.mockReset().mockReturnValue({ showTestIncidents: false });
   });
 
-  it("passes organization, filters, and pagination to Rootly", async () => {
+  it("passes organization, scope, sort, and pagination to Rootly and hides test incidents", async () => {
     render(
       <IncidentsTable
         organizationId="organization-id"
@@ -164,10 +255,105 @@ describe("IncidentsTable", () => {
     expect(mockUseRootlyClient).toHaveBeenCalledWith({
       organizationId: "organization-id",
     });
-    expect(mockGetIncidents).toHaveBeenLastCalledWith({
-      filter: { search: "", status: "started" },
-      page: { number: 1, size: 10 },
+    expect(mockSettings).toHaveBeenCalledWith({
+      organizationId: "organization-id",
     });
+    expect(mockGetIncidents).toHaveBeenLastCalledWith({
+      filter: { search: "", status: "started", ...hideTestIncidents },
+      page: { number: 1, size: 10 },
+      sort: "-started_at",
+    });
+    expect(
+      screen.getByText("filters: severity,teams,services,environments"),
+    ).toBeInTheDocument();
+  });
+
+  it("includes test incidents when the instance enables them", async () => {
+    mockSettings.mockReturnValue({ showTestIncidents: true });
+    render(<IncidentsTable />);
+
+    await waitFor(() =>
+      expect(mockGetIncidents).toHaveBeenLastCalledWith({
+        filter: { search: "" },
+        page: { number: 1, size: 10 },
+        sort: "-started_at",
+      }),
+    );
+  });
+
+  it("refetches from the first page when filters or the test toggle change", async () => {
+    render(<IncidentsTable />);
+    await waitFor(() => expect(mockGetIncidents).toHaveBeenCalledTimes(1));
+
+    fireEvent.click(screen.getByRole("button", { name: "Next page" }));
+    await waitFor(() =>
+      expect(mockGetIncidents).toHaveBeenLastCalledWith(
+        expect.objectContaining({ page: { number: 2, size: 10 } }),
+      ),
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Apply filters" }));
+    await waitFor(() =>
+      expect(mockGetIncidents).toHaveBeenLastCalledWith({
+        filter: {
+          search: "",
+          status: "resolved",
+          severity_id: "sev-1",
+          team_ids: "team-1",
+          ...hideTestIncidents,
+        },
+        page: { number: 1, size: 10 },
+        sort: "-started_at",
+      }),
+    );
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Toggle test incidents (false)" }),
+    );
+    await waitFor(() =>
+      expect(mockGetIncidents).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          filter: {
+            search: "",
+            status: "resolved",
+            severity_id: "sev-1",
+            team_ids: "team-1",
+          },
+        }),
+      ),
+    );
+  });
+
+  it("sorts server-side and only on columns the API can sort", async () => {
+    render(<IncidentsTable />);
+    await waitFor(() => expect(mockGetIncidents).toHaveBeenCalledTimes(1));
+
+    expect(screen.getByText("Started At")).toHaveAttribute(
+      "data-sortable",
+      "true",
+    );
+    expect(screen.getByText("Resolved At")).toHaveAttribute(
+      "data-sortable",
+      "true",
+    );
+    expect(screen.getByText("Title")).toHaveAttribute("data-sortable", "false");
+    expect(screen.getByText("Severity")).toHaveAttribute(
+      "data-sortable",
+      "false",
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Sort by resolved" }));
+    await waitFor(() =>
+      expect(mockGetIncidents).toHaveBeenLastCalledWith(
+        expect.objectContaining({ sort: "resolved_at" }),
+      ),
+    );
+  });
+
+  it("hides the filter bar when disabled", async () => {
+    render(<IncidentsTable showFilters={false} />);
+    await waitFor(() => expect(mockGetIncidents).toHaveBeenCalled());
+    expect(screen.queryByText(/^filters:/)).not.toBeInTheDocument();
   });
 
   it("renders incident details and included relationships", async () => {
@@ -208,25 +394,27 @@ describe("IncidentsTable", () => {
     await user.type(screen.getByLabelText("Search Incidents"), "payments");
     await waitFor(() =>
       expect(mockGetIncidents).toHaveBeenLastCalledWith({
-        filter: { search: "payments" },
+        filter: { search: "payments", ...hideTestIncidents },
         page: { number: 1, size: 10 },
+        sort: "-started_at",
       }),
     );
 
     fireEvent.click(screen.getByRole("button", { name: "Next page" }));
     await waitFor(() =>
-      expect(mockGetIncidents).toHaveBeenLastCalledWith({
-        filter: { search: "payments" },
-        page: { number: 2, size: 10 },
-      }),
+      expect(mockGetIncidents).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          filter: { search: "payments", ...hideTestIncidents },
+          page: { number: 2, size: 10 },
+        }),
+      ),
     );
 
     fireEvent.click(screen.getByRole("button", { name: "Show 25" }));
     await waitFor(() =>
-      expect(mockGetIncidents).toHaveBeenLastCalledWith({
-        filter: { search: "payments" },
-        page: { number: 2, size: 25 },
-      }),
+      expect(mockGetIncidents).toHaveBeenLastCalledWith(
+        expect.objectContaining({ page: { number: 2, size: 25 } }),
+      ),
     );
   });
 });
