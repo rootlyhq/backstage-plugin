@@ -75,7 +75,7 @@
     "@material-ui/icons": "^4.11.3",
     "@material-ui/lab": "4.0.0-alpha.61",
     "@rootly/backstage-plugin-common": "^1.6.0",
-    "chart.js": "^4.5.1",
+    "chart.js": "^4.6.1",
     "chartkick": "^5.0.1",
     "contrast-color": "^1.0.1",
     "moment": "^2.31.0",
